@@ -1,0 +1,17 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const categorySchema = new Schema({
+  username: { type: String, require: true },
+  password: { type: String, require: true },
+  fullname: { type: String, require: true },
+  phone: { type: String, require: true },
+  image: { type: String, require: true },
+  gender: { type: String, enum: ["MALE", "FEMALE", "OTHER"] },
+  birthday: { type: String, require: true },
+  address: [Address],
+  status: { type: Boolean, default: true },
+  role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
+});
+
+module.exports = mongoose.model("Category", categorySchema);
