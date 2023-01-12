@@ -2,15 +2,11 @@
   "compilerOptions": {
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "declaration": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictNullChecks": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": ["src/*"]
-    },
     "jsx": "react",
     "lib": ["dom", "es2017", "es2018"],
     "module": "commonjs",

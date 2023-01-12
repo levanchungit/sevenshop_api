@@ -1,12 +1,12 @@
 import express from "express";
 import http from "http";
 import mongoose from "mongoose";
-import userRouter from "routes/user";
-const dotenv = require("dotenv");
-dotenv.config();
-import Log from "library/Log";
+import userRouter from "./routes/user";
+import { config } from "dotenv";
+import Log from "./library/Log";
 
 const app = express();
+config();
 
 /** Connect to Mongo */
 mongoose
@@ -27,7 +27,7 @@ app.get("/ping", (req, res, next) =>
   res.status(200).json({ messsage: "pong" })
 );
 
-/** Error handling */
+// catch 404 and forward to error handler
 app.use((req, res, next) => {
   const error = new Error("Not found");
 
@@ -37,7 +37,6 @@ app.use((req, res, next) => {
     message: error.message,
   });
 });
-
 http
   .createServer(app)
   .listen(process.env.BE_PORT, () =>

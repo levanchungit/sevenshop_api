@@ -1,5 +1,5 @@
 import { Schema, model, Document } from "mongoose";
-import Product from "models/product";
+import Product from "../product";
 
 /*********************TYPE & INTERFACE*****************************/
 
@@ -7,6 +7,11 @@ export enum Gender {
   Male = "MALE",
   Female = "FEMALE",
   other = "OTHER",
+}
+
+export enum Language {
+  VietNam = "VIETNAM",
+  English = "ENGLISH",
 }
 
 export type AddressType = {
@@ -28,6 +33,7 @@ export type UserType = {
   role: { type: String; enum: ["USER", "ADMIN"]; default: "USER" };
   productFavorites: [];
   currentProduct: [];
+  language: { type: String; enum: Language; default: "VIETNAM" };
 };
 
 export type UserTypeModel = UserType & Document;
@@ -37,6 +43,12 @@ export const Address = {
   full_name: String,
   phone: String,
   address: String,
+};
+
+export const OTP = {
+  otp: String,
+  createAt: Date.now().toString(),
+  expires: 300,
 };
 
 export const userSchema = new Schema({
@@ -50,8 +62,12 @@ export const userSchema = new Schema({
   address: [Address],
   status: { type: Boolean, default: true },
   role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
-  productFavorites: [Product],
-  currentProduct: [Product],
+  productFavorites: [],
+  currentProduct: [],
+  otp: { type: String, require: true },
+  otp_createdAt: { type: String, require: true },
+  otp_expires: { type: Date, require: true },
+  language: { type: String, enum: Language, default: "VIETNAM" },
 });
 
 export default model<UserTypeModel>("User", userSchema);
