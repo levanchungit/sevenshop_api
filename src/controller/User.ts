@@ -100,6 +100,22 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// const checkOTP = async (req: Request, res: Response, next: NextFunction) => {
+//   const { username, otp }: UserType = req.body;
+//   if (username == undefined || username.toString().trim() == "") {
+//     res
+//       .status(500)
+//       .json({ error: true, message: "Username không được bỏ trống" });
+//   }
+//   if (otp == undefined || otp.toString().trim() == "") {
+//     res.status(500).json({ error: true, message: "OTP không được bỏ trống" });
+//   }
+//   const user = await User.find({ username });
+//   if (user) {
+//     user.otp = otp.toString();
+//   }
+// };
+
 const login = async (req: Request, res: Response, next: NextFunction) => {};
 
 const logout = (req: Request, res: Response, next: NextFunction) => {};

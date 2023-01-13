@@ -33,6 +33,9 @@ export type UserType = {
   role: { type: String; enum: ["USER", "ADMIN"]; default: "USER" };
   productFavorites: [];
   currentProduct: [];
+  otp: String;
+  otp_createdAt: Date;
+  otp_expires: Date;
   language: { type: String; enum: Language; default: "VIETNAM" };
 };
 
@@ -43,12 +46,6 @@ export const Address = {
   full_name: String,
   phone: String,
   address: String,
-};
-
-export const OTP = {
-  otp: String,
-  createAt: Date.now().toString(),
-  expires: 300,
 };
 
 export const userSchema = new Schema({
@@ -65,7 +62,7 @@ export const userSchema = new Schema({
   productFavorites: [],
   currentProduct: [],
   otp: { type: String, require: true },
-  otp_createdAt: { type: String, require: true },
+  otp_createdAt: { type: Date, require: true },
   otp_expires: { type: Date, require: true },
   language: { type: String, enum: Language, default: "VIETNAM" },
 });

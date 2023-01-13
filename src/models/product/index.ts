@@ -3,6 +3,12 @@ import { Schema, model, Document } from "mongoose";
 import { type } from "os";
 
 /*********************TYPE & INTERFACE*****************************/
+export enum ProductSort {
+  price_asc = "PRICE_ASC",
+  price_des = "PRICE_DES",
+  name_asc = "NAME_ASC",
+  name_des = "NAME_DES",
+}
 
 export type ReviewType = {
   content: string;
@@ -13,7 +19,7 @@ export type ReviewType = {
   username: string;
 };
 
-export type productType = {
+export type ProductType = {
   name: string;
   price: number;
   description: string;
@@ -24,7 +30,7 @@ export type productType = {
   review: ReviewType;
 };
 
-export type ProductTypeModel = {} & productType & Document;
+export type ProductTypeModel = {} & ProductType & Document;
 /*******************************SCHEMA*****************************/
 export const Review = {
   content: String,
