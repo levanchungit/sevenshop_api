@@ -70,7 +70,6 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             </div>
             <p style="text-align: center; color:rgb(255, 0, 0);font-size: 16px;">Valid for 5 minutes only</p>
         </div>
-
     </div>
   `;
       var mainOptions = {

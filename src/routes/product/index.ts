@@ -1,13 +1,12 @@
+import { getProduct, getProducts } from './../../controller/products/get';
 import { Router } from "express";
+import create from '../../controller/products/create';
 
-import controller from "../../controller/Product";
 const router = Router();
 
 //Auth routes
-router.get("/all", controller.getAllProducts);
-router.get("/get/:id", controller.getProduct);
-router.post("/create", controller.createProduct);
-router.put("/update/:id", controller.updateProduct);
-router.delete("/delete/:id", controller.deleteProduct);
+router.get("/", getProducts);
+router.get("/:id", getProduct);
+router.post("/create", create);
 
 export default router;
