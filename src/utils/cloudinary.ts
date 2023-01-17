@@ -1,6 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-const dotenv = require("dotenv");
-
+import dotenv from "dotenv";
 // Config
 dotenv.config();
 

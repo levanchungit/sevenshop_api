@@ -1,10 +1,20 @@
 import { Router } from "express";
+import {
+  register,
+  checkOTP,
+  login,
+  setPassword,
+  getUser,
+} from "../../controller/User";
+import { validateToken } from "../../middleware/validate";
 
-import controller from "../../controller/User";
 const router = Router();
 
 //Auth routes
-router.post("/register", controller.register);
-router.post("/login", controller.login);
+router.post("/register", register);
+router.post("/check-otp", checkOTP);
+router.post("/setPassword", setPassword);
+router.post("/login", login);
+router.get("/:username", validateToken, getUser);
 
 export default router;

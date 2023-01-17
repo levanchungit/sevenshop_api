@@ -3,8 +3,14 @@ import mongoose from "mongoose";
 import Log from "../library/Log";
 import User, { UserType } from "../models/user";
 const nodemailer = require("nodemailer");
+import bcrypt from "bcrypt";
+import { tokenGen } from "../utils/token";
 
-const register = async (req: Request, res: Response, next: NextFunction) => {
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username }: UserType = req.body;
     if (username == undefined || username.toString().trim() == "") {
@@ -99,28 +105,125 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// const checkOTP = async (req: Request, res: Response, next: NextFunction) => {
-//   const { username, otp }: UserType = req.body;
-//   if (username == undefined || username.toString().trim() == "") {
-//     res
-//       .status(500)
-//       .json({ error: true, message: "Username không được bỏ trống" });
-//   }
-//   if (otp == undefined || otp.toString().trim() == "") {
-//     res.status(500).json({ error: true, message: "OTP không được bỏ trống" });
-//   }
-//   const user = await User.find({ username });
-//   if (user) {
-//     user.otp = otp.toString();
-//   }
-// };
+export const checkOTP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, otp }: UserType = req.body;
+  if (username == undefined || username.toString().trim() == "") {
+    res
+      .status(500)
+      .json({ error: true, message: "Username không được bỏ trống" });
+  }
+  if (otp == undefined || otp.toString().trim() == "") {
+    res.status(500).json({ error: true, message: "OTP không được bỏ trống" });
+  }
 
-const login = async (req: Request, res: Response, next: NextFunction) => {};
-
-const logout = (req: Request, res: Response, next: NextFunction) => {};
-
-export default {
-  login,
-  logout,
-  register,
+  try {
+    const user = await User.find({ username });
+    if (user) {
+      if (user[0].otp == otp.toString()) {
+        res.status(200).json({ error: false, message: "OTP SUCCESS" });
+      } else {
+        res.status(500).json({ error: true, message: "OTP error" });
+      }
+    } else {
+      res.status(500).json({ error: true, message: "Username không tồn tại" });
+    }
+  } catch (e) {
+    res.status(500).json({ error: true, message: "OTP ERR " + e });
+  }
 };
+
+export const setPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, password }: UserType = req.body;
+  const hashedPassword = await bcrypt.hash(password.toString(), 10);
+  try {
+    const _user = await User.findOneAndUpdate(
+      { username },
+      {
+        $set: {
+          password: hashedPassword,
+        },
+      },
+      { new: true }
+    );
+    if (_user) {
+      const token = tokenGen(
+        { _id: _user._id.toString(), role: _user.role },
+        7
+      );
+      const refreshToken = tokenGen({ _id: _user._id.toString() }, 30);
+      res.status(200).json({ error: false, token, refreshToken, data: _user });
+    }
+  } catch (e) {
+    res.status(500).json({ error: true, message: "SetPassword ERR " + e });
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, password }: UserType = req.body;
+  if (username == undefined || username.toString().trim() == "") {
+    res
+      .status(500)
+      .json({ error: true, message: "Username không được bỏ trống" });
+  }
+
+  if (password == undefined || password.toString().trim() == "") {
+    res
+      .status(500)
+      .json({ error: true, message: "Password không được bỏ trống" });
+  }
+
+  try {
+    const _user = await User.find({ username });
+    if (_user.length > 0) {
+      const compare = await bcrypt.compare(
+        password.toString(),
+        _user[0].password.toString()
+      );
+      if (compare) {
+        const token = tokenGen(
+          { _id: _user[0]._id.toString(), role: _user[0].role },
+          7
+        );
+        const refreshToken = tokenGen({ _id: _user[0]._id.toString() }, 30);
+        res
+          .status(200)
+          .json({ error: false, token, refreshToken, data: _user[0] });
+      }
+    } else {
+      res.status(500).json({ error: true, message: "User không tồn tại" });
+    }
+  } catch (e) {
+    res.status(500).json({ error: true, message: "Login ERR " + e });
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username } = req.params;
+  try {
+    const _user = await User.find({ username });
+    if (_user.length > 0) {
+      res.status(200).json({ error: false, data: _user[0] });
+    } else {
+      res.status(500).json({ error: true, message: "User không tồn tại" });
+    }
+  } catch (e) {
+    res.status(500).json({ error: true, message: "GetUser ERR " + e });
+  }
+};
+export const logout = (req: Request, res: Response, next: NextFunction) => {};
