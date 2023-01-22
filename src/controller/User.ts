@@ -1,229 +1,149 @@
-import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
-import Log from "../library/Log";
-import User, { UserType } from "../models/user";
-const nodemailer = require("nodemailer");
+import { Request, Response } from "express";
+import User, { STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
-import { tokenGen } from "../utils/token";
+import { getIdFromReq, tokenGen } from "utils/token";
+import { accountVerify } from "middleware/verify";
 
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { username }: UserType = req.body;
-    if (username == undefined || username.toString().trim() == "") {
-      res
-        .status(500)
-        .json({ error: true, message: "Username không được bỏ trống" });
-    }
-    const findUserByUsername = await User.find({ username });
-    if (findUserByUsername.length > 0)
-      return res
-        .status(500)
-        .json({ error: true, message: "Username đã tồn tại" });
+// const sendSMS = (code: string, phone: string, res: Response) => {
+//   const accountSid = process.env.TWILIO_ACCOUNT_SID;
+//   const authToken = process.env.TWILIO_AUTH_TOKEN;
+//   const client = require("twilio")(accountSid, authToken);
+//   client.messages
+//     .create({
+//       body: `Here is your One Time Password to validate your phone number: ${code}`,
+//       from: process.env.TWILIO_PHONE_NUMBER,
+//       to: phone,
+//     })
+//     .then((message: any) => {
+//       return res.status(200).json({ message: "Send SMS success" });
+//     })
+//     .catch((err: any) => {
+//       return res.status(500).json({ message: "Send SMS fail" });
+//     });
+// };
 
-    const _id = new mongoose.Types.ObjectId();
-    const _user = new User({
-      _id,
-      username,
-    });
-    const user = await _user.save();
-    if (user) {
-      Log.info("CREATED USER");
+export const register = async (req: Request, res: Response) => {
+  const { email, phone }: UserType = req.body;
+  if (!email && !phone) {
+    return res.status(400).json({ message: "Missing email or phone" });
+  }
+  if (email) {
+    await accountVerify({ email, res });
+  }
+  if (phone) {
+    await accountVerify({ phone, res });
+  }
+};
 
-      const random = Math.floor(Math.random() * 90000) + 10000;
-      await User.findOneAndUpdate(
-        { _id },
-        {
-          $set: {
-            otp: random.toString(),
-            otp_createdAt: Date.now().toString(),
-            expiresIn: new Date().getTime() + 300 * 1000,
-          },
-        },
-        { new: true }
-      );
-
-      //Tiến hành gửi mail, nếu có gì đó bạn có thể xử lý trước khi gửi mail
-      var transporter = nodemailer.createTransport({
-        // config mail server
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.USER_APP_MAIL, //Tài khoản gmail vừa tạo
-          pass: process.env.PASS_APP_MAIL, //Mật khẩu tài khoản gmail vừa tạo
-        },
-        tls: {
-          // do not fail on invalid certs
-          rejectUnauthorized: false,
-        },
-      });
-      var content = `
-      <div
-        style="display:flex;width: 500px;background-color:rgb(224,224,224);align-items: center;justify-content: center;">
-        <div style="align-items: center;justify-content: center ;width: 50%; background-color: white; margin: 50px; padding: 50px">
-            <div>
-                <img style="width: 100%; min-width: 250px;"
-                    src="https://res.cloudinary.com/dq7xnkfde/image/upload/v1673451729/logo-01_xgl0wr.png"></img>
-            </div>
-            <h2 style="text-align: center; font-weight: bold;"> Here is your One Time Password</h2>
-            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p>
-            <div style="display:flex;padding:10px;background-color:white;border-radius:4px;align-items: center;justify-content: center;">
-                <h1 style="text-align: center; font-size: 50px; letter-spacing: 10dp;letter-spacing: 5px;">${random.toString()}</h1>
-            </div>
-            <p style="text-align: center; color:rgb(255, 0, 0);font-size: 16px;">Valid for 5 minutes only</p>
-        </div>
-    </div>
-  `;
-      var mainOptions = {
-        // thiết lập đối tượng, nội dung gửi mail
-        from: process.env.USER_APP_MAIL,
-        to: username,
-        subject: "OTP verification",
-        text: "", //Thường thi mình không dùng cái này thay vào đó mình sử dụng html để dễ edit hơn
-        html: content, //Nội dung html mình đã tạo trên kia :))
+export const checkOTP = async (req: Request, res: Response) => {
+  const { id, otp } = req.body;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  if (user.otp.code === otp) {
+    if (user.otp.expired > new Date()) {
+      user.otp = {
+        code: "",
+        expired: new Date(),
       };
-      transporter.sendMail(mainOptions, (err: any, info: any) => {
-        Log.info("INFO" + info.response);
-        if (err) {
-          Log.error(err);
-          res.status(500).json({ error: true, message: "Send mail error" });
-        } else {
-          Log.success("Mail send " + info.response);
-          res.status(200).json({
-            error: false,
-            message: "An OTP has been sent to email " + username,
-          });
-        }
+      user.accessToken = tokenGen({ _id: user.id }, 1);
+      await user.save();
+      return res.status(200).json({
+        data: {
+          accessToken: user.accessToken,
+        },
+        message: "OTP is valid",
       });
     }
-  } catch (err) {
-    return res.status(500).json({ error: true, message: err });
   }
+  return res.status(400).json({ message: "OTP is invalid" });
 };
 
-export const checkOTP = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { username, otp }: UserType = req.body;
-  if (username == undefined || username.toString().trim() == "") {
-    res
-      .status(500)
-      .json({ error: true, message: "Username không được bỏ trống" });
+export const setPassword = async (req: Request, res: Response) => {
+  const id = getIdFromReq(req);
+  const { password } = req.body;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
-  if (otp == undefined || otp.toString().trim() == "") {
-    res.status(500).json({ error: true, message: "OTP không được bỏ trống" });
+  if (user.status === STATUS.active) {
+    return res.status(409).json({ message: "User already set password" });
   }
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+  user.password = hashPassword;
+  user.otp = {
+    code: "",
+    expired: new Date(),
+  };
+  const accessToken = tokenGen({ _id: id }, 1);
+  const refreshToken = tokenGen({ _id: id }, 7);
+  user.accessToken = accessToken;
+  user.refreshToken = refreshToken;
+  user.status = STATUS.active;
+  await user.save();
+  return res.status(200).json({
+    data: {
+      accessToken,
+      refreshToken,
+    },
+    message: "Set password success",
+  });
+};
 
-  try {
-    const user = await User.find({ username });
-    if (user) {
-      if (user[0].otp == otp.toString()) {
-        res.status(200).json({ error: false, message: "OTP SUCCESS" });
-      } else {
-        res.status(500).json({ error: true, message: "OTP error" });
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const validPass = await bcrypt.compare(password, user.password);
+  if (!validPass) {
+    return res.status(400).json({ message: "Password is invalid" });
+  }
+  const accessToken = tokenGen({ _id: user.id }, 1);
+  const refreshToken = tokenGen({ _id: user.id }, 7);
+  user.accessToken = accessToken;
+  user.refreshToken = refreshToken;
+  await user.save();
+  return res.status(200).json({
+    data: {
+      accessToken,
+      refreshToken,
+    },
+    message: "Login success",
+  });
+};
+
+export const getMe = async (req: Request, res: Response) => {
+  const id = getIdFromReq(req);
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  return res.status(200).json({
+    data: {
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+    },
+    message: "Get user success",
+  });
+};
+export const logout = (req: Request, res: Response) => {
+  const id = getIdFromReq(req);
+  User.findByIdAndUpdate(
+    id,
+    {
+      accessToken: "",
+      refreshToken: "",
+    },
+    (err, doc) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout fail" });
       }
-    } else {
-      res.status(500).json({ error: true, message: "Username không tồn tại" });
+      return res.status(200).json({ message: "Logout success" });
     }
-  } catch (e) {
-    res.status(500).json({ error: true, message: "OTP ERR " + e });
-  }
+  );
 };
-
-export const setPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { username, password }: UserType = req.body;
-  const hashedPassword = await bcrypt.hash(password.toString(), 10);
-  try {
-    const _user = await User.findOneAndUpdate(
-      { username },
-      {
-        $set: {
-          password: hashedPassword,
-        },
-      },
-      { new: true }
-    );
-    if (_user) {
-      const token = tokenGen(
-        { _id: _user._id.toString(), role: _user.role },
-        7
-      );
-      const refreshToken = tokenGen({ _id: _user._id.toString() }, 30);
-      res.status(200).json({ error: false, token, refreshToken, data: _user });
-    }
-  } catch (e) {
-    res.status(500).json({ error: true, message: "SetPassword ERR " + e });
-  }
-};
-
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { username, password }: UserType = req.body;
-  if (username == undefined || username.toString().trim() == "") {
-    res
-      .status(500)
-      .json({ error: true, message: "Username không được bỏ trống" });
-  }
-
-  if (password == undefined || password.toString().trim() == "") {
-    res
-      .status(500)
-      .json({ error: true, message: "Password không được bỏ trống" });
-  }
-
-  try {
-    const _user = await User.find({ username });
-    if (_user.length > 0) {
-      const compare = await bcrypt.compare(
-        password.toString(),
-        _user[0].password.toString()
-      );
-      if (compare) {
-        const token = tokenGen(
-          { _id: _user[0]._id.toString(), role: _user[0].role },
-          7
-        );
-        const refreshToken = tokenGen({ _id: _user[0]._id.toString() }, 30);
-        res
-          .status(200)
-          .json({ error: false, token, refreshToken, data: _user[0] });
-      }
-    } else {
-      res.status(500).json({ error: true, message: "User không tồn tại" });
-    }
-  } catch (e) {
-    res.status(500).json({ error: true, message: "Login ERR " + e });
-  }
-};
-
-export const getUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { username } = req.params;
-  try {
-    const _user = await User.find({ username });
-    if (_user.length > 0) {
-      res.status(200).json({ error: false, data: _user[0] });
-    } else {
-      res.status(500).json({ error: true, message: "User không tồn tại" });
-    }
-  } catch (e) {
-    res.status(500).json({ error: true, message: "GetUser ERR " + e });
-  }
-};
-export const logout = (req: Request, res: Response, next: NextFunction) => {};

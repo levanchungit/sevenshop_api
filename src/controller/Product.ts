@@ -5,7 +5,7 @@ import Product, {
   ProductType,
   ProductTypeModel,
   ProductSort,
-} from "../models/product";
+} from "models/product";
 
 export const create = async (req: Request, res: Response) => {
   try {

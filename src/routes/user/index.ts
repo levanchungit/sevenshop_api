@@ -4,17 +4,19 @@ import {
   checkOTP,
   login,
   setPassword,
-  getUser,
-} from "../../controller/User";
-import { validateToken } from "../../middleware/validate";
+  getMe,
+  logout,
+} from "controller/user";
+import { validateToken } from "middleware/validate";
 
 const router = Router();
 
 //Auth routes
 router.post("/register", register);
 router.post("/check-otp", checkOTP);
-router.post("/setPassword", setPassword);
+router.post("/set-password",validateToken, setPassword);
 router.post("/login", login);
-router.get("/:username", validateToken, getUser);
+router.get("/me", validateToken, getMe);
+router.get("/logout",validateToken, logout);
 
 export default router;

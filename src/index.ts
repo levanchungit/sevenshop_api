@@ -1,10 +1,10 @@
 import express from "express";
 import http from "http";
 import mongoose from "mongoose";
-import userRouter from "./routes/user";
-import productRouter from "./routes/product";
+import userRouter from "routes/user";
+import productRouter from "routes/product";
 import { config } from "dotenv";
-import Log from "./library/Log";
+import Log from "library/Log";
 
 const app = express();
 config();
@@ -21,13 +21,12 @@ mongoose
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/** Routes */
+/* Routes */
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 
-/** Healthcheck */
 app.get("/ping", (req, res, next) =>
-  res.status(200).json({ messsage: "pong" })
+  res.status(200).json({ message: "pong" })
 );
 
 // catch 404 and forward to error handler

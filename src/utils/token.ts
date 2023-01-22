@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
-import dotenv from "dotenv";
-dotenv.config();
 
 export const tokenGen = (data: any, days?: number) => {
   return jwt.sign(data, process.env.JWT_SECRET || "", {
@@ -14,8 +12,7 @@ export const parseJwt = (token: string) => {
 };
 
 export const getIdFromReq = (req: Request) => {
-  const token = req.header("Authorization")?.slice(7); // cut 'Bearer '
+  const token = req.headers.authorization?.slice(7); // cut Bearer
   const _id = parseJwt(token ?? "")._id;
-
-  return _id as string;
+  return _id;
 };
