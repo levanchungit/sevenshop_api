@@ -1,12 +1,29 @@
-import { Schema, model, Document } from "mongoose";
 import Product from "models/product";
+import { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export enum Gender {
-  Male = "MALE",
-  Female = "FEMALE",
-  other = "OTHER",
+export enum GENDER {
+  male = "male",
+  female = "female",
+  other = "other",
+}
+
+export enum LANGUAGE {
+  vi = "vi",
+  en = "en",
+}
+
+export enum STATUS {
+  active = "active",
+  inactive = "inactive",
+  pending = "pending",
+}
+
+export enum ROLE {
+  user = "user",
+  admin = "admin",
+  staff = "staff",
 }
 
 export type AddressType = {
@@ -15,19 +32,30 @@ export type AddressType = {
   address: string;
 };
 
+export type OTPType = {
+  code: string;
+  expired: Date;
+};
+
 export type UserType = {
-  username: String;
-  password: String;
-  fullname: String;
-  phone: String;
-  image: String;
-  gender: Gender;
-  birthday: { type: String; require: true };
-  address: AddressType;
-  status: { type: Boolean; default: true };
-  role: { type: String; enum: ["USER", "ADMIN"]; default: "USER" };
+  id: string;
+  email: string;
+  username: string;
+  password: string;
+  full_name: string;
+  phone: string;
+  image: string;
+  gender: GENDER;
+  birthday: string;
+  addresses: [AddressType];
+  status: STATUS;
+  roles: [ROLE];
   productFavorites: [];
-  currentProduct: [];
+  recentProducts: [];
+  accessToken: string;
+  refreshToken: string;
+  otp: OTPType;
+  language: LANGUAGE;
 };
 
 export type UserTypeModel = UserType & Document;
@@ -39,19 +67,31 @@ export const Address = {
   address: String,
 };
 
+export const OTP = {
+  code: String,
+  expired: Date,
+};
+
 export const userSchema = new Schema({
+  email: { type: String, require: true },
   username: { type: String, require: true },
   password: { type: String, require: true },
-  fullname: { type: String, require: true },
+  full_name: { type: String, require: true },
   phone: { type: String, require: true },
   image: { type: String, require: true },
   gender: { type: String, require: true },
   birthday: { type: String, require: true },
-  address: [Address],
-  status: { type: Boolean, default: true },
-  role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
-  productFavorites: [Product],
-  currentProduct: [Product],
+  addresses: { type: [Address], default: [] },
+  status: { type: String, enum: STATUS, default: "pending" },
+  roles: { type: String, enum: ROLE, default: "user" },
+  productFavorites: [{ type: Schema.Types.ObjectId, ref: Product }],
+  recentProducts: [{ type: Schema.Types.ObjectId, ref: Product }],
+  otp: { type: OTP, default: {} },
+  accessToken: { type: String, require: true },
+  refreshToken: { type: String, require: true },
+  language: { type: String, enum: LANGUAGE, default: "vi" },
 });
 
-export default model<UserTypeModel>("User", userSchema);
+const User = model<UserTypeModel>("User", userSchema);
+
+export default User;
