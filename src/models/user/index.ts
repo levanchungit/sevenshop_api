@@ -26,11 +26,6 @@ export enum ROLE {
   staff = "staff",
 }
 
-export enum Language {
-  VietNam = "VIETNAM",
-  English = "ENGLISH",
-}
-
 export type AddressType = {
   full_name: string;
   phone: string;
