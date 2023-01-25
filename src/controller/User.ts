@@ -3,7 +3,7 @@ import User, { STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
-import Log from "library/Log";
+import Log from "library/log";
 
 // const sendSMS = (code: string, phone: string, res: Response) => {
 //   const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -145,7 +145,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     Log.error("Token expired");
     return res.status(401).json({ message: "Refresh token expired" });
   }
-  const user = await User.findOne({ _id , refresh_token: token });
+  const user = await User.findOne({ _id, refresh_token: token });
   if (!user) {
     return res.status(401).json({ message: "Refresh token fail" });
   }
@@ -171,11 +171,9 @@ export const logout = (req: Request, res: Response) => {
     .then(() => {
       Log.success(`Logout success with id: ${id}`);
       return res.status(200).json({ message: "Logout success" });
-    }
-  )
+    })
     .catch((err: any) => {
       Log.error(`Logout fail with id: ${id}`);
       return res.status(500).json({ message: "Logout fail" });
-    }
-  );
+    });
 };

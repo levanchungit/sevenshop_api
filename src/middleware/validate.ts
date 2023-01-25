@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { parseJwt } from "utils/token";
 import User from "models/user";
-import Log from "library/Log";
+import Log from "library/log";
 
 export const validateToken = async (
   req: Request,
@@ -11,7 +11,7 @@ export const validateToken = async (
 ) => {
   const token = req.headers.authorization?.slice(7); // cut Bearer
   if (!token) {
-    Log.error(`Access denied: ${req.method} ${req.originalUrl}`)
+    Log.error(`Access denied: ${req.method} ${req.originalUrl}`);
     return res.status(401).json({ message: "Access denied" });
   }
   const _id = parseJwt(token)._id;
@@ -28,8 +28,7 @@ export const validateToken = async (
   try {
     await jwt.verify(token, process.env.JWT_SECRET || "");
     next();
-  }
-  catch (err) {
+  } catch (err) {
     return res.status(400).json({ message: "Invalid token" });
   }
 };
