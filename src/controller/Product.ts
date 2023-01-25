@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
 import { FilterQuery } from "mongoose";
 import Product, {
   ProductType,
@@ -19,9 +18,7 @@ export const create = async (req: Request, res: Response) => {
       categories,
       reviews,
     }: ProductType = req.body;
-    const _id = new mongoose.Types.ObjectId();
     const product = new Product({
-      _id,
       name,
       price,
       description,

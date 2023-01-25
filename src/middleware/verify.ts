@@ -44,7 +44,7 @@ const sendMail = (
   const mailOptions = {
     from: process.env.USER_APP_MAIL,
     to: email,
-    subject: "Xác nhận tài khoản",
+    subject: "Verify your email",
     html: content,
   };
   transporter.sendMail(mailOptions, async (err, info) => {
