@@ -50,10 +50,10 @@ export type UserType = {
   addresses: [AddressType];
   status: STATUS;
   roles: [ROLE];
-  productFavorites: [];
-  recentProducts: [];
-  accessToken: string;
-  refreshToken: string;
+  product_favorites: [];
+  recent_products: [];
+  access_token: string;
+  refresh_token: string;
   otp: OTPType;
   language: LANGUAGE;
 };
@@ -84,11 +84,11 @@ export const userSchema = new Schema({
   addresses: { type: [Address], default: [] },
   status: { type: String, enum: STATUS, default: "pending" },
   roles: { type: String, enum: ROLE, default: "user" },
-  productFavorites: [{ type: Schema.Types.ObjectId, ref: Product }],
-  recentProducts: [{ type: Schema.Types.ObjectId, ref: Product }],
+  product_favorites: [{ type: Schema.Types.ObjectId, ref: Product }],
+  recent_products: [{ type: Schema.Types.ObjectId, ref: Product }],
   otp: { type: OTP, default: {} },
-  accessToken: { type: String, require: true },
-  refreshToken: { type: String, require: true },
+  access_token: { type: String, require: true },
+  refresh_token: { type: String, require: true },
   language: { type: String, enum: LANGUAGE, default: "vi" },
 });
 
