@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 
-export const tokenGen = (data: any, days?: number) => {
+export const tokenGen = (data: any, expiresIn: number) => {
   return jwt.sign(data, process.env.JWT_SECRET || "", {
-    expiresIn: 60 * 60 * 24 * (days || 1), //1 day
+    expiresIn: expiresIn * 60,
   });
 };
 

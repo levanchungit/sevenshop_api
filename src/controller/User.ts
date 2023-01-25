@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import User, { STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
-import { getIdFromReq, tokenGen } from "utils/token";
+import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
+import Log from "library/Log";
 
 // const sendSMS = (code: string, phone: string, res: Response) => {
 //   const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -47,12 +48,11 @@ export const checkOTP = async (req: Request, res: Response) => {
         code: "",
         expired: new Date(),
       };
-      user.accessToken = tokenGen({ _id: user.id }, 1);
+      const access_token = tokenGen({ _id: id }, 1);
+      user.access_token = access_token;
       await user.save();
       return res.status(200).json({
-        data: {
-          accessToken: user.accessToken,
-        },
+        access_token,
         message: "OTP is valid",
       });
     }
@@ -77,23 +77,24 @@ export const setPassword = async (req: Request, res: Response) => {
     code: "",
     expired: new Date(),
   };
-  const accessToken = tokenGen({ _id: id }, 1);
-  const refreshToken = tokenGen({ _id: id }, 7);
-  user.accessToken = accessToken;
-  user.refreshToken = refreshToken;
+  const access_token = tokenGen({ _id: id }, 1);
+  const refresh_token = tokenGen({ _id: id }, 3);
+  user.access_token = access_token;
+  user.refresh_token = refresh_token;
   user.status = STATUS.active;
   await user.save();
   return res.status(200).json({
-    data: {
-      accessToken,
-      refreshToken,
-    },
+    access_token,
+    refresh_token,
     message: "Set password success",
   });
 };
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Missing email or password" });
+  }
   const user = await User.findOne({ email });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -102,16 +103,15 @@ export const login = async (req: Request, res: Response) => {
   if (!validPass) {
     return res.status(400).json({ message: "Password is invalid" });
   }
-  const accessToken = tokenGen({ _id: user.id }, 1);
-  const refreshToken = tokenGen({ _id: user.id }, 7);
-  user.accessToken = accessToken;
-  user.refreshToken = refreshToken;
+  const access_token = tokenGen({ _id: user.id }, 1);
+  const refresh_token = tokenGen({ _id: user.id }, 3);
+  user.access_token = access_token;
+  user.refresh_token = refresh_token;
   await user.save();
+  Log.info("Login success with email: " + user.email);
   return res.status(200).json({
-    data: {
-      accessToken,
-      refreshToken,
-    },
+    access_token,
+    refresh_token,
     message: "Login success",
   });
 };
@@ -119,11 +119,12 @@ export const login = async (req: Request, res: Response) => {
 export const getMe = async (req: Request, res: Response) => {
   const id = getIdFromReq(req);
   const user = await User.findById(id);
+  Log.info("Get user success with email: " + user?.email);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
   return res.status(200).json({
-    data: {
+    result: {
       username: user.username,
       email: user.email,
       phone: user.phone,
@@ -131,19 +132,50 @@ export const getMe = async (req: Request, res: Response) => {
     message: "Get user success",
   });
 };
+
+export const refreshToken = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ message: "Missing token" });
+  }
+  const parToken = parseJwt(token);
+  const { _id, exp } = parToken;
+  // check expired token
+  if (exp < new Date().getTime() / 1000) {
+    Log.error("Token expired");
+    return res.status(401).json({ message: "Refresh token expired" });
+  }
+  const user = await User.findOne({ _id , refresh_token: token });
+  if (!user) {
+    return res.status(401).json({ message: "Refresh token fail" });
+  }
+  //log id
+  Log.info(`Refresh token success with id: ${user._id}`);
+  const access_token = tokenGen({ _id: user.id }, 1);
+  user.access_token = access_token;
+  await user.save();
+  Log.success(`Refresh token success with email: ${user.email}`);
+  return res.status(200).json({
+    access_token,
+    message: "Refresh token success",
+  });
+};
+
 export const logout = (req: Request, res: Response) => {
   const id = getIdFromReq(req);
-  User.findByIdAndUpdate(
-    id,
-    {
-      accessToken: "",
-      refreshToken: "",
-    },
-    (err, doc) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout fail" });
-      }
+  // clear token
+  User.findByIdAndUpdate(id, {
+    access_token: "",
+    refresh_token: "",
+  })
+    .then(() => {
+      Log.success(`Logout success with id: ${id}`);
       return res.status(200).json({ message: "Logout success" });
+    }
+  )
+    .catch((err: any) => {
+      Log.error(`Logout fail with id: ${id}`);
+      return res.status(500).json({ message: "Logout fail" });
     }
   );
 };

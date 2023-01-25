@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Response } from "express";
 import http from "http";
 import mongoose from "mongoose";
 import userRouter from "routes/user";
@@ -25,13 +25,13 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 
-app.get("/ping", (req, res, next) =>
+app.get("/ping", (res: Response) =>
   res.status(200).json({ message: "pong" })
 );
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const error = new Error("Not found");
+app.use((req, res) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
 
   Log.error(error);
 
