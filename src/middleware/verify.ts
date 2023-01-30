@@ -2,6 +2,7 @@ import User, { OTPType, STATUS } from "models/user";
 import { Types } from "mongoose";
 import { Response } from "express";
 import nodemailer from "nodemailer";
+import Log from "library/log";
 
 type AccountVerifyType = {
   email?: string;
@@ -60,10 +61,39 @@ const sendMail = (
   });
 };
 
+const sendPhone = (
+  user_id: Types.ObjectId,
+  otp: string,
+  phone: string,
+  res: Response
+) => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const client = require("twilio")(accountSid, authToken);
+  client.messages
+    .create({
+      messagingServiceSid: process.env.MESSAGINGSERVICESID,
+      body: `Here is your One Time Password to validate your phone number: ${otp}`,
+      to: "+84" + phone,
+    })
+    .then((message: any) => {
+      return res.status(200).json({
+        data: {
+          user_id,
+        },
+        message: "Send SMS success",
+      });
+    })
+    .catch((err: any) => {
+      return res.status(500).json({ message: "Send SMS fail" });
+    });
+};
+
 const generateOTP = async () => {
   const otp = Math.floor(100000 + Math.random() * 900000);
   const expired = new Date();
   expired.setMinutes(expired.getMinutes() + 5);
+
   return { code: otp.toString(), expired };
 };
 
@@ -78,6 +108,10 @@ export const accountVerify = async (props: AccountVerifyType) => {
       checkDateOTP(user._id, res);
       if (email) {
         sendMail(user._id, user.otp.code, user.email, res);
+        return;
+      }
+      if (phone) {
+        sendPhone(user._id, user.otp.code, user.phone, res);
         return;
       }
       return res.status(200).json({
@@ -98,6 +132,10 @@ export const accountVerify = async (props: AccountVerifyType) => {
   await newUser.save();
   if (email) {
     sendMail(newUser._id, otp.code, newUser.email, res);
+    return;
+  }
+  if (phone) {
+    sendPhone(newUser._id, otp.code, newUser.phone, res);
     return;
   }
   return res.status(200).json({
