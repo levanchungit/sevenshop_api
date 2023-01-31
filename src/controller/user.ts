@@ -25,10 +25,10 @@ export const checkOTP = async (req: Request, res: Response) => {
     return res.status(404).json({ message: "User not found" });
   }
   if (user.otp.code === otp) {
-    if (user.otp.expired > new Date()) {
+    if (user.otp.exp > new Date()) {
       user.otp = {
         code: "",
-        expired: new Date(),
+        exp: new Date(),
       };
       const access_token = tokenGen({ _id: id }, 5);
       user.access_token = access_token;
@@ -57,7 +57,7 @@ export const setPassword = async (req: Request, res: Response) => {
   user.password = hashPassword;
   user.otp = {
     code: "",
-    expired: new Date(),
+    exp: new Date(),
   };
   const access_token = tokenGen({ _id: id }, 5);
   const refresh_token = tokenGen({ _id: id }, 60);

@@ -34,7 +34,7 @@ export type AddressType = {
 
 export type OTPType = {
   code: string;
-  expired: Date;
+  exp: Date;
 };
 
 export type UserType = {
@@ -69,7 +69,7 @@ export const Address = {
 
 export const OTP = {
   code: String,
-  expired: Date,
+  exp: Date,
 };
 
 export const userSchema = new Schema({

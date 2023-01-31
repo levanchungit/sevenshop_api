@@ -2,6 +2,7 @@ import User, { OTPType, STATUS } from "models/user";
 import { Types } from "mongoose";
 import { Response } from "express";
 import nodemailer from "nodemailer";
+import client from "twilio";
 import Log from "library/log";
 
 type AccountVerifyType = {
@@ -53,8 +54,8 @@ const sendMail = (
       return res.status(500).json({ message: "Send email fail" });
     }
     return res.status(200).json({
-      data: {
-        user_id,
+      result: {
+        id: user_id,
       },
       message: "Send email success",
     });
@@ -69,32 +70,33 @@ const sendPhone = (
 ) => {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const client = require("twilio")(accountSid, authToken);
-  client.messages
-    .create({
-      messagingServiceSid: process.env.MESSAGINGSERVICESID,
-      body: `Here is your One Time Password to validate your phone number: ${otp}`,
+  client(accountSid, authToken)
+    .messages.create({
+      body: `Your OTP is ${otp}`,
+      messagingServiceSid: process.env.MESSAGE_SERVICE_ID,
       to: "+84" + phone,
     })
-    .then((message: any) => {
+    .then((message) => {
+      Log.info(message);
       return res.status(200).json({
-        data: {
-          user_id,
+        result: {
+          id: user_id,
         },
-        message: "Send SMS success",
+        message: "Send phone success",
       });
     })
-    .catch((err: any) => {
-      return res.status(500).json({ message: "Send SMS fail" });
+    .catch((err) => {
+      Log.error(err);
+      return res.status(500).json({ message: "Send phone fail" });
     });
 };
 
 const generateOTP = async () => {
   const otp = Math.floor(100000 + Math.random() * 900000);
-  const expired = new Date();
-  expired.setMinutes(expired.getMinutes() + 5);
+  const exp = new Date();
+  exp.setMinutes(exp.getMinutes() + 5);
 
-  return { code: otp.toString(), expired };
+  return { code: otp.toString(), exp };
 };
 
 export const accountVerify = async (props: AccountVerifyType) => {
@@ -115,7 +117,7 @@ export const accountVerify = async (props: AccountVerifyType) => {
         return;
       }
       return res.status(200).json({
-        data: {
+        result: {
           otp: user.otp.code,
         },
         message: "Send OTP success",
@@ -139,7 +141,7 @@ export const accountVerify = async (props: AccountVerifyType) => {
     return;
   }
   return res.status(200).json({
-    data: {
+    result: {
       otp: otp.code,
     },
     message: "Send OTP success",
@@ -150,7 +152,7 @@ export const checkDateOTP = async (id: Types.ObjectId, res: Response) => {
   const user = await User.findById(id);
   // update if otp expired
   if (user) {
-    if (user.otp.expired < new Date()) {
+    if (user.otp.exp < new Date()) {
       const otp = await generateOTP();
       await user.updateOne({
         otp,
