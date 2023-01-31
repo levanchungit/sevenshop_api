@@ -41,4 +41,11 @@ http
   .createServer(app)
   .listen(process.env.BE_PORT, () =>
     Log.success(`Server is running on port ${process.env.BE_PORT}`)
+).on("error", () => { 
+  Log.error("Port is already in use. Trying another port.");
+  const port = parseInt(process.env.BE_PORT as string) + 1;
+  http.createServer(app).listen(port, () =>
+    Log.success(`Server is running on port ${port}`)
   );
+ });
+
