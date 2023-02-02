@@ -7,7 +7,7 @@ import {
   getMe,
   logout,
   refreshToken,
-} from "controller/user";
+} from "controllers/user";
 import { validateToken } from "middleware/validate";
 
 const router = Router();

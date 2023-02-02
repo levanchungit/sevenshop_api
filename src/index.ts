@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
 import { config } from "dotenv";
-import Log from "library/log";
+import Log from "libraries/log";
 
 const app = express();
 config();
@@ -25,7 +25,11 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 
-app.get("/ping", (res: Response) => res.status(200).json({ message: "pong" }));
+app.get("/ping", (req, res: Response) => {
+  res.status(200).json({
+    message: "pong",
+  });
+});
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
@@ -41,11 +45,11 @@ http
   .createServer(app)
   .listen(process.env.BE_PORT, () =>
     Log.success(`Server is running on port ${process.env.BE_PORT}`)
-).on("error", () => { 
-  Log.error("Port is already in use. Trying another port.");
-  const port = parseInt(process.env.BE_PORT as string) + 1;
-  http.createServer(app).listen(port, () =>
-    Log.success(`Server is running on port ${port}`)
-  );
- });
-
+  )
+  .on("error", () => {
+    Log.error("Port is already in use. Trying another port.");
+    const port = parseInt(process.env.BE_PORT as string) + 1;
+    http
+      .createServer(app)
+      .listen(port, () => Log.success(`Server is running on port ${port}`));
+  });

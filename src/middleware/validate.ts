@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { parseJwt } from "utils/token";
 import User from "models/user";
-import Log from "library/log";
+import Log from "libraries/log";
 
 export const validateToken = async (
   req: Request,

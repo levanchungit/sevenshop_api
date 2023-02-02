@@ -3,7 +3,7 @@ import User, { STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
-import Log from "library/log";
+import Log from "libraries/log";
 
 // const sendSMS = (code: string, phone: string, res: Response) => {
 //   const accountSid = process.env.TWILIO_ACCOUNT_SID;

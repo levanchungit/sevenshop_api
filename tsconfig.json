@@ -16,7 +16,6 @@
     "target": "es6",
     "allowJs": true,
     "typeRoots": ["./node_modules/@types"],
-    "rootDir": "./src",
     "esModuleInterop": true,
     "outDir": "dist",
     "baseUrl": ".",
