@@ -74,6 +74,7 @@ const sendPhone = (
     .messages.create({
       body: `Your OTP is ${otp}`,
       messagingServiceSid: process.env.MESSAGE_SERVICE_ID,
+      from: process.env.TWILIO_PHONE_NUMBER,
       to: "+84" + phone,
     })
     .then((message) => {
