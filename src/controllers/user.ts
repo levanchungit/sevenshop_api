@@ -67,7 +67,7 @@ export const setPassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  if (user.status === STATUS.active) {
+  if (user.status === STATUS.ACTIVE) {
     return res.status(409).json({ message: "User already set password" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -81,7 +81,7 @@ export const setPassword = async (req: Request, res: Response) => {
   const refresh_token = tokenGen({ _id: id }, 3);
   user.access_token = access_token;
   user.refresh_token = refresh_token;
-  user.status = STATUS.active;
+  user.status = STATUS.ACTIVE;
   await user.save();
   return res.status(200).json({
     access_token,
@@ -125,7 +125,6 @@ export const getMe = async (req: Request, res: Response) => {
   }
   return res.status(200).json({
     result: {
-      username: user.username,
       email: user.email,
       phone: user.phone,
     },
