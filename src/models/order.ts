@@ -19,10 +19,10 @@ export type OrderType = {
   order_type: Status;
   payment_type: number;
   voucher_type: [];
-  CRT_AT: Date;
-  CRT_BY: string;
-  MOD_AT: Date;
-  MOD_BY: string;
+  create_at: Date;
+  create_by: string;
+  modify_at: Date;
+  modify_by: string;
 };
 
 export type OrderTypeModel = {} & OrderType & Document;
@@ -42,10 +42,10 @@ const orderSchema = new Schema({
   order_type: { type: String, enum: Status },
   payment_type: { type: String },
   voucher_type: { type: String },
-  CRT_AT: { type: Date, require: true },
-  CRT_BY: { type: String, require: true },
-  MOD_AT: { type: Date, require: true },
-  MOD_BY: { type: String, require: true },
+  create_at: { type: Date, require: true },
+  create_by: { type: String, require: true },
+  modify_at: { type: Date, require: true },
+  modify_by: { type: String, require: true },
 });
 
 const Order = model<OrderTypeModel>("Order", orderSchema);

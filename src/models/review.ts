@@ -10,10 +10,10 @@ export type ReviewType = {
   rating: number;
   user_id: string;
   product_id: string;
-  CRT_AT: Date;
-  CRT_BY: string;
-  MOD_AT: Date;
-  MOD_BY: string;
+  create_at: Date;
+  create_by: string;
+  modify_at: Date;
+  modify_by: string;
 };
 
 export type ReviewTypeModel = {} & ReviewType & Document;
@@ -25,10 +25,10 @@ const reviewSchema = new Schema({
   rating: { type: Number, require: true },
   user_id: { type: Schema.Types.ObjectId, ref: User },
   product_id: { type: Schema.Types.ObjectId, ref: Product },
-  CRT_AT: { type: Date, require: true },
-  CRT_BY: { type: String, require: true },
-  MOD_AT: { type: Date, require: true },
-  MOD_BY: { type: String, require: true },
+  create_at: { type: Date, require: true },
+  create_by: { type: String, require: true },
+  modify_at: { type: Date, require: true },
+  modify_by: { type: String, require: true },
 });
 
 const Review = model<ReviewTypeModel>("Review", reviewSchema);

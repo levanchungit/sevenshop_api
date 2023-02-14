@@ -36,12 +36,12 @@ export const metaDataDetailSchema = new Schema({
   num3: { type: Number },
   num4: { type: String },
   num5: { type: Date },
-  CRT_AT: { type: Date },
-  CRT_BY: { type: String },
-  MOD_AT: { type: Date },
-  MOD_BY: { type: String },
-  ENG: { type: String },
-  KR: { type: String },
+  create_at: { type: Date, require: true },
+  create_by: { type: String, require: true },
+  modify_at: { type: Date, require: true },
+  modify_by: { type: String, require: true },
+  eng: { type: String },
+  kr: { type: String },
 });
 
 const MetaDataDetail = model<MetaDataDetailTypeModel>(

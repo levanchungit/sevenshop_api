@@ -9,10 +9,10 @@ export type MetaDataType = {
   code_name: string;
   active: boolean;
   note: string;
-  CRT_AT: Date;
-  CRT_BY: string;
-  MOD_AT: Date;
-  MOD_BY: string;
+  create_at: Date;
+  create_by: string;
+  modify_at: Date;
+  modify_by: string;
 };
 
 export type MetaDataTypeModel = MetaDataType & Document;
@@ -25,10 +25,10 @@ const metaDataSchema = new Schema({
   code_name: { type: String, required: true },
   active: { type: Boolean, required: true, default: true },
   note: { type: String, required: true },
-  CRT_AT: { type: Date, required: true },
-  CRT_BY: { type: String, required: true },
-  MOD_AT: { type: Date, required: true },
-  MOD_BY: { type: String, required: true },
+  create_at: { type: Date, require: true },
+  create_by: { type: String, require: true },
+  modify_at: { type: Date, require: true },
+  modify_by: { type: String, require: true },
 });
 
 const MetaData = model<MetaDataTypeModel>("MetaData", metaDataSchema);

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User, { STATUS, UserType } from "models/user";
+import User, { Status, UserType } from "models/user";
 import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
@@ -67,7 +67,7 @@ export const setPassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  if (user.status === STATUS.ACTIVE) {
+  if (user.status === Status.active) {
     return res.status(409).json({ message: "User already set password" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -81,7 +81,7 @@ export const setPassword = async (req: Request, res: Response) => {
   const refresh_token = tokenGen({ _id: id }, 3);
   user.access_token = access_token;
   user.refresh_token = refresh_token;
-  user.status = STATUS.ACTIVE;
+  user.status = Status.active;
   await user.save();
   return res.status(200).json({
     access_token,
