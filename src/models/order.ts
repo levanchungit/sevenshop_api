@@ -5,10 +5,10 @@ import Product from "models/product";
 /*********************TYPE & INTERFACE*****************************/
 
 export enum Status {
-  CART = 1,
-  DELIVERY = 2,
-  SUCCESSFULLY = 3,
-  CANCEL = 4,
+  cart = 1,
+  delivery = 2,
+  successfully = 3,
+  cancel = 4,
 }
 export type OrderType = {
   id: string;
