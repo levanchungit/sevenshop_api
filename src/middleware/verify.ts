@@ -34,9 +34,8 @@ const sendMail = (
             </div>
             <h2 style="text-align: center; font-weight: bold;"> Here is your One Time Password</h2>
             <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p>
-            <div style="display:flex;padding:10px;background-color:white;border-radius:4px;align-items: center;justify-content: center;">
-                <h1 style="text-align: center; font-size: 50px; letter-spacing: 10dp;letter-spacing: 5px;">${otp}</h1>
-            </div>
+            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p>
+            <h2 style="text-align: center; font-weight: bold;color:'red"> ${otp}</h2>
             <p style="text-align: center; color:rgb(255, 0, 0);font-size: 16px;">Valid for 5 minutes only</p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import MetaData from "models/meta_data";
 
 export type MetaDataDetailType = {
   id: string;
-  code: string;
+  code: number;
   code_name: string;
   meta_data_id: string;
   active: boolean;
@@ -14,10 +14,10 @@ export type MetaDataDetailType = {
   num3: Number;
   num4: string;
   num5: Date;
-  CRT_AT: Date;
-  CRT_BY: string;
-  MOD_AT: Date;
-  MOD_BY: string;
+  create_at: Date;
+  create_by: string;
+  modify_at: Date;
+  modify_by: string;
   ENG: string;
   KR: string;
 };
@@ -27,10 +27,10 @@ export type MetaDataDetailTypeModel = MetaDataDetailType & Document;
 /*******************************SCHEMA*****************************/
 
 export const metaDataDetailSchema = new Schema({
-  code: { type: String, required: true },
+  code: { type: Number },
   code_name: { type: String, required: true },
   meta_data_id: { type: Schema.Types.ObjectId, ref: MetaData },
-  active: { type: Boolean, required: true },
+  active: { type: Boolean, default: true },
   num1: { type: String },
   num2: { type: Number },
   num3: { type: Number },

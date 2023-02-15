@@ -1,3 +1,4 @@
+import Log from "libraries/log";
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 

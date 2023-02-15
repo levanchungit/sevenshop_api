@@ -48,7 +48,10 @@ export const checkOTP = async (req: Request, res: Response) => {
         code: "",
         expired: new Date(),
       };
-      const access_token = tokenGen({ _id: id, role_type: user.role_type }, 1);
+      const access_token = tokenGen(
+        { _id: id, role_type: user.role_type },
+        parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
+      );
       user.access_token = access_token;
       user.modify_at = new Date();
       user.modify_by = user.create_by + "CHECK OTP|";
@@ -79,8 +82,14 @@ export const setPassword = async (req: Request, res: Response) => {
     code: "",
     expired: new Date(),
   };
-  const access_token = tokenGen({ _id: id, role_type: user.role_type }, 1);
-  const refresh_token = tokenGen({ _id: id, role_type: user.role_type }, 3);
+  const access_token = tokenGen(
+    { _id: id, role_type: user.role_type },
+    parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
+  );
+  const refresh_token = tokenGen(
+    { _id: id, role_type: user.role_type },
+    parseInt(<string>process.env.EXPIRED_REFRESH_TOKEN)
+  );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
   user.status = Status.active;
@@ -107,10 +116,13 @@ export const login = async (req: Request, res: Response) => {
   if (!validPass) {
     return res.status(400).json({ message: "Password is invalid" });
   }
-  const access_token = tokenGen({ _id: user.id, role_type: user.role_type }, 1);
+  const access_token = tokenGen(
+    { _id: user.id, role_type: user.role_type },
+    parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
+  );
   const refresh_token = tokenGen(
     { _id: user.id, role_type: user.role_type },
-    3
+    parseInt(<string>process.env.EXPIRED_REFRESH_TOKEN)
   );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
@@ -156,10 +168,13 @@ export const refreshToken = async (req: Request, res: Response) => {
   }
   //log id
   Log.info(`Refresh token success with id: ${user._id}`);
-  const access_token = tokenGen({ _id: user.id, role_type: user.role_type }, 1);
+  const access_token = tokenGen(
+    { _id: user.id, role_type: user.role_type },
+    parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
+  );
   const refresh_token = tokenGen(
     { _id: user.id, role_type: user.role_type },
-    3
+    parseInt(<string>process.env.EXPIRED_REFRESH_TOKEN)
   );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
