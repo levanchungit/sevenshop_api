@@ -38,7 +38,7 @@ export type UserType = {
   password: string;
   full_name: string;
   phone: string;
-  image: [];
+  image: string;
   gender: Gender;
   birthday: Date;
   address: string;
@@ -72,7 +72,7 @@ export const userSchema = new Schema({
   password: { type: String, require: true },
   full_name: { type: String, require: true },
   phone: { type: String, require: true },
-  image: { type: [String], require: true },
+  image: { type: String, require: true },
   gender: { type: String, enum: Gender, require: true },
   birthday: { type: Date, require: true },
   address: { type: String, require: true },
@@ -86,7 +86,7 @@ export const userSchema = new Schema({
   refresh_token: { type: String, require: true },
   role_type: { type: Number, enum: Role, default: 1 },
   membership_type: { type: Number, require: true, default: 1 },
-  create_at: { type: Date, require: true },
+  create_at: { type: Date, default: new Date() },
   create_by: { type: String, require: true },
   modify_at: { type: Date, require: true },
   modify_by: { type: String, require: true },

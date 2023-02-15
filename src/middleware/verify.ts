@@ -95,6 +95,8 @@ export const accountVerify = async (props: AccountVerifyType) => {
     phone,
     otp,
   });
+  newUser.create_at = new Date();
+  newUser.create_by = "REGISTER|";
   await newUser.save();
   if (email) {
     sendMail(newUser._id, otp.code, newUser.email, res);

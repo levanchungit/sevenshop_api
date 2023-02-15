@@ -48,8 +48,10 @@ export const checkOTP = async (req: Request, res: Response) => {
         code: "",
         expired: new Date(),
       };
-      const access_token = tokenGen({ _id: id }, 1);
+      const access_token = tokenGen({ _id: id, role_type: user.role_type }, 1);
       user.access_token = access_token;
+      user.modify_at = new Date();
+      user.modify_by = user.create_by + "CHECK OTP|";
       await user.save();
       return res.status(200).json({
         access_token,
@@ -77,11 +79,13 @@ export const setPassword = async (req: Request, res: Response) => {
     code: "",
     expired: new Date(),
   };
-  const access_token = tokenGen({ _id: id }, 1);
-  const refresh_token = tokenGen({ _id: id }, 3);
+  const access_token = tokenGen({ _id: id, role_type: user.role_type }, 1);
+  const refresh_token = tokenGen({ _id: id, role_type: user.role_type }, 3);
   user.access_token = access_token;
   user.refresh_token = refresh_token;
   user.status = Status.active;
+  user.modify_at = new Date();
+  user.modify_by += "SET PASSWORD|";
   await user.save();
   return res.status(200).json({
     access_token,
@@ -103,8 +107,11 @@ export const login = async (req: Request, res: Response) => {
   if (!validPass) {
     return res.status(400).json({ message: "Password is invalid" });
   }
-  const access_token = tokenGen({ _id: user.id }, 1);
-  const refresh_token = tokenGen({ _id: user.id }, 3);
+  const access_token = tokenGen({ _id: user.id, role_type: user.role_type }, 1);
+  const refresh_token = tokenGen(
+    { _id: user.id, role_type: user.role_type },
+    3
+  );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
   await user.save();
@@ -125,54 +132,59 @@ export const getMe = async (req: Request, res: Response) => {
   }
   return res.status(200).json({
     result: {
-      email: user.email,
-      phone: user.phone,
+      user,
     },
     message: "Get user success",
   });
 };
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const { token } = req.body;
-  if (!token) {
+  const { refresh_Token } = req.body;
+  if (!refresh_Token) {
     return res.status(400).json({ message: "Missing token" });
   }
-  const parToken = parseJwt(token);
-  const { _id, exp } = parToken;
+  const parToken = parseJwt(refresh_Token);
+  const { _id, exp, role_type } = parToken;
   // check expired token
   if (exp < new Date().getTime() / 1000) {
     Log.error("Token expired");
     return res.status(401).json({ message: "Refresh token expired" });
   }
-  const user = await User.findOne({ _id, refresh_token: token });
+  const user = await User.findOne({ _id, refresh_token: refresh_Token });
   if (!user) {
     return res.status(401).json({ message: "Refresh token fail" });
   }
   //log id
   Log.info(`Refresh token success with id: ${user._id}`);
-  const access_token = tokenGen({ _id: user.id }, 1);
+  const access_token = tokenGen({ _id: user.id, role_type: user.role_type }, 1);
+  const refresh_token = tokenGen(
+    { _id: user.id, role_type: user.role_type },
+    3
+  );
   user.access_token = access_token;
+  user.refresh_token = refresh_token;
+  user.modify_at = new Date();
+  user.modify_by += "REFRESH TOKEN|";
   await user.save();
   Log.success(`Refresh token success with email: ${user.email}`);
   return res.status(200).json({
     access_token,
+    refresh_token,
     message: "Refresh token success",
   });
 };
 
-export const logout = (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response) => {
   const id = getIdFromReq(req);
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(500).json({ message: "Logout fail" });
+  }
   // clear token
-  User.findByIdAndUpdate(id, {
-    access_token: "",
-    refresh_token: "",
-  })
-    .then(() => {
-      Log.success(`Logout success with id: ${id}`);
-      return res.status(200).json({ message: "Logout success" });
-    })
-    .catch((err: any) => {
-      Log.error(`Logout fail with id: ${id}`);
-      return res.status(500).json({ message: "Logout fail" });
-    });
+  user.access_token = "";
+  user.refresh_token = "";
+  user.modify_at = new Date();
+  user.modify_by += "LOGOUT|";
+  await user.save();
+  return res.status(200).json({ message: "Logout success" });
 };
