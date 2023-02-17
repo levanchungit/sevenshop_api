@@ -143,9 +143,7 @@ export const getMe = async (req: Request, res: Response) => {
     return res.status(404).json({ message: "User not found" });
   }
   return res.status(200).json({
-    result: {
-      user,
-    },
+    result: user,
     message: "Get user success",
   });
 };

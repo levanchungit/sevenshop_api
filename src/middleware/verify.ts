@@ -33,8 +33,7 @@ const sendMail = (
                     src="https://res.cloudinary.com/dq7xnkfde/image/upload/v1673451729/logo-01_xgl0wr.png"></img>
             </div>
             <h2 style="text-align: center; font-weight: bold;"> Here is your One Time Password</h2>
-            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p>
-            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p>
+            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p> 
             <h2 style="text-align: center; font-weight: bold;color:'red"> ${otp}</h2>
             <p style="text-align: center; color:rgb(255, 0, 0);font-size: 16px;">Valid for 5 minutes only</p>
         </div>
