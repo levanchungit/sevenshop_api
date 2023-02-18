@@ -45,7 +45,7 @@ app.use((req, res) => {
 });
 http
   .createServer(app)
-  .listen(process.env.BE_PORT || 3000, () =>
+  .listen(process.env.PORT || 3000, () =>
     Log.success(`Server is running on port ${process.env.BE_PORT}`)
   )
   .on("error", () => {
