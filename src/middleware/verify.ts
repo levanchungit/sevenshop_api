@@ -1,3 +1,4 @@
+import moment from "moment";
 import User, { OTPType, Status } from "models/user";
 import { Types } from "mongoose";
 import { Response } from "express";
@@ -93,7 +94,7 @@ export const accountVerify = async (props: AccountVerifyType) => {
     phone,
     otp,
   });
-  newUser.create_at = new Date();
+  newUser.create_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
   newUser.create_by = "REGISTER|";
   await newUser.save();
   if (email) {

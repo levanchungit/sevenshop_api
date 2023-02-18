@@ -16,9 +16,9 @@ export type ProductType = {
   active: boolean;
   properties_type: PropertiesType[];
   categories_type: Number;
-  create_at: Date;
+  create_at: string;
   create_by: string;
-  modify_at: Date;
+  modify_at: string;
   modify_by: string;
 };
 
@@ -39,9 +39,9 @@ const productSchema = new Schema({
   active: { type: Boolean, default: true },
   properties_type: [{ type: Properties, default: [] }],
   categories_type: { type: Number },
-  create_at: { type: Date, require: true },
+  create_at: { type: String, require: true },
   create_by: { type: String, require: true },
-  modify_at: { type: Date, require: true },
+  modify_at: { type: String, require: true },
   modify_by: { type: String, require: true },
 });
 

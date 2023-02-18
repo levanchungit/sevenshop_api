@@ -52,9 +52,9 @@ export type UserType = {
   refresh_token: string;
   role_type: Role;
   membership_type: number;
-  create_at: Date;
+  create_at: string;
   create_by: string;
-  modify_at: Date;
+  modify_at: string;
   modify_by: string;
 };
 
@@ -86,9 +86,9 @@ export const userSchema = new Schema({
   refresh_token: { type: String, require: true },
   role_type: { type: Number, enum: Role, default: 1 },
   membership_type: { type: Number, require: true, default: 1 },
-  create_at: { type: Date, default: new Date() },
+  create_at: { type: String, default: new Date() },
   create_by: { type: String, require: true },
-  modify_at: { type: Date, require: true },
+  modify_at: { type: String, require: true },
   modify_by: { type: String, require: true },
 });
 
