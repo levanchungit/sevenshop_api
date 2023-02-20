@@ -6,6 +6,11 @@ import {
   getAllDetail,
   get,
   getDetail,
+  update,
+  updateDetail,
+  deleteMetaData,
+  deleteMetaDataDetail,
+  getDetailByMetaDataID,
 } from "controllers/meta_data";
 import { validateToken } from "middleware/validate";
 
@@ -17,5 +22,14 @@ router.get("/getAll", validateToken, getAll);
 router.get("/getAll_detail", validateToken, getAllDetail);
 router.get("/get/:id", validateToken, get);
 router.get("/get_detail/:id", validateToken, getDetail);
+router.get(
+  "/get_detail_meta-data-id/:meta_data_id",
+  validateToken,
+  getDetailByMetaDataID
+);
+router.post("/update/:id", validateToken, update);
+router.post("/updateDetail/:id", validateToken, updateDetail);
+router.post("/deleteMetaData/:id", validateToken, deleteMetaData);
+router.post("/deleteMetaDataDetail/:id", validateToken, deleteMetaDataDetail);
 
 export default router;

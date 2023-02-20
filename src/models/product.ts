@@ -2,9 +2,15 @@ import { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export type PropertiesType = {
+export type Properties = {
   color: number;
   size: number;
+  quantity: number;
+};
+
+export type PropertiesType = {
+  total: number;
+  properties: Properties[];
 };
 
 export type ProductType = {
@@ -14,7 +20,7 @@ export type ProductType = {
   description: string;
   images: string[];
   active: boolean;
-  properties_type: PropertiesType[];
+  properties_type: PropertiesType;
   categories_type: Number;
   create_at: string;
   create_by: string;
@@ -29,6 +35,12 @@ export type ProductTypeModel = {} & ProductType & Document;
 export const Properties = {
   color: Number,
   size: Number,
+  quantity: Number,
+};
+
+export const PropertiesType = {
+  total: Number,
+  properties: [Properties],
 };
 
 const productSchema = new Schema({

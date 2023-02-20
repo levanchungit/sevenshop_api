@@ -24,21 +24,18 @@ export const createProduct = async (req: Request, res: Response) => {
       images,
       properties_type,
       categories_type,
+      create_at: moment(new Date()).format("YYYY-MM-DD HH:mm"),
+      create_by:
+        user?.email + "_INS_" + moment(new Date()).format("YYYY-MM-DD HH:mm"),
     });
-    product.create_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
-    product.create_by =
-      user?.email +
-      "_CREATE_" +
-      moment(new Date()).format("YYYY-MM-DD HH:mm") +
-      " | ";
     const savedProduct = await product.save();
     if (savedProduct) {
       return res.status(200).json(savedProduct);
     } else {
-      return res.status(500).json({ message: "Faild to create new product" });
+      return res.status(500).json({ message: "Fail create new product" });
     }
-  } catch (error) {
-    return res.status(500).json({ message: error });
+  } catch (err) {
+    return res.status(500).json({ message: err });
   }
 };
 
@@ -75,7 +72,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       },
       { new: true }
     );
-    console.log(updateProduct);
     return res.status(200).json(updateProduct);
   } catch (err) {
     return res.status(500).json({ message: err });
@@ -86,7 +82,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const _id = req.params.id;
     const deleteProduct = await Product.deleteOne({ _id });
-    console.log(deleteProduct);
     if (deleteProduct) {
       return res.status(200).json({ success: true });
     } else {

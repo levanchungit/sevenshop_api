@@ -6,24 +6,6 @@ import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
 import Log from "libraries/log";
 
-// const sendSMS = (code: string, phone: string, res: Response) => {
-//   const accountSid = process.env.TWILIO_ACCOUNT_SID;
-//   const authToken = process.env.TWILIO_AUTH_TOKEN;
-//   const client = require("twilio")(accountSid, authToken);
-//   client.messages
-//     .create({
-//       body: `Here is your One Time Password to validate your phone number: ${code}`,
-//       from: process.env.TWILIO_PHONE_NUMBER,
-//       to: phone,
-//     })
-//     .then((message: any) => {
-//       return res.status(200).json({ message: "Send SMS success" });
-//     })
-//     .catch((err: any) => {
-//       return res.status(500).json({ message: "Send SMS fail" });
-//     });
-// };
-
 export const register = async (req: Request, res: Response) => {
   const { email, phone }: UserType = req.body;
   if (!email && !phone) {

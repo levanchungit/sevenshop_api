@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
 import metadataRoter from "routes/meta_data";
+import orderRoter from "routes/order";
 import { config } from "dotenv";
 import Log from "libraries/log";
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/user", userRouter);
 app.use("/product", productRouter);
 app.use("/meta_data", metadataRoter);
+app.use("/order", orderRoter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({

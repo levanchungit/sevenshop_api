@@ -14,12 +14,12 @@ export type MetaDataDetailType = {
   num3: Number;
   num4: string;
   num5: Date;
-  create_at: Date;
+  create_at: string;
   create_by: string;
-  modify_at: Date;
+  modify_at: string;
   modify_by: string;
-  ENG: string;
-  KR: string;
+  eng: string;
+  kr: string;
 };
 
 export type MetaDataDetailTypeModel = MetaDataDetailType & Document;
@@ -36,9 +36,9 @@ export const metaDataDetailSchema = new Schema({
   num3: { type: Number },
   num4: { type: String },
   num5: { type: Date },
-  create_at: { type: Date, require: true },
+  create_at: { type: String, require: true },
   create_by: { type: String, require: true },
-  modify_at: { type: Date, require: true },
+  modify_at: { type: String, require: true },
   modify_by: { type: String, require: true },
   eng: { type: String },
   kr: { type: String },
