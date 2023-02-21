@@ -3,34 +3,29 @@ import { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export enum GENDER {
+export enum Gender {
   male = "male",
   female = "female",
   other = "other",
 }
 
-export enum LANGUAGE {
-  vi = "vi",
-  en = "en",
+export enum Language {
+  vie = 1,
+  eng = 2,
+  kr = 3,
 }
 
-export enum STATUS {
+export enum Status {
   active = "active",
   inactive = "inactive",
   pending = "pending",
 }
 
-export enum ROLE {
-  user = "user",
-  admin = "admin",
-  staff = "staff",
+export enum Role {
+  user = 1,
+  admin = 2,
+  staff = 3,
 }
-
-export type AddressType = {
-  full_name: string;
-  phone: string;
-  address: string;
-};
 
 export type OTPType = {
   code: string;
@@ -40,56 +35,61 @@ export type OTPType = {
 export type UserType = {
   id: string;
   email: string;
-  username: string;
   password: string;
   full_name: string;
   phone: string;
-  image: string;
-  gender: GENDER;
-  birthday: string;
-  addresses: [AddressType];
-  status: STATUS;
-  roles: [ROLE];
+  image: [];
+  gender: Gender;
+  birthday: Date;
+  address: string;
+  status: Status;
   product_favorites: [];
   recent_products: [];
+  language: Language;
+  device_id: string;
+  otp: OTPType;
   access_token: string;
   refresh_token: string;
-  otp: OTPType;
-  language: LANGUAGE;
+  role_type: Role;
+  membership_type: number;
+  create_at: Date;
+  create_by: string;
+  modify_at: Date;
+  modify_by: string;
 };
 
 export type UserTypeModel = UserType & Document;
 
 /*******************************SCHEMA*****************************/
-export const Address = {
-  full_name: String,
-  phone: String,
-  address: String,
-};
 
-export const OTP = {
+export const Otp = {
   code: String,
   expired: Date,
 };
 
 export const userSchema = new Schema({
   email: { type: String, require: true },
-  username: { type: String, require: true },
   password: { type: String, require: true },
   full_name: { type: String, require: true },
   phone: { type: String, require: true },
-  image: { type: String, require: true },
-  gender: { type: String, require: true },
-  birthday: { type: String, require: true },
-  addresses: { type: [Address], default: [] },
-  status: { type: String, enum: STATUS, default: "pending" },
-  roles: { type: String, enum: ROLE, default: "user" },
+  image: { type: [String], require: true },
+  gender: { type: String, enum: Gender, require: true },
+  birthday: { type: Date, require: true },
+  address: { type: String, require: true },
+  status: { type: String, enum: Status, default: "pending" },
   product_favorites: [{ type: Schema.Types.ObjectId, ref: Product }],
   recent_products: [{ type: Schema.Types.ObjectId, ref: Product }],
-  otp: { type: OTP, default: {} },
+  language: { type: Number, enum: Language, default: 1 },
+  device_id: { type: String, require: true },
+  otp: { type: Otp, default: {} },
   access_token: { type: String, require: true },
   refresh_token: { type: String, require: true },
-  language: { type: String, enum: LANGUAGE, default: "vi" },
+  role_type: { type: Number, enum: Role, default: 1 },
+  membership_type: { type: Number, require: true, default: 1 },
+  create_at: { type: Date, require: true },
+  create_by: { type: String, require: true },
+  modify_at: { type: Date, require: true },
+  modify_by: { type: String, require: true },
 });
 
 const User = model<UserTypeModel>("User", userSchema);

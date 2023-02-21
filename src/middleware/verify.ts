@@ -1,4 +1,4 @@
-import User, { OTPType, STATUS } from "models/user";
+import User, { OTPType, Status } from "models/user";
 import { Types } from "mongoose";
 import { Response } from "express";
 import nodemailer from "nodemailer";
@@ -71,10 +71,10 @@ export const accountVerify = async (props: AccountVerifyType) => {
   const { email, phone, res } = props;
   const user = await User.findOne(email ? { email } : { phone });
   if (user) {
-    if (user.status === STATUS.active) {
+    if (user.status === Status.active) {
       return res.status(409).json({ message: "Account already exists" });
     }
-    if (user.status === STATUS.pending) {
+    if (user.status === Status.pending) {
       checkDateOTP(user._id, res);
       if (email) {
         sendMail(user._id, user.otp.code, user.email, res);
