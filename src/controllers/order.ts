@@ -1,51 +1,75 @@
 import Product from "models/product";
-import Order, { OrderType } from "./../models/order";
+import Order, {
+  IOrder,
+  PaymentType,
+  ProductType,
+  Status,
+} from "./../models/order";
 import moment from "moment";
 import { Request, Response } from "express";
-import User, { Status, UserType } from "models/user";
-import bcrypt from "bcrypt";
+import User from "models/user";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
-import { accountVerify } from "middleware/verify";
-import Log from "libraries/log";
+import { Stats } from "fs";
 
 export const addToCart = async (req: Request, res: Response) => {
   try {
+    const { code, product_id, color, size, quantity } = req.body;
     const idUser = getIdFromReq(req);
     const user = await User.findById(idUser);
-    const { code, products }: OrderType = req.body;
-    // const product = await Product.findById(products.product);
+    const product = await Product.findById(product_id);
 
-    const orderUser = await Order.findOne({ user_id: idUser });
-    //check order User exists
-    if (orderUser) {
-      console.log("IN");
-      const orderUserAdd = await Order.findOneAndUpdate(
-        { _id: orderUser._id },
-        { $addToSet: { products: products }, $inc: { total: 1000 } }
-      );
-      if (orderUserAdd) {
-        return res.status(200).json(orderUserAdd);
-      } else {
-        return res.status(500).json({ message: "Failed To Add Product" });
-      }
-    } else {
-      console.log("IN2");
-
-      const order = new Order({
-        code,
-        user_id: idUser,
-        products,
-        create_at: moment(new Date()).format("YYYY-MM-DD HH:mm"),
-        create_by:
-          user?.email + "_INS_" + moment(new Date()).format("YYYY-MM-DD HH:mm"),
-      });
-      const savedOrder = await order.save();
-      if (savedOrder) {
-        return res.status(200).json(savedOrder);
-      } else {
-        return res.status(500).json({ message: "Fail create new order" });
-      }
+    //check product exists
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
     }
+
+    if (quantity > Number(product?.storage_quantity)) {
+      return res.status(400).json({ message: "Not enough quantity in stock" });
+    }
+
+    // update product quantity in stock
+    console.log(product_id);
+    const productt = await Product.aggregate();
+    if (productt) {
+      return res.status(404).json({ result: productt });
+    } else {
+      return res.status(404).json({ message: "Properties not found" });
+    }
+
+    // const productType: ProductType = {
+    //   product_id,
+    //   color,
+    //   size,
+    //   quantity,
+    //   image: "",
+    // };
+
+    // const order = await Order.findOne({
+    //   user_id: idUser,
+    //   order_type: Status.CART,
+    // });
+    // if (!order) {
+    //   const newOrder = new Order({
+    //     code,
+    //     products: [productType],
+    //     color,
+    //     size,
+    //     quantity,
+    //     user_id: idUser,
+    //     order_type: Status.CART,
+    //     payment_type: PaymentType.CASH,
+    //     total: Number(product?.price) * quantity,
+    //     create_at: moment(new Date()).format("YYYY-MM-DD HH:mm"),
+    //     create_by:
+    //       user?.email +
+    //       "_INS-CART_" +
+    //       moment(new Date()).format("YYYY-MM-DD HH:mm"),
+    //   });
+
+    //   await newOrder.save();
+
+    //   return res.status(201).json({ message: "Add Product Successfully" });
+    // }
   } catch (err) {
     res.status(500).json({ message: err });
   }

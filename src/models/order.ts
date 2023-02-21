@@ -1,64 +1,75 @@
-import { Properties } from "./product";
-import { Schema, model, Document } from "mongoose";
-import User from "models/user";
-import Product from "models/product";
-
+import mongoose from "mongoose";
 /*********************TYPE & INTERFACE*****************************/
 
 export enum Status {
-  cart = 1,
-  delivery = 2,
-  successfully = 3,
-  cancel = 4,
+  CART = 1,
+  DELIVERY = 2,
+  SUCCESSFULLY = 3,
+  CANCEL = 4,
 }
 
-export type Products = {
-  product_id: string;
+export enum PaymentType {
+  CASH = 1,
+  MOMO = 2,
+  BANKING = 3,
+}
+
+export type ProductType = {
+  product_id: mongoose.Types.ObjectId;
   color: number;
   size: number;
   quantity: number;
+  image: string;
 };
 
-export type OrderType = {
-  id: string;
+export interface IOrder extends mongoose.Document {
   code: string;
   total: number;
-  user_id: string;
-  products: Products[];
+  user_id: mongoose.Types.ObjectId;
+  products: ProductType[];
   order_type: Status;
-  payment_type: number;
-  voucher_type: [];
-  create_at: Date;
+  payment_type: string;
+  voucher_type?: string;
+  create_at: string;
   create_by: string;
-  modify_at: Date;
+  modify_at: string;
   modify_by: string;
-};
-
-export type OrderTypeModel = {} & OrderType & Document;
+}
 
 /*******************************SCHEMA*****************************/
 
-export const Products = {
-  product_id: { type: Schema.Types.ObjectId, ref: Product },
-  color: Number,
-  size: Number,
-  quantity: Number,
-};
+const orderSchema = new mongoose.Schema(
+  {
+    code: { type: String, required: true },
+    total: { type: Number, required: true },
+    user_id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+    products: {
+      type: [
+        {
+          product_id: {
+            type: mongoose.Types.ObjectId,
+            ref: "Product",
+          },
+          color: { type: Number },
+          size: { type: Number },
+          quantity: { type: Number },
+          image: { type: String },
+        },
+      ],
+    },
+    order_type: { type: Number, enum: Status },
+    payment_type: {
+      type: Number,
+      enum: PaymentType,
+    },
+    voucher_type: { type: Number },
+    create_at: { type: String },
+    create_by: { type: String },
+    modify_at: { type: String },
+    modify_by: { type: String },
+  },
+  { timestamps: true }
+);
 
-const orderSchema = new Schema({
-  code: { type: String, require: true },
-  total: { type: Number, default: 0 },
-  user_id: { type: Schema.Types.ObjectId, ref: User },
-  products: [{ type: Products, default: [] }],
-  order_type: { type: String, enum: Status, default: 1 },
-  payment_type: { type: String },
-  voucher_type: { type: String },
-  create_at: { type: Date, require: true },
-  create_by: { type: String, require: true },
-  modify_at: { type: Date, require: true },
-  modify_by: { type: String, require: true },
-});
-
-const Order = model<OrderTypeModel>("Order", orderSchema);
-
+const Order = mongoose.model<IOrder>("Order", orderSchema);
 export default Order;

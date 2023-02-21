@@ -1,62 +1,92 @@
-import { Schema, model, Document } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export type Properties = {
-  color: number;
-  size: number;
-  quantity: number;
-};
-
-export type PropertiesType = {
-  total: number;
-  properties: Properties[];
-};
-
-export type ProductType = {
-  id: string;
+export interface IProduct extends Document {
   name: string;
   price: number;
   description: string;
   images: string[];
   active: boolean;
-  properties_type: PropertiesType;
-  categories_type: Number;
+  storage_quantity: number;
+  properties_type: {
+    properties: {
+      color: number;
+      size: number;
+      quantity: number;
+    }[];
+  };
+  categories_type: number;
   create_at: string;
   create_by: string;
   modify_at: string;
   modify_by: string;
-};
-
-export type ProductTypeModel = {} & ProductType & Document;
+}
 
 /*******************************SCHEMA*****************************/
 
-export const Properties = {
-  color: Number,
-  size: Number,
-  quantity: Number,
-};
-
-export const PropertiesType = {
-  total: Number,
-  properties: [Properties],
-};
-
-const productSchema = new Schema({
-  name: { type: String, require: true },
-  price: { type: Number, require: true },
-  description: { type: String, require: true },
-  images: [{ type: String, default: [] }],
-  active: { type: Boolean, default: true },
-  properties_type: [{ type: Properties, default: [] }],
-  categories_type: { type: Number },
-  create_at: { type: String, require: true },
-  create_by: { type: String, require: true },
-  modify_at: { type: String, require: true },
-  modify_by: { type: String, require: true },
+const productSchema: Schema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  images: {
+    type: [String],
+    required: true,
+  },
+  active: {
+    type: Boolean,
+    required: true,
+  },
+  storage_quantity: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  properties_type: [
+    {
+      color: {
+        type: Number,
+        required: true,
+      },
+      size: {
+        type: Number,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
+  categories_type: {
+    type: Number,
+    required: true,
+  },
+  create_at: {
+    type: String,
+    required: true,
+  },
+  create_by: {
+    type: String,
+    required: true,
+  },
+  modify_at: {
+    type: String,
+  },
+  modify_by: {
+    type: String,
+  },
 });
 
-const Product = model<ProductTypeModel>("Product", productSchema);
+const Product = model<IProduct>("Product", productSchema);
 
 export default Product;

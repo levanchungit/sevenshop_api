@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
 import Log from "libraries/log";
+import { ObjectId } from "mongoose";
 
 export const register = async (req: Request, res: Response) => {
   const { email, phone }: UserType = req.body;
@@ -199,4 +200,27 @@ export const logout = async (req: Request, res: Response) => {
     "LOG OUT_" + moment(new Date()).format("YYYY-MM-DD HH:mm") + " | ";
   await user.save();
   return res.status(200).json({ message: "Logout success" });
+};
+
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find();
+    return res
+      .status(200)
+      .json({ message: "Get Users Successfully", result: users });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+};
+
+export const getUserByID = async (req: Request, res: Response) => {
+  try {
+    const _id = req.params.id;
+    const users = await User.findOne({ _id });
+    return res
+      .status(200)
+      .json({ message: "Get Users Successfully", result: users });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
 };
