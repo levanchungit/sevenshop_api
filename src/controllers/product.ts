@@ -139,7 +139,9 @@ export const getProducts = async (req: Request, res: Response) => {
     const products = await Product.find({ active: true })
       .skip(parseInt(offset?.toString() ?? "0"))
       .limit(parseInt(limit?.toString() ?? "0"));
-    return res.status(200).json(products);
+    return res
+      .status(200)
+      .json({ message: "Get Products Successfully", result: products });
   } catch (err) {
     return res.status(500).json(err);
   }
