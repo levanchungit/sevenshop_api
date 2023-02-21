@@ -3,6 +3,8 @@ import http from "http";
 import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
+import metadataRoter from "routes/meta_data";
+import orderRoter from "routes/order";
 import { config } from "dotenv";
 import Log from "libraries/log";
 
@@ -24,6 +26,8 @@ app.use(express.json());
 /* Routes */
 app.use("/user", userRouter);
 app.use("/product", productRouter);
+app.use("/meta_data", metadataRoter);
+app.use("/order", orderRoter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({
@@ -43,7 +47,7 @@ app.use((req, res) => {
 });
 http
   .createServer(app)
-  .listen(process.env.BE_PORT, () =>
+  .listen(process.env.PORT || 3000, () =>
     Log.success(`Server is running on port ${process.env.BE_PORT}`)
   )
   .on("error", () => {
