@@ -18,7 +18,7 @@ router.post("/createProduct", validateToken, createProduct);
 router.post("/updateProduct/:id", validateToken, updateProduct);
 router.post("/deleteProduct/:id", validateToken, deleteProduct);
 router.post("/anActiveProduct/:id", validateToken, anActiveProduct);
-router.get("/", validateToken, getProducts);
+router.get("/", getProducts);
 router.get("/:id", validateToken, getProduct);
 router.post("/recentProduct/:id", validateToken, recentProduct);
 router.post("/productFavorites/:id", validateToken, productFavorites);

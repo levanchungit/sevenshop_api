@@ -40,7 +40,7 @@ export type UserType = {
   phone: string;
   image: string;
   gender: Gender;
-  birthday: Date;
+  birthday: string;
   address: string;
   status: Status;
   product_favorites: [];
@@ -68,28 +68,28 @@ export const Otp = {
 };
 
 export const userSchema = new Schema({
-  email: { type: String, require: true },
-  password: { type: String, require: true },
-  full_name: { type: String, require: true },
-  phone: { type: String, require: true },
-  image: { type: String, require: true },
-  gender: { type: String, enum: Gender, require: true },
-  birthday: { type: Date, require: true },
-  address: { type: String, require: true },
+  email: { type: String },
+  password: { type: String },
+  full_name: { type: String },
+  phone: { type: String },
+  image: { type: String },
+  gender: { type: String, enum: Gender },
+  birthday: { type: String },
+  address: { type: String },
   status: { type: String, enum: Status, default: "pending" },
   product_favorites: [{ type: Schema.Types.ObjectId, ref: Product }],
   recent_products: [{ type: Schema.Types.ObjectId, ref: Product }],
   language: { type: Number, enum: Language, default: 1 },
-  device_id: { type: String, require: true },
+  device_id: { type: String },
   otp: { type: Otp, default: {} },
-  access_token: { type: String, require: true },
-  refresh_token: { type: String, require: true },
+  access_token: { type: String },
+  refresh_token: { type: String },
   role_type: { type: Number, enum: Role, default: 1 },
-  membership_type: { type: Number, require: true, default: 1 },
+  membership_type: { type: Number, default: 1 },
   create_at: { type: String, default: new Date() },
-  create_by: { type: String, require: true },
-  modify_at: { type: String, require: true },
-  modify_by: { type: String, require: true },
+  create_by: { type: String },
+  modify_at: { type: String },
+  modify_by: { type: String },
 });
 
 const User = model<UserTypeModel>("User", userSchema);

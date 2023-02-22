@@ -27,18 +27,19 @@ const sendMail = (
     },
   });
   var content = `
-      <div style="display:flex;background-color:rgb(224,224,224);align-items: center;justify-content: center;">
-        <div style="align-items: center;justify-content: center ;width: 50%; background-color: white; margin: 50px; padding: 50px">
-            <div>
-                <img style="width: 100%; min-width: 250px;"
-                    src="https://res.cloudinary.com/dq7xnkfde/image/upload/v1673451729/logo-01_xgl0wr.png"></img>
-            </div>
-            <h2 style="text-align: center; font-weight: bold;"> Here is your One Time Password</h2>
-            <p style="text-align: center; color:rgb(132, 132, 132);font-size: 18px;">to validate your email address</p> 
-            <h2 style="text-align: center; font-weight: bold;color:'red"> ${otp}</h2>
-            <p style="text-align: center; color:rgb(255, 0, 0);font-size: 16px;">Valid for 5 minutes only</p>
-        </div>
-      </div>
+  <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+  <div style="margin:50px auto;width:70%;padding:20px 0">
+    <div style="border-bottom:1px solid #eee">
+      <a href="" style="font-size:1.4em;color: #AC1506;text-decoration:none;font-weight:600">Seven Shop</a>
+    </div>
+    <p style="font-size:1.1em">Hi,</p>
+    <p>Thank you for choosing Seven Shop. Use the following OTP to complete your Sign Up procedures. OTP is valid for ${process.env.EXPIRED_OTP} minutes</p>
+    <h2 style="background: #AC1506;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+    <p style="font-size:0.9em;">Regards,<br />Seven Shop</p>
+    <hr style="border:none;border-top:1px solid #eee" />
+
+  </div>
+</div>
   `;
   const mailOptions = {
     from: process.env.USER_APP_MAIL,
@@ -51,10 +52,10 @@ const sendMail = (
       return res.status(500).json({ message: "Send email fail" });
     }
     return res.status(200).json({
-      data: {
+      message: "Send email success",
+      result: {
         user_id,
       },
-      message: "Send email success",
     });
   });
 };
@@ -62,7 +63,7 @@ const sendMail = (
 const generateOTP = async () => {
   const otp = Math.floor(100000 + Math.random() * 900000);
   const expired = new Date();
-  expired.setMinutes(expired.getMinutes() + 5);
+  expired.setMinutes(expired.getMinutes() + Number(process.env.EXPIRED_OTP));
   return { code: otp.toString(), expired };
 };
 
@@ -71,7 +72,7 @@ export const accountVerify = async (props: AccountVerifyType) => {
   const user = await User.findOne(email ? { email } : { phone });
   if (user) {
     if (user.status === Status.active) {
-      return res.status(409).json({ message: "Account already exists" });
+      return res.status(500).json({ message: "Account already exists" });
     }
     if (user.status === Status.pending) {
       checkDateOTP(user._id, res);
@@ -80,10 +81,10 @@ export const accountVerify = async (props: AccountVerifyType) => {
         return;
       }
       return res.status(200).json({
-        data: {
+        message: "Send OTP success",
+        result: {
           otp: user.otp.code,
         },
-        message: "Send OTP success",
       });
     }
   }
@@ -102,10 +103,10 @@ export const accountVerify = async (props: AccountVerifyType) => {
     return;
   }
   return res.status(200).json({
-    data: {
+    message: "Send OTP success",
+    result: {
       otp: otp.code,
     },
-    message: "Send OTP success",
   });
 };
 

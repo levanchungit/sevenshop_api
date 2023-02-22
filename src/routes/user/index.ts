@@ -9,8 +9,11 @@ import {
   refreshToken,
   getUsers,
   getUserByID,
+  updateUser,
+  deleteUser,
+  changePassword,
 } from "controllers/user";
-import { validateToken } from "middleware/validate";
+import { validateToken, validateAdmin } from "middleware/validate";
 
 const router = Router();
 
@@ -19,10 +22,17 @@ router.post("/register", register);
 router.post("/check_otp", checkOTP);
 router.post("/set_password", validateToken, setPassword);
 router.post("/login", login);
-router.get("/me", validateToken, getMe);
 router.post("/logout", validateToken, logout);
 router.post("/refresh_token", refreshToken);
-router.get("/", validateToken, getUsers);
-router.get("/:id", validateToken, getUserByID);
+
+//User Routes (role==='USER')
+router.get("/me", validateToken, getMe);
+router.post("/updateUser/:id", validateToken, updateUser); // USER & ADMIN
+router.post("/changePassword", validateToken, changePassword);
+
+//User Routes (role==='ADMIN')
+router.get("/", validateToken, validateAdmin, getUsers);
+router.get("/:id", validateToken, validateAdmin, getUserByID);
+router.post("/deleteUser/:id", validateToken, validateAdmin, deleteUser);
 
 export default router;
