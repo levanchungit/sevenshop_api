@@ -14,6 +14,7 @@ import {
   changePassword,
 } from "controllers/user";
 import { validateToken, validateAdmin } from "middleware/validate";
+import { upload } from "utils/multer";
 
 const router = Router();
 
@@ -27,7 +28,12 @@ router.post("/refresh_token", refreshToken);
 
 //User Routes (role==='USER')
 router.get("/me", validateToken, getMe);
-router.post("/updateUser/:id", validateToken, updateUser); // USER & ADMIN
+router.post(
+  "/updateUser/:id",
+  validateToken,
+  upload.single("image"),
+  updateUser
+); // USER & ADMIN
 router.post("/changePassword", validateToken, changePassword);
 
 //User Routes (role==='ADMIN')

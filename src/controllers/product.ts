@@ -18,6 +18,7 @@ export const createProduct = async (req: Request, res: Response) => {
       categories_type,
     }: IProduct = req.body;
     const id = getIdFromReq(req);
+
     const user = await User.findById(id);
     const product = new Product({
       name,
