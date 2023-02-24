@@ -4,6 +4,15 @@ import { getIdFromReq } from "./../utils/token";
 import { Request, Response } from "express";
 import Product from "models/product";
 import moment from "moment";
+interface Image_Cloud {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  path: string;
+  size: string;
+  filename: string;
+}
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
@@ -20,12 +29,13 @@ export const createProduct = async (req: Request, res: Response) => {
     const id = getIdFromReq(req);
 
     const user = await User.findById(id);
-    var imageUrlList = [];
+    var imageUrlList: any[] = [];
 
     if (req.files) {
-      for (let i = 0; i < req.files.length; i++) {
-        var url = req.files[i].path;
-        imageUrlList.push(url);
+      if (Array.isArray(req.files)) {
+        req.files.forEach((obj: any) => {
+          imageUrlList.push(obj.path);
+        });
       }
     }
 
@@ -73,11 +83,12 @@ export const updateProduct = async (req: Request, res: Response) => {
     const idUser = getIdFromReq(req);
     const user = await User.findById(idUser);
 
-    var imageUrlList = [];
+    var imageUrlList: any[] = [];
     if (req.files) {
-      for (let i = 0; i < req.files.length; i++) {
-        var url = req.files[i].path;
-        imageUrlList.push(url);
+      if (Array.isArray(req.files)) {
+        req.files.forEach((obj: any) => {
+          imageUrlList.push(obj.path);
+        });
       }
     }
 

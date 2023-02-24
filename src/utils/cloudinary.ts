@@ -28,7 +28,6 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req: any) => {
-    console.log(req);
     return {
       folder: "SevenShop",
       public_id: req.params.id,
