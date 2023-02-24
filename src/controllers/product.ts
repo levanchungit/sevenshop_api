@@ -20,11 +20,20 @@ export const createProduct = async (req: Request, res: Response) => {
     const id = getIdFromReq(req);
 
     const user = await User.findById(id);
+    var imageUrlList = [];
+
+    if (req.files) {
+      for (let i = 0; i < req.files.length; i++) {
+        var url = req.files[i].path;
+        imageUrlList.push(url);
+      }
+    }
+
     const product = new Product({
       name,
       price,
       description,
-      images,
+      images: imageUrlList,
       active,
       storage_quantity,
       properties_type,
@@ -49,10 +58,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const _id = req.params.id;
-    const product = await Product.findById({ _id });
-    if (!product) {
-      res.status(404).json({ message: "Product not found" });
-    }
+
     const {
       name,
       price,
@@ -66,6 +72,15 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const idUser = getIdFromReq(req);
     const user = await User.findById(idUser);
+
+    var imageUrlList = [];
+    if (req.files) {
+      for (let i = 0; i < req.files.length; i++) {
+        var url = req.files[i].path;
+        imageUrlList.push(url);
+      }
+    }
+
     const updateProduct = await Product.findOneAndUpdate(
       { _id },
       {
@@ -73,7 +88,7 @@ export const updateProduct = async (req: Request, res: Response) => {
           name,
           price,
           description,
-          images,
+          images: imageUrlList,
           active,
           storage_quantity,
           properties_type,
@@ -88,9 +103,14 @@ export const updateProduct = async (req: Request, res: Response) => {
       },
       { new: true }
     );
-    return res
-      .status(200)
-      .json({ message: "Update successfully", result: updateProduct });
+
+    if (updateProduct) {
+      return res
+        .status(200)
+        .json({ message: "Update successfully", result: updateProduct });
+    } else {
+      return res.status(500).json({ message: "Update failed" });
+    }
   } catch (err) {
     return res.status(500).json({ message: err });
   }

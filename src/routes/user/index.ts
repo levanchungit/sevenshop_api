@@ -14,7 +14,7 @@ import {
   changePassword,
 } from "controllers/user";
 import { validateToken, validateAdmin } from "middleware/validate";
-import { upload } from "utils/multer";
+import { upload } from "utils/cloudinary";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ router.post(
   validateToken,
   upload.single("image"),
   updateUser
-); // USER & ADMIN
+);
 router.post("/changePassword", validateToken, changePassword);
 
 //User Routes (role==='ADMIN')
