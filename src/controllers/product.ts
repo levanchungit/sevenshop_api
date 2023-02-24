@@ -4,15 +4,6 @@ import { getIdFromReq } from "./../utils/token";
 import { Request, Response } from "express";
 import Product from "models/product";
 import moment from "moment";
-interface Image_Cloud {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  path: string;
-  size: string;
-  filename: string;
-}
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
