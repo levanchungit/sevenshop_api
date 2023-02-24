@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
 import Log from "libraries/log";
+// import cloudinary from "utils/cloudinary";
 
 export const register = async (req: Request, res: Response) => {
   const { email, phone }: UserType = req.body;
@@ -293,13 +294,12 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const _id = getIdFromReq(req);
     const userReq = await User.findById(_id);
-
     const {
       password,
       full_name,
       phone,
-      image,
       gender,
+      image,
       birthday,
       address,
       status,
@@ -323,8 +323,12 @@ export const updateUser = async (req: Request, res: Response) => {
     }
     if (full_name) user.full_name = full_name;
     if (phone) user.phone = phone;
-    if (image) user.image = image;
     if (gender) user.gender = gender;
+
+    if (req.file) {
+      user.image = req.file.path;
+    }
+
     if (birthday) {
       if (!isValidDateBirthday(birthday)) {
         return res
