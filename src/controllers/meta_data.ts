@@ -8,11 +8,12 @@ import moment from "moment";
 export const insert = async (req: Request, res: Response) => {
   const idUser = getIdFromReq(req);
   const user = await User.findById(idUser);
-  const { code, type, code_name, note }: MetaDataType = req.body;
+  const { code, type, active, code_name, note }: MetaDataType = req.body;
   const newMetaData = new MetaData({
     code,
     type,
     code_name,
+    active,
     note,
   });
   newMetaData.create_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
@@ -36,6 +37,8 @@ export const insertDetail = async (req: Request, res: Response) => {
     num3,
     num4,
     num5,
+    eng,
+    kr,
   }: MetaDataDetailType = req.body;
   const newMetaDataDetail = new MetaDataDetail({
     code_name,
@@ -46,6 +49,8 @@ export const insertDetail = async (req: Request, res: Response) => {
     num3,
     num4,
     num5,
+    eng,
+    kr,
   });
   newMetaDataDetail.create_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
   newMetaDataDetail.create_by =
