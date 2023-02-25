@@ -16,6 +16,8 @@ export enum PaymentType {
 
 export type ProductType = {
   product_id: mongoose.Types.ObjectId;
+  name?: string;
+  price?: number;
   color: number;
   size: number;
   quantity: number;
@@ -40,8 +42,8 @@ export interface IOrder extends mongoose.Document {
 
 const orderSchema = new mongoose.Schema(
   {
-    code: { type: String, required: true },
-    total: { type: Number, required: true },
+    code: { type: String },
+    total: { type: Number },
     user_id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
     products: {
       type: [
@@ -50,6 +52,8 @@ const orderSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "Product",
           },
+          name: { type: String },
+          price: { type: Number },
           color: { type: Number },
           size: { type: Number },
           quantity: { type: Number },
