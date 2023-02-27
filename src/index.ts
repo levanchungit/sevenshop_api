@@ -3,8 +3,8 @@ import http from "http";
 import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
-import metadataRoter from "routes/meta_data";
-import orderRoter from "routes/order";
+import metadataRouter from "routes/meta_data";
+import orderRouter from "routes/order";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
@@ -60,8 +60,8 @@ app.use((req, res, next) => {
 /* Routes */
 app.use("/user", userRouter);
 app.use("/product", productRouter);
-app.use("/meta_data", metadataRoter);
-app.use("/order", orderRoter);
+app.use("/meta_data", metadataRouter);
+app.use("/order", orderRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({
@@ -86,7 +86,7 @@ http
   )
   .on("error", () => {
     Log.error("Port is already in use. Trying another port.");
-    const port = parseInt(process.env.BE_PORT as string) + 1;
+    const port = parseInt(process.env.PORT as string) + 1;
     http
       .createServer(app)
       .listen(port, () => Log.success(`Server is running on port ${port}`));

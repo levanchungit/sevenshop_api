@@ -65,11 +65,6 @@ export const setPassword = async (req: Request, res: Response) => {
   }
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
-  user.password = hashPassword;
-  user.otp = {
-    code: "",
-    expired: new Date(),
-  };
   const access_token = tokenGen(
     { _id: id, role_type: user.role_type },
     parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
@@ -78,6 +73,11 @@ export const setPassword = async (req: Request, res: Response) => {
     { _id: id, role_type: user.role_type },
     parseInt(<string>process.env.EXPIRED_REFRESH_TOKEN)
   );
+  user.password = hashPassword;
+  user.otp = {
+    code: "",
+    expired: new Date(),
+  };
   user.access_token = access_token;
   user.refresh_token = refresh_token;
   user.status = STATUS.active;
@@ -153,18 +153,18 @@ export const getMe = async (req: Request, res: Response) => {
 };
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const { refresh_Token } = req.body;
-  if (!refresh_Token) {
+  const { refresh_token } = req.body;
+  if (!refresh_token) {
     return res.status(500).json({ message: "Missing token" });
   }
-  const parToken = parseJwt(refresh_Token);
-  const { _id, exp, role_type } = parToken;
+  const parToken = parseJwt(refresh_token);
+  const { _id, exp } = parToken;
   // check expired token
   if (exp < new Date().getTime() / 1000) {
     Log.error("Token expired");
     return res.status(500).json({ message: "Refresh token expired" });
   }
-  const user = await User.findOne({ _id, refresh_token: refresh_Token });
+  const user = await User.findOne({ _id, refresh_token });
   if (!user) {
     return res.status(500).json({ message: "Refresh token fail" });
   }
@@ -175,12 +175,6 @@ export const refreshToken = async (req: Request, res: Response) => {
     parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
   );
   user.access_token = access_token;
-  user.modify_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
-  user.modify_by +=
-    user?.email +
-    "_REF-TOKEN_" +
-    moment(new Date()).format("YYYY-MM-DD HH:mm") +
-    " | ";
   await user.save();
   Log.success(`Refresh token success with email: ${user.email}`);
   return res.status(200).json({
@@ -198,12 +192,6 @@ export const logout = async (req: Request, res: Response) => {
   // clear token
   user.access_token = "";
   user.refresh_token = "";
-  user.modify_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
-  user.modify_by +=
-    user?.email +
-    "_LOGOUT_" +
-    moment(new Date()).format("YYYY-MM-DD HH:mm") +
-    " | ";
   await user.save();
   return res.status(200).json({ message: "Logout success" });
 };
@@ -261,7 +249,7 @@ export const changePassword = async (req: Request, res: Response) => {
         user.modify_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
         user.modify_by +=
           user?.email +
-          "_CHANG-PASS_" +
+          "_CHANGE-PASS_" +
           moment(new Date()).format("YYYY-MM-DD HH:mm") +
           " | ";
         await user.save();
