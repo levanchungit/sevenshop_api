@@ -164,7 +164,6 @@ export const updateDetail = async (req: Request, res: Response) => {
     const idUser = getIdFromReq(req);
     const user = await User.findOne({ _id: idUser });
     const {
-      code,
       code_name,
       meta_data_id,
       active,
@@ -190,7 +189,6 @@ export const updateDetail = async (req: Request, res: Response) => {
         { _id },
         {
           $set: {
-            code,
             code_name,
             meta_data_id,
             active,
