@@ -47,7 +47,7 @@ const sendMail = (
     subject: "Verify your email",
     html: content,
   };
-  transporter.sendMail(mailOptions, async (err, info) => {
+  transporter.sendMail(mailOptions, async (err) => {
     if (err) {
       return res.status(500).json({ message: "Send email fail" });
     }
@@ -75,9 +75,12 @@ export const accountVerify = async (props: AccountVerifyType) => {
       return res.status(500).json({ message: "Account already exists" });
     }
     if (user.status === STATUS.pending) {
-      checkDateOTP(user._id, res);
       if (email) {
-        sendMail(user._id, user.otp.code, user.email, res);
+        const otp = await checkDateOTP(user._id);
+        if (!otp) {
+          return res.status(500).json({ message: "Send OTP fail" });
+        }
+        sendMail(user._id, otp.code, user.email, res);
         return;
       }
       return res.status(200).json({
@@ -110,18 +113,19 @@ export const accountVerify = async (props: AccountVerifyType) => {
   });
 };
 
-export const checkDateOTP = async (id: Types.ObjectId, res: Response) => {
+export const checkDateOTP = async (id: Types.ObjectId) => {
   const user = await User.findById(id);
   // update if otp expired
   if (user) {
-    if (user.otp.expired < new Date()) {
+    if (moment(user.otp.expired).isBefore(new Date())) {
       const otp = await generateOTP();
       await user.updateOne({
         otp,
       });
-      return { otp, id };
+      return otp;
+    } else {
+      return user.otp;
     }
-    return { otp: user.otp, id };
   }
-  return res.status(404).json({ message: "User not found" });
+  return null;
 };
