@@ -3,25 +3,25 @@ import { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export enum Gender {
+export enum GENDER {
   male = "male",
   female = "female",
   other = "other",
 }
 
-export enum Language {
+export enum LANGUAGE {
   vie = 1,
   eng = 2,
   kr = 3,
 }
 
-export enum Status {
+export enum STATUS {
   active = "active",
   inactive = "inactive",
   pending = "pending",
 }
 
-export enum Role {
+export enum ROLE {
   user = 1,
   admin = 2,
   staff = 3,
@@ -39,18 +39,18 @@ export type UserType = {
   full_name: string;
   phone: string;
   image: string;
-  gender: Gender;
+  gender: GENDER;
   birthday: string;
   address: string;
-  status: Status;
+  status: STATUS;
   product_favorites: [];
   recent_products: [];
-  language: Language;
+  language: LANGUAGE;
   device_id: string;
   otp: OTPType;
   access_token: string;
   refresh_token: string;
-  role_type: Role;
+  role_type: ROLE;
   membership_type: number;
   create_at: string;
   create_by: string;
@@ -73,18 +73,18 @@ export const userSchema = new Schema({
   full_name: { type: String },
   phone: { type: String },
   image: { type: String },
-  gender: { type: String, enum: Gender },
+  gender: { type: String, enum: GENDER },
   birthday: { type: String },
   address: { type: String },
-  status: { type: String, enum: Status, default: "pending" },
+  status: { type: String, enum: STATUS, default: "pending" },
   product_favorites: [{ type: Schema.Types.ObjectId, ref: Product }],
   recent_products: [{ type: Schema.Types.ObjectId, ref: Product }],
-  language: { type: Number, enum: Language, default: 1 },
+  language: { type: Number, enum: LANGUAGE, default: 1 },
   device_id: { type: String },
   otp: { type: Otp, default: {} },
   access_token: { type: String },
   refresh_token: { type: String },
-  role_type: { type: Number, enum: Role, default: 1 },
+  role_type: { type: Number, enum: ROLE, default: 1 },
   membership_type: { type: Number, default: 1 },
   create_at: { type: String, default: new Date() },
   create_by: { type: String },

@@ -1,5 +1,4 @@
-import { Document, model, Schema } from "mongoose";
-
+import mongoose, { Document, model, Schema } from "mongoose";
 /*********************TYPE & INTERFACE*****************************/
 
 export interface IProduct extends Document {
@@ -9,13 +8,13 @@ export interface IProduct extends Document {
   images: string[];
   active: boolean;
   storage_quantity: number;
-  properties_type: {
-    properties: {
-      color: number;
-      size: number;
+  properties_type: [
+    {
+      color_id: mongoose.Types.ObjectId;
+      size_id: mongoose.Types.ObjectId;
       quantity: number;
-    }[];
-  };
+    }
+  ];
   categories_type: number;
   create_at: string;
   create_by: string;
@@ -53,12 +52,12 @@ const productSchema: Schema = new Schema({
   },
   properties_type: [
     {
-      color: {
-        type: Number,
+      color_id: {
+        type: mongoose.Types.ObjectId,
         required: true,
       },
-      size: {
-        type: Number,
+      size_id: {
+        type: mongoose.Types.ObjectId,
         required: true,
       },
       quantity: {

@@ -1,3 +1,4 @@
+import MetaDataDetail from "models/meta_data_detail";
 import { IProduct } from "./../models/product";
 import User from "models/user";
 import { getIdFromReq } from "./../utils/token";
@@ -162,9 +163,53 @@ export const getProducts = async (req: Request, res: Response) => {
     const products = await Product.find({ active: true })
       .skip(parseInt(offset?.toString() ?? "0"))
       .limit(parseInt(limit?.toString() ?? "0"));
+
+    const _products = [];
+
+    for (let i = 0; i < products.length; i++) {
+      const product_properties = [];
+
+      for (let j = 0; j < products[i].properties_type.length; j++) {
+        //get Color
+        const color_id = products[i].properties_type[j].color_id;
+        const objColor = await MetaDataDetail.findOne({ _id: color_id });
+
+        //get Size
+        const size_id = products[i].properties_type[j].size_id;
+        const objSize = await MetaDataDetail.findOne({ _id: size_id });
+
+        const objProperties = {
+          color_id: objColor?._id,
+          color_name: objColor?.code_name,
+          color_code: objColor?.num1,
+          size_id: objSize?._id,
+          size_name: objSize?.code_name,
+        };
+        product_properties.push(objProperties);
+      }
+
+      const product = {
+        _id: products[i]._id,
+        name: products[i].name,
+        price: products[i].price,
+        description: products[i].description,
+        images: products[i].images,
+        active: products[i].active,
+        storage_quantity: products[i].storage_quantity,
+        properties_type: product_properties,
+        categories_type: products[i].categories_type,
+        create_at: products[i].create_at,
+        create_by: products[i].create_by,
+        modify_at: products[i].modify_at,
+        modify_by: products[i].modify_by,
+      };
+
+      _products.push(product);
+    }
+
     return res
       .status(200)
-      .json({ message: "Get Products Successfully", result: products });
+      .json({ message: "Get Products Successfully", result: _products });
   } catch (err) {
     return res.status(500).json(err);
   }

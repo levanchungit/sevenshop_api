@@ -5,7 +5,6 @@ import MetaData from "models/meta_data";
 
 export type MetaDataDetailType = {
   id: string;
-  code: number;
   code_name: string;
   meta_data_id: string;
   active: boolean;
@@ -27,7 +26,6 @@ export type MetaDataDetailTypeModel = MetaDataDetailType & Document;
 /*******************************SCHEMA*****************************/
 
 export const metaDataDetailSchema = new Schema({
-  code: { type: Number },
   code_name: { type: String, required: true },
   meta_data_id: { type: Schema.Types.ObjectId, ref: MetaData },
   active: { type: Boolean, default: true },

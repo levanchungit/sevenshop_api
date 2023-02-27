@@ -1,6 +1,6 @@
 import moment from "moment";
 import { Request, Response } from "express";
-import User, { Status, UserType } from "models/user";
+import User, { STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify } from "middleware/verify";
@@ -60,7 +60,7 @@ export const setPassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  if (user.status === Status.active) {
+  if (user.status === STATUS.active) {
     return res.status(500).json({ message: "User already set password" });
   }
   const salt = await bcrypt.genSalt(10);
@@ -80,7 +80,7 @@ export const setPassword = async (req: Request, res: Response) => {
   );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
-  user.status = Status.active;
+  user.status = STATUS.active;
   user.modify_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
   user.modify_by +=
     user?.email +
