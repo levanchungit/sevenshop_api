@@ -36,7 +36,10 @@ export const checkOTP = async (req: Request, res: Response) => {
         { _id: id, role_type: user.role_type },
         parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
       );
+
+      const refresh_token = access_token;
       user.access_token = access_token;
+      user.refresh_token = refresh_token;
       user.modify_at = moment(new Date()).format("YYYY-MM-DD HH:mm");
       user.modify_by =
         user?.email +
@@ -47,6 +50,7 @@ export const checkOTP = async (req: Request, res: Response) => {
       return res.status(200).json({
         message: "OTP is valid",
         access_token,
+        refresh_token,
       });
     }
   }
