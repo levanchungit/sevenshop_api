@@ -6,9 +6,12 @@ import {
   deleteProduct,
   anActiveProduct,
   getProducts,
-  getProduct,
+  getProductByID,
   recentProduct,
-  productFavorites,
+  addProductFavorites,
+  removeProductFavorites,
+  getProductsRecent,
+  getProductsSale,
 } from "controllers/product";
 import { upload } from "utils/cloudinary";
 
@@ -16,9 +19,16 @@ const router = Router();
 
 //User Routes (role==='USER')
 router.get("/", getProducts);
-router.get("/:id", validateToken, getProduct);
+router.get("/:id", validateToken, getProductByID);
 router.post("/recentProduct/:id", validateToken, recentProduct);
-router.post("/productFavorites/:id", validateToken, productFavorites);
+router.post("/addProductFavorites/:id", validateToken, addProductFavorites);
+router.post(
+  "/removeProductFavorites/:id",
+  validateToken,
+  removeProductFavorites
+);
+router.get("/getProducts/recent", validateToken, getProductsRecent);
+router.get("/getProducts/sale", getProductsSale);
 
 //User Routes (role==='ADMIN')
 router.post(

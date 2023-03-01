@@ -12,19 +12,6 @@ cloudinary.config({
   secure: true,
 });
 
-// export async function uploadToCloudinary(locaFilePath: any) {
-//   var mainFolderName = "SevenShop";
-//   return cloudinary.uploader
-//     .upload(locaFilePath, { folder: mainFolderName })
-//     .then((result: any) => {
-//       console.log("RS", result);
-//       return result.url;
-//     })
-//     .catch((error: any) => {
-//       return { message: error };
-//     });
-// }
-
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req: any) => {

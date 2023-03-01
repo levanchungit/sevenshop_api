@@ -32,6 +32,13 @@ export type OTPType = {
   expired: Date;
 };
 
+export type AddressType = {
+  address: string;
+  full_name: string;
+  phone: string;
+  default_address: boolean;
+};
+
 export type UserType = {
   id: string;
   email: string;
@@ -41,10 +48,10 @@ export type UserType = {
   image: string;
   gender: GENDER;
   birthday: string;
-  address: string;
+  address: AddressType[];
   status: STATUS;
   product_favorites: [];
-  recent_products: [];
+  recent_products: string[];
   language: LANGUAGE;
   device_id: string;
   otp: OTPType;
@@ -67,6 +74,13 @@ export const Otp = {
   expired: Date,
 };
 
+export const Address = {
+  address: String,
+  full_name: String,
+  phone: String,
+  default_address: Boolean,
+};
+
 export const userSchema = new Schema({
   email: { type: String },
   password: { type: String },
@@ -75,10 +89,10 @@ export const userSchema = new Schema({
   image: { type: String },
   gender: { type: String, enum: GENDER },
   birthday: { type: String },
-  address: { type: String },
+  address: [{ type: Address }],
   status: { type: String, enum: STATUS, default: "pending" },
   product_favorites: [{ type: Schema.Types.ObjectId, ref: Product }],
-  recent_products: [{ type: Schema.Types.ObjectId, ref: Product }],
+  recent_products: [{ type: String }],
   language: { type: Number, enum: LANGUAGE, default: 1 },
   device_id: { type: String },
   otp: { type: Otp, default: {} },

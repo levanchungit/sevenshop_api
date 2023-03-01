@@ -4,6 +4,7 @@ import mongoose, { Document, model, Schema } from "mongoose";
 export interface IProduct extends Document {
   name: string;
   price: number;
+  price_sale: number;
   description: string;
   images: string[];
   active: boolean;
@@ -15,7 +16,7 @@ export interface IProduct extends Document {
       quantity: number;
     }
   ];
-  categories_type: number;
+  categories_type: string;
   create_at: string;
   create_by: string;
   modify_at: string;
@@ -32,6 +33,11 @@ const productSchema: Schema = new Schema({
   price: {
     type: Number,
     required: true,
+  },
+  price_sale: {
+    type: Number,
+    required: true,
+    default: 0,
   },
   description: {
     type: String,
@@ -67,7 +73,7 @@ const productSchema: Schema = new Schema({
     },
   ],
   categories_type: {
-    type: Number,
+    type: String,
     required: true,
   },
   create_at: {

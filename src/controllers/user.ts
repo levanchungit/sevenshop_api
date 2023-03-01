@@ -1,9 +1,10 @@
+import mongoose from "mongoose";
 import moment from "moment";
 import { Request, Response } from "express";
-import User, { STATUS, UserType } from "models/user";
+import User, { AddressType, STATUS, UserType } from "models/user";
 import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
-import { accountVerify } from "middleware/verify";
+import { accountVerify, accountVerifyPassword } from "middleware/verify";
 import Log from "libraries/log";
 // import cloudinary from "utils/cloudinary";
 
@@ -63,9 +64,6 @@ export const setPassword = async (req: Request, res: Response) => {
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
-  }
-  if (user.status === STATUS.active) {
-    return res.status(500).json({ message: "User already set password" });
   }
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(password, salt);
@@ -352,8 +350,8 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const idUSer = req.params.id;
-    const user = await User.findOneAndDelete({ _id: idUSer });
+    const idUser = req.params.id;
+    const user = await User.findOneAndDelete({ _id: idUser });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -362,5 +360,131 @@ export const deleteUser = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Delete successfully" });
   } catch (err) {
     res.status(500).json({ message: err });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const { email, phone }: UserType = req.body;
+    if (!email && !phone) {
+      return res.status(500).json({ message: "Missing email or phone" });
+    }
+    if (email) {
+      await accountVerifyPassword({ email, res });
+    }
+    if (phone) {
+      await accountVerifyPassword({ phone, res });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Forgot Password Err" });
+  }
+};
+
+export const insertAddress = async (req: Request, res: Response) => {
+  try {
+    const _id = getIdFromReq(req);
+    const { full_name, address, phone, default_address }: AddressType =
+      req.body;
+
+    //set default address
+    if (default_address) {
+      const us = await User.findOneAndUpdate(
+        { _id },
+        { $set: { "address.$.default_address": false } }
+      );
+      console.log(us);
+    }
+
+    const newAddress: AddressType = {
+      full_name,
+      address,
+      phone,
+      default_address,
+    };
+
+    //add new address
+    const user = await User.findOneAndUpdate(
+      { _id },
+      {
+        $push: {
+          address: [newAddress],
+        },
+      }
+    );
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+
+    if (user) {
+      return res.status(200).json({ message: "Add New Addresss Successfully" });
+    } else {
+      return res.status(500).json({ message: "Add New Addresss Failed" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Err Add Address" });
+  }
+};
+
+export const updateAddress = async (req: Request, res: Response) => {
+  try {
+    const _id = getIdFromReq(req);
+    const { full_name, address, phone, default_address }: AddressType =
+      req.body;
+    const newAddress: AddressType = {
+      full_name,
+      address,
+      phone,
+      default_address,
+    };
+
+    const user = await User.findOne({ _id });
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+    user.address = [newAddress];
+    const updateUser = await user.save();
+
+    if (updateUser) {
+      return res.status(200).json({ message: "Add New Addresss Successfully" });
+    } else {
+      return res.status(500).json({ message: "Add New Addresss Failed" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Err Add Address" });
+  }
+};
+
+export const deleteAddress = async (req: Request, res: Response) => {
+  try {
+    const _id = getIdFromReq(req);
+    const { address_id } = req.query;
+
+    const user = await User.findOneAndUpdate(
+      { _id },
+      {
+        $pull: {
+          address: {
+            _id: address_id,
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+
+    if (user) {
+      return res.status(200).json({ message: "Delete Addresss Successfully" });
+    } else {
+      return res.status(500).json({ message: "Delete Addresss Failed" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Err Delete Address" });
   }
 };

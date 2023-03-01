@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 /*********************TYPE & INTERFACE*****************************/
 
-export enum Status {
+export enum STATUS {
   CART = 1,
   DELIVERY = 2,
   SUCCESSFULLY = 3,
@@ -18,8 +18,8 @@ export type ProductType = {
   product_id: mongoose.Types.ObjectId;
   name?: string;
   price?: number;
-  color: number;
-  size: number;
+  color_id: mongoose.Types.ObjectId;
+  size_id: mongoose.Types.ObjectId;
   quantity: number;
   image: string;
 };
@@ -29,7 +29,7 @@ export interface IOrder extends mongoose.Document {
   total: number;
   user_id: mongoose.Types.ObjectId;
   products: ProductType[];
-  order_type: Status;
+  order_type: STATUS;
   payment_type: string;
   voucher_type?: string;
   create_at: string;
@@ -40,40 +40,40 @@ export interface IOrder extends mongoose.Document {
 
 /*******************************SCHEMA*****************************/
 
-const orderSchema = new mongoose.Schema(
-  {
-    code: { type: String },
-    total: { type: Number },
-    user_id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-    products: {
-      type: [
-        {
-          product_id: {
-            type: mongoose.Types.ObjectId,
-            ref: "Product",
-          },
-          name: { type: String },
-          price: { type: Number },
-          color: { type: Number },
-          size: { type: Number },
-          quantity: { type: Number },
-          image: { type: String },
+const orderSchema = new mongoose.Schema({
+  code: { type: String },
+  total: { type: Number },
+  user_id: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+  products: {
+    type: [
+      {
+        product_id: {
+          type: mongoose.Types.ObjectId,
+          ref: "Product",
         },
-      ],
-    },
-    order_type: { type: Number, enum: Status },
-    payment_type: {
-      type: Number,
-      enum: PaymentType,
-    },
-    voucher_type: { type: Number },
-    create_at: { type: String },
-    create_by: { type: String },
-    modify_at: { type: String },
-    modify_by: { type: String },
+        name: { type: String },
+        price: { type: Number },
+        color_id: { type: mongoose.Types.ObjectId, ref: "MetaDataDetail" },
+        size_id: { type: mongoose.Types.ObjectId, ref: "MetaDataDetail" },
+        quantity: { type: Number },
+        image: { type: String },
+      },
+    ],
   },
-  { timestamps: true }
-);
+  order_type: {
+    type: Number,
+    enum: STATUS,
+  },
+  payment_type: {
+    type: Number,
+    enum: PaymentType,
+  },
+  voucher_type: { type: Number },
+  create_at: { type: String },
+  create_by: { type: String },
+  modify_at: { type: String },
+  modify_by: { type: String },
+});
 
 const Order = mongoose.model<IOrder>("Order", orderSchema);
 export default Order;
