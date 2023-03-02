@@ -16,8 +16,8 @@ export enum PaymentType {
 
 export type ProductType = {
   product_id: mongoose.Types.ObjectId;
-  name?: string;
-  price?: number;
+  name: string;
+  price: number;
   color_id: mongoose.Types.ObjectId;
   size_id: mongoose.Types.ObjectId;
   quantity: number;
