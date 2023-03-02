@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
 import { accountVerify, accountVerifyPassword } from "middleware/verify";
 import Log from "libraries/log";
-// import cloudinary from "utils/cloudinary";
 
 export const register = async (req: Request, res: Response) => {
   const { email, phone }: UserType = req.body;
@@ -386,39 +385,55 @@ export const insertAddress = async (req: Request, res: Response) => {
     const { full_name, address, phone, default_address }: AddressType =
       req.body;
 
-    //set default address
-    if (default_address) {
-      const us = await User.findOneAndUpdate(
-        { _id },
-        { $set: { "address.$.default_address": false } }
-      );
-      console.log(us);
-    }
-
     const newAddress: AddressType = {
+      _id: new mongoose.Types.ObjectId().toString(),
       full_name,
       address,
       phone,
       default_address,
     };
 
-    //add new address
-    const user = await User.findOneAndUpdate(
-      { _id },
-      {
-        $push: {
-          address: [newAddress],
-        },
-      }
-    );
-    if (!user) {
-      return res.status(500).json({ message: "User not found" });
-    }
+    if (default_address) {
+      const user = await User.findById({
+        _id,
+      });
 
-    if (user) {
-      return res.status(200).json({ message: "Add New Addresss Successfully" });
+      if (!user) {
+        return res.status(500).json({ message: "User not found" });
+      }
+
+      for (let i = 0; i < user.address.length; i++) {
+        if (user.address[i].default_address === true) {
+          user.address[i].default_address = false;
+        }
+      }
+
+      user.address.push(newAddress);
+
+      const result = await user.save();
+      if (result) {
+        return res.status(200).json({ message: "Add Addresss Successfully" });
+      } else {
+        return res.status(500).json({ message: "Add Addresss Failed" });
+      }
     } else {
-      return res.status(500).json({ message: "Add New Addresss Failed" });
+      //add new address
+      const user = await User.findOneAndUpdate(
+        { _id },
+        {
+          $push: {
+            address: newAddress,
+          },
+        }
+      );
+
+      if (user) {
+        return res
+          .status(200)
+          .json({ message: "Add New Addresss Successfully" });
+      } else {
+        return res.status(500).json({ message: "Add New Addresss Failed" });
+      }
     }
   } catch (err) {
     console.log(err);
@@ -431,24 +446,44 @@ export const updateAddress = async (req: Request, res: Response) => {
     const _id = getIdFromReq(req);
     const { full_name, address, phone, default_address }: AddressType =
       req.body;
-    const newAddress: AddressType = {
-      full_name,
-      address,
-      phone,
-      default_address,
-    };
+    const address_id = req.params.id;
 
-    const user = await User.findOne({ _id });
+    const user = await User.findOne({
+      _id,
+    });
+
     if (!user) {
-      return res.status(500).json({ message: "User not found" });
+      return res.status(500).json({ message: "User Not Found" });
     }
-    user.address = [newAddress];
-    const updateUser = await user.save();
 
-    if (updateUser) {
-      return res.status(200).json({ message: "Add New Addresss Successfully" });
+    let count = 0;
+    for (let i = 0; i < user.address.length; i++) {
+      //set all address false
+      if (user.address[i].default_address == true) {
+        user.address[i].default_address = false;
+      } else {
+        count += 1;
+      }
+
+      //update address new
+      if (user.address[i]._id == address_id) {
+        user.address[i].full_name = full_name;
+        user.address[i].address = address;
+        user.address[i].phone = phone;
+        user.address[i].default_address = default_address;
+      }
+
+      //all address default_address false. set index 0 default_address true
+      if (count == user.address.length) {
+        user.address[0].default_address = true;
+      }
+    }
+    const updateUserAddress = await user.save();
+
+    if (updateUserAddress) {
+      return res.status(200).json({ message: "Update Addresss Successfully" });
     } else {
-      return res.status(500).json({ message: "Add New Addresss Failed" });
+      return res.status(500).json({ message: "Update Addresss Failed" });
     }
   } catch (err) {
     console.log(err);
@@ -459,7 +494,7 @@ export const updateAddress = async (req: Request, res: Response) => {
 export const deleteAddress = async (req: Request, res: Response) => {
   try {
     const _id = getIdFromReq(req);
-    const { address_id } = req.query;
+    const address_id = req.params.id;
 
     const user = await User.findOneAndUpdate(
       { _id },
@@ -474,9 +509,29 @@ export const deleteAddress = async (req: Request, res: Response) => {
         new: true,
       }
     );
+
     if (!user) {
       return res.status(500).json({ message: "User not found" });
     }
+
+    const _user = await User.find({ _id });
+    if (!_user) {
+      return res.status(500).json({ message: "User Not Found" });
+    }
+
+    let count = 0;
+    for (let i = 0; i < user.address.length; i++) {
+      //set all address false
+      if (user.address[i].default_address == false) {
+        count += 1;
+      }
+
+      //all address default_address false. set index 0 default_address true
+      if (count == user.address.length) {
+        user.address[0].default_address = true;
+      }
+    }
+    const updateUserAddress = await user.save();
 
     if (user) {
       return res.status(200).json({ message: "Delete Addresss Successfully" });

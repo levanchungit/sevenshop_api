@@ -1,5 +1,5 @@
 import Product from "models/product";
-import { Schema, model, Document } from "mongoose";
+import mongoose, { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
 
@@ -33,6 +33,7 @@ export type OTPType = {
 };
 
 export type AddressType = {
+  _id: string;
   address: string;
   full_name: string;
   phone: string;

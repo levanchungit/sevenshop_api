@@ -31,7 +31,7 @@ router.post("/login", login);
 router.post("/logout", validateToken, logout);
 router.post("/refresh_token", refreshToken);
 router.post("/insertAddress", validateToken, insertAddress);
-router.post("/updateAddress", validateToken, updateAddress);
+router.post("/updateAddress/:id", validateToken, updateAddress);
 router.post("/deleteAddress/:id", validateToken, deleteAddress);
 
 //User Routes (role==='USER')
