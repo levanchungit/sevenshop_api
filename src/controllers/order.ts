@@ -5,7 +5,6 @@ import moment from "moment";
 import { Request, Response } from "express";
 import User from "models/user";
 import { getIdFromReq, parseJwt, tokenGen } from "utils/token";
-import { Stats } from "fs";
 import { Types } from "mongoose";
 
 export const getAll = async (req: Request, res: Response) => {

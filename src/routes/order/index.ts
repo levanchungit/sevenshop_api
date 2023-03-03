@@ -1,4 +1,4 @@
-import { validateAdmin } from "./../../middleware/validate";
+import { validateAdmin, validateToken } from "middleware/validate";
 import { Router } from "express";
 import {
   getAll,
@@ -8,7 +8,6 @@ import {
   clearCart,
   updateProductCartQuantity,
 } from "controllers/order";
-import { validateToken } from "middleware/validate";
 
 const router = Router();
 
