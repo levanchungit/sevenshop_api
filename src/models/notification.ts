@@ -1,5 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 import User from "models/user";
+import { IModify, Modify } from "interfaces/basic";
 
 /*********************TYPE & INTERFACE*****************************/
 
@@ -10,10 +11,9 @@ export type NotificationType = {
   image: string;
   from_user_id: string;
   to_user_id: string[];
-  create_at: Date;
-  create_by: string;
-  modify_at: Date;
-  modify_by: string;
+  created_at: string;
+  created_by: string;
+  modify: IModify[];
 };
 
 export type NotificationTypeModel = NotificationType & Document;
@@ -26,10 +26,9 @@ export const notificationSchema = new Schema({
   image: { type: String, required: true },
   from_user_id: { type: Schema.Types.ObjectId, ref: User },
   to_user_id: [{ type: Schema.Types.ObjectId, ref: User }],
-  create_at: { type: Date, require: true },
-  create_by: { type: String, require: true },
-  modify_at: { type: Date, require: true },
-  modify_by: { type: String, require: true },
+  created_at: { type: String, require: true },
+  created_by: { type: String, require: true },
+  modify: { type: [Modify], require: true },
 });
 
 const Notification = model<NotificationTypeModel>(

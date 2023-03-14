@@ -1,4 +1,3 @@
-import Log from "libraries/log";
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 
@@ -16,4 +15,16 @@ export const getIdFromReq = (req: Request) => {
   const token = req.headers.authorization?.slice(7); // cut Bearer
   const _id = parseJwt(token ?? "")._id;
   return _id;
+};
+
+export const getRoleFromReq = (req: Request) => {
+  const token = req.headers.authorization?.slice(7); // cut Bearer
+  const role = parseJwt(token ?? "").role;
+  return role;
+};
+
+export const haveToken = (req: Request) => {
+  const token = req.headers.authorization?.slice(7); // cut Bearer
+  if (!token) return false;
+  return true;
 };

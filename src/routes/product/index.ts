@@ -1,49 +1,22 @@
-import { validateToken } from "middleware/validate";
-import { Router } from "express";
+import { validateAdmin } from 'middleware/validate';
+import { Router } from 'express';
 import {
   createProduct,
   updateProduct,
   deleteProduct,
-  anActiveProduct,
   getProducts,
-  getProductByID,
-  recentProduct,
-  addProductFavorites,
-  removeProductFavorites,
-  getProductsRecent,
-  getProductsSale,
-} from "controllers/product";
-import { upload } from "utils/cloudinary";
+  getProductById,
+  generateStock,
+} from 'controllers/product';
 
 const router = Router();
+const isAdmin = [validateAdmin];
 
-//User Routes (role==='USER')
-router.get("/", getProducts);
-router.get("/:id", validateToken, getProductByID);
-router.post("/recentProduct/:id", validateToken, recentProduct);
-router.post("/addProductFavorites/:id", validateToken, addProductFavorites);
-router.post(
-  "/removeProductFavorites/:id",
-  validateToken,
-  removeProductFavorites
-);
-router.get("/getProducts/recent", validateToken, getProductsRecent);
-router.get("/getProducts/sale", getProductsSale);
-
-//User Routes (role==='ADMIN')
-router.post(
-  "/createProduct",
-  validateToken,
-  upload.array("images"),
-  createProduct
-);
-router.post(
-  "/updateProduct/:id",
-  validateToken,
-  upload.array("images"),
-  updateProduct
-);
-router.post("/deleteProduct/:id", validateToken, deleteProduct);
-router.post("/anActiveProduct/:id", validateToken, anActiveProduct);
+router.get('/', getProducts);
+router.get("/:id", getProductById);
+router.post('/', isAdmin, createProduct);
+router.get('/generate_stock/:id', isAdmin, generateStock);
+router.put('/:id', isAdmin, updateProduct);
+router.delete('/:id', isAdmin, deleteProduct);
 
 export default router;

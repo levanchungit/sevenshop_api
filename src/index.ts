@@ -3,12 +3,19 @@ import http from "http";
 import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
-import metadataRouter from "routes/meta_data";
+import authRouter from "routes/auth";
+import categoryRouter from "routes/category";
 import orderRouter from "routes/order";
+import colorRouter from "routes/color";
+import sizeRouter from "routes/size";
+import cartRouter from "routes/cart";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
 import bodyParser from "body-parser";
+import helmet from "helmet";
+import nocache from "nocache";
+import morgan from "morgan";
 
 const app = express();
 config();
@@ -57,11 +64,19 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(nocache());
+
 /* Routes */
-app.use("/user", userRouter);
-app.use("/product", productRouter);
-app.use("/meta_data", metadataRouter);
-app.use("/order", orderRouter);
+app.use("/users", userRouter);
+app.use("/products", productRouter);
+app.use("/categories", categoryRouter);
+app.use("/auth", authRouter);
+app.use("/colors", colorRouter);
+app.use("/sizes", sizeRouter);
+app.use("/orders", orderRouter);
+app.use("/carts", cartRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({
