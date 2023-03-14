@@ -1,6 +1,6 @@
 import { STATUS_PRODUCT } from "constants/product";
 import { IModify, Modify } from "interfaces/basic";
-import { IStock, Stock } from "interfaces/product";
+import { IReview, IStock, Review, Stock } from "interfaces/product";
 import { Document, model, Schema } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
@@ -13,6 +13,7 @@ export type IProduct = {
   images: string[];
   stock: IStock[];
   status: STATUS_PRODUCT;
+  reviews: IReview[];
   category_ids: string[];
   color_ids: string[];
   size_ids: string[];
@@ -33,6 +34,8 @@ const productSchema: Schema = new Schema({
   images: { type: Array, require: true },
   stock: { type: [Stock], require: true },
   status: { type: String, enum: STATUS_PRODUCT, default: STATUS_PRODUCT.inactive },
+  reviews: { type: [Review], require: true },
+  cart_id: { type: String, require: true, ref: "Cart" },
   category_ids: { type: [String], require: true, ref: "Category" },
   color_ids: { type: [String], require: true, ref: "Color" },
   size_ids: { type: [String], require: true, ref: "Size" },

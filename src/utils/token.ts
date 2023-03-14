@@ -22,3 +22,9 @@ export const getRoleFromReq = (req: Request) => {
   const role = parseJwt(token ?? "").role;
   return role;
 };
+
+export const haveToken = (req: Request) => {
+  const token = req.headers.authorization?.slice(7); // cut Bearer
+  if (!token) return false;
+  return true;
+};
