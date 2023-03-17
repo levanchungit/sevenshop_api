@@ -9,7 +9,7 @@ export type IAddress = {
   address: string;
   full_name: string;
   phone: string;
-  default_address: boolean;
+  default_address?: boolean;
 };
 
 export const Membership = {

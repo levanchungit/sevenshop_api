@@ -3,3 +3,5 @@
 /database
 /build
 .env
+.dockerignore
+Dockerfile

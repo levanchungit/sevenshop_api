@@ -1,12 +1,11 @@
-import User from "models/user";
-import { Types } from "mongoose";
-import { Response } from "express";
-import nodemailer from "nodemailer";
 import { STATUS_USER } from "constants/user";
+import { Response } from "express";
 import { IOTP } from "interfaces/basic";
 import Log from "libraries/log";
+import User from "models/user";
+import { Types } from "mongoose";
+import nodemailer from "nodemailer";
 import { getNow, getNowPlusMinute } from "utils/common";
-import { createCart } from "controllers/cart";
 
 type AccountVerifyType = {
   email?: string;
@@ -115,9 +114,7 @@ export const accountVerify = async (props: AccountVerifyType) => {
     otp,
   });
   newUser.created_at = getNow();
-  newUser.created_by = "user";
-  const cart_id = await createCart(newUser._id)
-  newUser.cart_id = cart_id;
+  newUser.created_by = email ? email : phone ? phone : "system";
   await newUser.save();
   if (email) {
     sendMail(newUser._id, otp.code, newUser.email, res, "Register");

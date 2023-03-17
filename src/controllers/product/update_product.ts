@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
+import Log from "libraries/log";
+import Category from "models/category";
+import Color from "models/color";
 import Product, { IProduct } from "models/product";
+import Size from "models/size";
 import User from "models/user";
 import { getNow, validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
@@ -55,6 +59,37 @@ const updateProduct = async (req: Request, res: Response) => {
     if (validateFieldsResult)
       return res.status(400).json({ message: validateFieldsResult });
 
+    // check if color_ids, size_ids, category_ids are valid
+    const colors = await Color.find({ _id: { $in: color_ids } });
+    if (colors.length !== color_ids.length)
+      return res.status(400).json({ message: "Invalid color_ids" });
+    const sizes = await Size.find({ _id: { $in: size_ids } });
+    if (sizes.length !== size_ids.length)
+      return res.status(400).json({ message: "Invalid size_ids" });
+    const categories = await Category.find({ _id: { $in: category_ids } });
+    if (categories.length !== category_ids.length)
+      return res.status(400).json({ message: "Invalid category_ids" });
+
+    if (stock) {
+      for (const item of stock) {
+        if (!item.color_id || !item.size_id || item.quantity === undefined) {
+          Log.error("Invalid stock");
+          Log.info(`item.color_id: ${item.color_id}`);
+          Log.info(`item.size_id: ${item.size_id}`);
+          Log.info(`item.quantity: ${item.quantity}`);
+          return res.status(400).json({ message: "Invalid stock" });
+        }
+        const color = colors.find(
+          (color) => color._id.toString() === item.color_id
+        );
+        if (!color)
+          return res.status(400).json({ message: `Invalid stock, color: ${item.color_id}` });
+        const size = sizes.find((size) => size._id.toString() === item.size_id);
+        if (!size)
+          return res.status(400).json({ message: `Invalid stock, size: ${item.size_id}` });
+      }
+    }
+
     const existingProduct = await Product.findOne({ name });
     if (existingProduct && existingProduct._id.toString() !== id) {
       return res
@@ -77,7 +112,15 @@ const updateProduct = async (req: Request, res: Response) => {
     if (JSON.stringify(size_ids) !== JSON.stringify(product.size_ids))
       fieldsEdited.push("size_ids");
     if (status && status !== product.status) fieldsEdited.push("status");
-    if (stock && stock !== product.stock) fieldsEdited.push("stock");
+    if (
+      JSON.stringify(stock, (key, value) =>
+        key === "_id" ? undefined : value
+      ) !==
+      JSON.stringify(product.stock, (key, value) =>
+        key === "_id" ? undefined : value
+      )
+    )
+      fieldsEdited.push("stock");
 
     if (!fieldsEdited.length) return res.sendStatus(304);
 
@@ -102,7 +145,7 @@ const updateProduct = async (req: Request, res: Response) => {
       ],
     };
 
-    await product.updateOne(newProduct);
+    await product.set(newProduct).save();
     return res.sendStatus(200);
   } catch (err) {
     return res.sendStatus(500);

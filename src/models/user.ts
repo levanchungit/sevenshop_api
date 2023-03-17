@@ -1,6 +1,7 @@
 import { GENDER, ROLE, STATUS_USER } from "constants/user";
 import { IModify, IOTP, Modify, OTP } from "interfaces/basic";
 import { Address, IAddress, IMembership, Membership } from "interfaces/user";
+import { IVoucherUser, VoucherUser } from "interfaces/voucher";
 import { Schema, model, Document } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/
@@ -17,15 +18,15 @@ export type IUser = {
   addresses: IAddress[];
   status: STATUS_USER;
   favorite_products: string[];
-  recent_products: string[];
-  rating_products: string[];
+  recently_products: string[];
+  rated_products: string[];
+  unrated_products: string[];
   otp: IOTP;
   access_token: string;
   refresh_token: string;
   role: ROLE;
   membership: IMembership;
-  cart_id: string;
-  order_ids: string[];
+  vouchers: IVoucherUser[];
   history_search: string[];
   created_at: string;
   created_by: string;
@@ -53,16 +54,22 @@ export const userSchema = new Schema({
   birthday: { type: String },
   addresses: [Address],
   status: { type: String, enum: STATUS_USER, default: STATUS_USER.pending },
-  favorite_products: [{ type: String }],
-  recent_products: [{ type: String }],
-  rating_products: [{ type: String }],
+  favorite_products: { type: [Schema.Types.ObjectId], ref: "Product" },
+  recently_products: { type: [Schema.Types.ObjectId], ref: "Product" },
+  rated_products: { type: [Schema.Types.ObjectId], ref: "Product" },
+  unrated_products: { type: [Schema.Types.ObjectId], ref: "Product" },
   otp: { type: OTP, default: {} },
   access_token: { type: String },
   refresh_token: { type: String },
   role: { type: String, default: "user" },
-  membership: { type: Membership, default: {} },
-  cart_id: { type: Schema.Types.ObjectId, ref: "Cart" },
-  order_ids: [{ type: String }],
+  membership: {
+    type: Membership, default: {
+      name: "Basic",
+      description: "You are a basic member, buy more to get more benefits",
+      point: 0,
+  }
+  },
+  vouchers: [VoucherUser],
   history_search: [{ type: String }],
   created_at: { type: String },
   created_by: { type: String },
