@@ -51,7 +51,7 @@ const updateCategory = async (req: Request, res: Response) => {
       ],
     };
 
-    await category.updateOne(newCategory);
+    await category.set(newCategory).save();
     return res.sendStatus(200);
   } catch (err) {
     console.error(err);

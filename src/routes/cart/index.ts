@@ -1,11 +1,12 @@
+import { addCart, changeQuantity, getCart } from "controllers/cart";
 import { Router } from "express";
-import { validateAdmin } from "middleware/validate";
+import { validateToken } from "middleware/validate";
 
 const router = Router();
 
-const isAdmin = [validateAdmin];
-
-// Size routes
-
+// Cart routes
+router.get("/", validateToken, getCart);
+router.post("/", validateToken, addCart);
+router.put("/", validateToken, changeQuantity);
 
 export default router;
