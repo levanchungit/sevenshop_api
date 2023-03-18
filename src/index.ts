@@ -9,6 +9,7 @@ import orderRouter from "routes/order";
 import colorRouter from "routes/color";
 import sizeRouter from "routes/size";
 import cartRouter from "routes/cart";
+import uploadRouter from "routes/upload";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
@@ -30,11 +31,10 @@ mongoose
   .catch((error) => Log.error(error));
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 // Body parser configuration
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Express 4.0
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
 app.use(morgan("dev"));
 app.use(helmet());
@@ -49,6 +49,7 @@ app.use("/colors", colorRouter);
 app.use("/sizes", sizeRouter);
 app.use("/orders", orderRouter);
 app.use("/carts", cartRouter);
+app.use("/upload", uploadRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({
