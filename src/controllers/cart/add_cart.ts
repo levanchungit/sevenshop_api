@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { IProductCart } from "interfaces/cart";
 import Cart from "models/cart";
+import Product from "models/product";
+import { validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
 const addToCart = async (req: Request, res: Response) => {
@@ -9,7 +11,32 @@ const addToCart = async (req: Request, res: Response) => {
     // find cart of user
     const cart = await Cart.findOne({ user_id: id_user });
     const { product_id, quantity, size_id, color_id }: IProductCart = req.body;
-
+    const validateFieldsResult = validateFields(
+      { product_id, quantity, size_id, color_id },
+      [
+        { name: "product_id", type: "string", required: true },
+        { name: "quantity", type: "number", required: true },
+        { name: "size_id", type: "string" },
+        { name: "color_id", type: "string" },
+      ]
+    );
+    if (validateFieldsResult)
+      return res.status(400).json({ message: validateFieldsResult });
+    // check product quantity
+    const product = await Product.findById(product_id);
+    if (!product) return res.sendStatus(404);
+    const { stock } = product;
+    if (stock) {
+      stock.forEach((item) => {
+        if (item.size_id === size_id && item.color_id === color_id) {
+          if (item.quantity < quantity) {
+            return res.status(400).json({
+              message: `Product quantity is not enough. Only ${item.quantity} left`,
+            });
+          }
+        }
+      });
+    }
     if (!cart) {
       // create new cart
       const newCart = new Cart({

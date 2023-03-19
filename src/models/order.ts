@@ -32,7 +32,7 @@ const orderSchema = new Schema({
   total_before_discount: { type: Number, required: true },
   payment_type: { type: String, required: true },
   status: { type: String, enum: STATUS_ORDER, default: STATUS_ORDER.pending },
-  voucher_id: { type: String, required: true },
+  voucher_id: { type: String },
   created_at: { type: String, require: true },
   created_by: { type: String, require: true },
   modify: { type: [Modify], require: true },

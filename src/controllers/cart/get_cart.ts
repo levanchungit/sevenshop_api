@@ -1,19 +1,18 @@
 import { Request, Response } from "express";
 import Cart from "models/cart";
 import Product from "models/product";
-import User from "models/user";
 import { getNow } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
 const get_cart = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
+    const user_id = getIdFromReq(req);
     // find cart of user
-    const cart = await Cart.findOne({ user_id: id_user });
+    const cart = await Cart.findOne({ user_id });
     if (!cart) {
       // create new cart
       const newCart = new Cart({
-        user_id: id_user,
+        user_id,
         products: [],
         created_at: getNow(),
         created_by: "system",

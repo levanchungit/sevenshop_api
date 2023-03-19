@@ -15,7 +15,7 @@ const getInvoice = async (req: Request, res: Response) => {
     if (!user) {
       return res.sendStatus(403);
     }
-    const { products, address: address_body, voucher_id }: IInvoice = req.body;
+    const { products, voucher_id }: IInvoice = req.body;
     const productsCart = products.map(async (product) => {
       const { product_id, quantity, size_id, color_id }: IProductCart = product;
       const itemProduct = await Product.findById(product_id);
@@ -107,7 +107,7 @@ const getInvoice = async (req: Request, res: Response) => {
     if (!user.addresses) {
       return res.status(400).json({ message: "Please add address" });
     }
-    const address = user.addresses.find((item) => item.default_address);
+    const address = user.addresses.find((item) => item.default);
     if (!address) {
       return res.status(400).json({ message: "Please choose address" });
     }
@@ -122,7 +122,7 @@ const getInvoice = async (req: Request, res: Response) => {
         : totalDiscountProducts,
       total_invoice: voucher_id ? totalAfterVoucher : totalPrice,
       voucher_id: chooseVoucherID,
-      address: address_body || { full_name, phone, address: addressUser },
+      address: { full_name, phone, address: addressUser },
     });
   } catch (err) {
     console.error(err);
