@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
 import { IProductCart } from "interfaces/cart";
-import Cart from "models/cart";
+import { CartTypeModel } from "models/cart";
 import Product from "models/product";
 import { validateFields } from "utils/common";
-import { getIdFromReq } from "utils/token";
+import createCart from "./create_cart";
 
 const addToCart = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
-    // find cart of user
-    const cart = await Cart.findOne({ user_id: id_user });
+    const cart = (await createCart(req, res)) as CartTypeModel;
     const { product_id, quantity, size_id, color_id }: IProductCart = req.body;
     const validateFieldsResult = validateFields(
       { product_id, quantity, size_id, color_id },
@@ -26,52 +24,34 @@ const addToCart = async (req: Request, res: Response) => {
     const product = await Product.findById(product_id);
     if (!product) return res.sendStatus(404);
     const { stock } = product;
-    if (stock) {
-      stock.forEach((item) => {
-        if (item.size_id === size_id && item.color_id === color_id) {
-          if (item.quantity < quantity) {
-            return res.status(400).json({
-              message: `Product quantity is not enough. Only ${item.quantity} left`,
-            });
-          }
-        }
-      });
-    }
-    if (!cart) {
-      // create new cart
-      const newCart = new Cart({
-        user_id: id_user,
-        products: [
-          {
-            product_id,
-            quantity,
-            size_id,
-            color_id,
-          },
-        ],
-      });
-      await newCart.save();
-      return res.status(200).json(newCart);
-    }
+    if (stock.length === 0) return res.sendStatus(404);
+    const { size_ids, color_ids } = product;
+
+    const stockItem = stock.find((item) => {
+      return (
+        (size_ids.length === 0 || size_ids.includes(item.size_id)) &&
+        (color_ids.length === 0 || color_ids.includes(item.color_id))
+      );
+    });
 
     // check if product is already in cart
-    const productIndex = cart.products.findIndex(
-      (product) =>
-        product.product_id === product_id &&
-        product.size_id === size_id &&
-        product.color_id === color_id
-    );
-    if (productIndex !== -1) {
-      // update quantity
-      cart.products[productIndex].quantity += quantity;
+    const productInCart = cart.products.find((item) => {
+      return (
+        item.product_id.toString() === product_id &&
+        (!size_id || item.size_id.toString() === size_id) &&
+        (!color_id || item.color_id.toString() === color_id)
+      );
+    });
+    if (productInCart) {
+      if (stockItem) {
+        if (stockItem.quantity < productInCart.quantity + quantity)
+          return res
+            .status(400)
+            .json({ message: "Quantity is not enough in stock" });
+      }
+      productInCart.quantity += quantity;
     } else {
-      // add new product
-      cart.products.push({
-        product_id,
-        quantity,
-        size_id,
-        color_id,
-      });
+      cart.products.push({ product_id, quantity, size_id, color_id });
     }
     await cart.save();
     return res.sendStatus(200);

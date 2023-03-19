@@ -6,8 +6,8 @@ import { getIdFromReq } from "utils/token";
 
 const createCategory = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
-    const user = await User.findById(id_user);
+    const user_id = getIdFromReq(req);
+    const user = await User.findById(user_id);
     const { name, description, image = "" }: ICategory = req.body;
     const validateFieldsResult = validateFields({ name, description, image }, [
       { name: "name", type: "string", required: true },

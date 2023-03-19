@@ -23,7 +23,7 @@
       "*": ["src/*"]
     }
   },
-  "include": ["**/*.ts", "src/views/form.tsx"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"],
   "compileOnSave": false,
   "moduleResolution": ["node"],

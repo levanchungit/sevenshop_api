@@ -6,10 +6,10 @@ import { getIdFromReq } from "utils/token";
 
 const changeQuantity = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
-    const user = await User.findById(id_user);
+    const user_id = getIdFromReq(req);
+    const user = await User.findById(user_id);
     // find cart of user
-    const cart = await Cart.findOne({ user_id: id_user });
+    const cart = await Cart.findOne({ user_id });
     if (!user) {
       return res.sendStatus(403);
     }
@@ -26,6 +26,9 @@ const changeQuantity = async (req: Request, res: Response) => {
     );
     if (productIndex !== -1) {
       cart.products[productIndex].quantity = quantity;
+    }
+    if (cart.products[productIndex].quantity === 0) {
+      cart.products.splice(productIndex, 1);
     }
     await cart.updateOne(cart);
     return res.sendStatus(200);
