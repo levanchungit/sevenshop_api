@@ -2,8 +2,10 @@ import { PAYMENT_TYPE } from "constants/order";
 import { IProductCart } from "./cart";
 import { IAddress } from "./user";
 
+export type IProductInvoice = IProductCart
+
 export type IInvoice = {
-  products: IProductCart[];
+  products: IProductInvoice[];
   total_invoice?: number;
   total_invoice_discount?: number;
   total_invoice_before_discount?: number;

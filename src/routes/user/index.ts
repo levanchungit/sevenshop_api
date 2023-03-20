@@ -1,28 +1,15 @@
-import {
-  // deleteAddress,
-  deleteUser,
-  getUserByID,
-  getUsers,
-  // insertAddress,
-  // updateAddress,
-  // updateUser,
-} from "controllers/user";
+import { getUsers } from "controllers/user";
 import { Router } from "express";
 import { validateAdmin, validateToken } from "middleware/validate";
+import addressRouter from "./address";
 
 const router = Router();
 
-const isUser = [validateToken];
 const isAdmin = [validateAdmin];
-
-// Auth routes
-// router.post('/insertAddress', validateToken, insertAddress);
-// router.post('/updateAddress/:id', validateToken, updateAddress);
-// router.post('/deleteAddress/:id', validateToken, deleteAddress);
-// router.put('/updateUser/:id', validateToken, updateUser);
+const isUser = [validateToken];
 
 router.get("/", isAdmin, getUsers);
-router.get("/:id", validateToken, validateAdmin, getUserByID);
-router.post("/deleteUser/:id", validateToken, validateAdmin, deleteUser);
+
+router.use("/addresses", isUser, addressRouter);
 
 export default router;

@@ -10,7 +10,7 @@ const getSizes = async (req: Request, res: Response) => {
     const startIndex = (page - 1) * limit;
     const total = await Size.countDocuments();
 
-    const size: ISize[] = await Size.find()
+    const sizes: ISize[] = await Size.find()
       .sort(sort)
       .limit(limit)
       .skip(startIndex);
@@ -19,7 +19,7 @@ const getSizes = async (req: Request, res: Response) => {
       total: total,
       page: page,
       limit: limit,
-      results: size,
+      results: sizes,
     };
 
     return res.json(results);
