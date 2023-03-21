@@ -10,7 +10,7 @@ const isAdmin = [validateAdmin];
 const isUser = [validateToken];
 
 router.get("/", isAdmin, getUsers);
-router.get("/:id", getUserById);
+router.get("/:id", isAdmin, getUserById);
 
 router.use("/addresses", isUser, addressRouter);
 
