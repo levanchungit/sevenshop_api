@@ -10,6 +10,7 @@ import sizeRouter from "routes/size";
 import cartRouter from "routes/cart";
 import uploadRouter from "routes/upload";
 import payRouter from "routes/pay";
+import voucherRouter from "routes/voucher";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
@@ -53,6 +54,7 @@ app.use("/orders", orderRouter);
 app.use("/carts", cartRouter);
 app.use("/upload", uploadRouter);
 app.use("/pay", payRouter);
+app.use("/voucher", voucherRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({
