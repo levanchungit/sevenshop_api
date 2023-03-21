@@ -1,25 +1,15 @@
-import {
-  // deleteAddress,
-  deleteUser,
-  getUserByID,
-  getUsers,
-  // insertAddress,
-  // updateAddress,
-  // updateUser,
-} from 'controllers/user';
-import { Router } from 'express';
-import { validateAdmin, validateToken } from 'middleware/validate';
+import { getUsers } from "controllers/user";
+import { Router } from "express";
+import { validateAdmin, validateToken } from "middleware/validate";
+import addressRouter from "./address";
 
 const router = Router();
 
-// Auth routes
-// router.post('/insertAddress', validateToken, insertAddress);
-// router.post('/updateAddress/:id', validateToken, updateAddress);
-// router.post('/deleteAddress/:id', validateToken, deleteAddress);
-// router.put('/updateUser/:id', validateToken, updateUser);
+const isAdmin = [validateAdmin];
+const isUser = [validateToken];
 
-router.get('/', validateToken, validateAdmin, getUsers);
-router.get('/:id', validateToken, validateAdmin, getUserByID);
-router.post('/deleteUser/:id', validateToken, validateAdmin, deleteUser);
+router.get("/", isAdmin, getUsers);
+
+router.use("/addresses", isUser, addressRouter);
 
 export default router;

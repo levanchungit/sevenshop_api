@@ -1,26 +1,11 @@
+import { CartTypeModel } from "models/cart";
 import { Request, Response } from "express";
-import Cart from "models/cart";
 import Product from "models/product";
-import User from "models/user";
-import { getNow } from "utils/common";
-import { getIdFromReq } from "utils/token";
+import createCart from "./create_cart";
 
 const get_cart = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
-    // find cart of user
-    const cart = await Cart.findOne({ user_id: id_user });
-    if (!cart) {
-      // create new cart
-      const newCart = new Cart({
-        user_id: id_user,
-        products: [],
-        created_at: getNow(),
-        created_by: "system",
-      });
-      await newCart.save();
-      return res.status(200).json(newCart.products);
-    }
+    const cart = (await createCart(req, res)) as CartTypeModel;
     const { products } = cart;
     const cart_products = products.map(async (product) => {
       const { product_id, quantity, size_id, color_id } = product;

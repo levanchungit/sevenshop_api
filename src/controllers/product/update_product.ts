@@ -72,21 +72,27 @@ const updateProduct = async (req: Request, res: Response) => {
 
     if (stock) {
       for (const item of stock) {
-        if (!item.color_id || !item.size_id || item.quantity === undefined) {
-          Log.error("Invalid stock");
-          Log.info(`item.color_id: ${item.color_id}`);
-          Log.info(`item.size_id: ${item.size_id}`);
-          Log.info(`item.quantity: ${item.quantity}`);
+        if ((!item.color_id && !item.size_id) || item.quantity === undefined) {
           return res.status(400).json({ message: "Invalid stock" });
         }
-        const color = colors.find(
-          (color) => color._id.toString() === item.color_id
-        );
-        if (!color)
-          return res.status(400).json({ message: `Invalid stock, color: ${item.color_id}` });
-        const size = sizes.find((size) => size._id.toString() === item.size_id);
-        if (!size)
-          return res.status(400).json({ message: `Invalid stock, size: ${item.size_id}` });
+        if (item.color_id) {
+          const color = colors.find(
+            (color) => color._id.toString() === item.color_id
+          );
+          if (!color)
+            return res
+              .status(400)
+              .json({ message: `Invalid stock, color: ${item.color_id}` });
+        }
+        if (item.size_id) {
+          const size = sizes.find(
+            (size) => size._id.toString() === item.size_id
+          );
+          if (!size)
+            return res
+              .status(400)
+              .json({ message: `Invalid stock, size: ${item.size_id}` });
+        }
       }
     }
 
@@ -113,14 +119,16 @@ const updateProduct = async (req: Request, res: Response) => {
       fieldsEdited.push("size_ids");
     if (status && status !== product.status) fieldsEdited.push("status");
     if (
+      stock &&
       JSON.stringify(stock, (key, value) =>
         key === "_id" ? undefined : value
       ) !==
-      JSON.stringify(product.stock, (key, value) =>
-        key === "_id" ? undefined : value
-      )
-    )
+        JSON.stringify(product.stock, (key, value) =>
+          key === "_id" ? undefined : value
+        )
+    ) {
       fieldsEdited.push("stock");
+    }
 
     if (!fieldsEdited.length) return res.sendStatus(304);
 

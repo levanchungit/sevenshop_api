@@ -1,5 +1,4 @@
 import express, { Response } from "express";
-import http from "http";
 import mongoose from "mongoose";
 import userRouter from "routes/user";
 import productRouter from "routes/product";
@@ -21,6 +20,8 @@ import morgan from "morgan";
 
 const app = express();
 config();
+
+const port = process.env.PORT || 3000;
 
 /** Connect to Mongo */
 mongoose.set("strictQuery", false);
@@ -61,23 +62,9 @@ app.get("/ping", (req, res: Response) => {
 
 // catch 404 and forward to error handler
 app.use((req, res) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
-
-  Log.error(error);
-
-  res.status(404).json({
-    message: error.message,
-  });
+  res.sendStatus(404);
 });
-http
-  .createServer(app)
-  .listen(process.env.PORT || 3000, () =>
-    Log.success(`Server is running on port ${process.env.PORT}`)
-  )
-  .on("error", () => {
-    Log.error("Port is already in use. Trying another port.");
-    const port = parseInt(process.env.PORT as string) + 1;
-    http
-      .createServer(app)
-      .listen(port, () => Log.success(`Server is running on port ${port}`));
-  });
+
+app.listen(port, () => {
+  Log.success(`Server is running on port ${port}`);
+});

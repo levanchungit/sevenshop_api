@@ -36,7 +36,7 @@ export function validateFields(
 ): string | undefined {
   const errors: string[] = [];
   fields.forEach((field) => {
-    if (field.required && !body[field.name]) {
+    if (field.required && body[field.name] === undefined) {
       errors.push(`${field.name} is required`);
     }
     if (body[field.name] !== undefined) {
