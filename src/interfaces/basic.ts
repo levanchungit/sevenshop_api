@@ -1,3 +1,5 @@
+import { STATUS_ORDER } from "constants/order";
+
 export type IModify = {
   action: string;
   date: string;
@@ -16,4 +18,16 @@ export const Modify = {
 export const OTP = {
   code: Number,
   exp: String,
+};
+
+export type IModifyOrder = {
+  status: STATUS_ORDER;
+  modify_at: String;
+  modify_by: String;
+};
+
+export const ModifyOrder = {
+  status: { type: String, enum: Object.values(STATUS_ORDER) },
+  modify_at: String,
+  modify_by: String,
 };

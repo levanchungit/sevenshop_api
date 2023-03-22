@@ -37,7 +37,13 @@ const checkout = async (req: Request, res: Response) => {
         status: STATUS_ORDER.pending,
         created_at: getNow(),
         created_by: user.email,
-        modify: [{ action: `${user.email} send order`, date: getNow() }],
+        modify: [
+          {
+            status: STATUS_ORDER.pending,
+            modify_at: getNow(),
+            modify_by: `${user.email} send order`,
+          },
+        ],
       });
       await newOrder.save();
       return res.sendStatus(201);

@@ -1,5 +1,5 @@
 import { PAYMENT_TYPE, STATUS_ORDER } from "constants/order";
-import { IModify, Modify } from "interfaces/basic";
+import { IModifyOrder, ModifyOrder } from "interfaces/basic";
 import { IProductOrder, ProductOrder } from "interfaces/order";
 import { Document, model, Schema } from "mongoose";
 
@@ -17,7 +17,7 @@ export type IOrder = {
   voucher_id: string;
   created_at: string;
   created_by: string;
-  modify: IModify[];
+  modify: IModifyOrder[];
 };
 
 export type OrderTypeModel = IOrder & Document;
@@ -35,7 +35,7 @@ const orderSchema = new Schema({
   voucher_id: { type: String },
   created_at: { type: String, require: true },
   created_by: { type: String, require: true },
-  modify: { type: [Modify], require: true },
+  modify: { type: [ModifyOrder], require: true },
 });
 
 const Order = model<OrderTypeModel>("Order", orderSchema);
