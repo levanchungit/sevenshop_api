@@ -11,7 +11,7 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/", getAddresses);
-router.post("/default", setDefaultAddress);
+router.patch("/default/:id", setDefaultAddress);
 router.get("/:id", getAddress);
 router.post("/", createAddress);
 router.put("/:id", updateAddress);

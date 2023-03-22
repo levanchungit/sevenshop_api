@@ -112,9 +112,6 @@ const getInvoice = async (req: Request, res: Response) => {
       return res.status(404).json({ errors });
     }
     const address = await getDefaultAddress(user_id);
-    if (!address) {
-      return res.status(400).json({ message: "Address not found" });
-    }
     return res.status(200).json({
       products: resolvedProducts,
       total_invoice_before_discount: voucher_id
@@ -125,7 +122,7 @@ const getInvoice = async (req: Request, res: Response) => {
         : totalDiscountProducts,
       total_invoice: voucher_id ? totalAfterVoucher : totalPrice,
       voucher_id: chooseVoucherID,
-      address
+      address,
     });
   } catch (err) {
     console.error(err);

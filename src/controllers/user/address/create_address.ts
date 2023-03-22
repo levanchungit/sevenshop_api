@@ -21,10 +21,10 @@ const createAddress = async (req: Request, res: Response) => {
     if (validateFieldsResult)
       return res.status(400).json({ message: validateFieldsResult });
     const existingAddress = user.addresses.find(
-      (item) => item.address === address && item.full_name === full_name
+      (item) => item.address === address && item.phone === phone
     );
     if (existingAddress) {
-      const message = `Address '${address}' by ${full_name} already exists`;
+      const message = `Address '${address}' by ${phone} already exists`;
       return res.status(409).json({ message });
     }
     let message = "";
