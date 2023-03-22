@@ -1,25 +1,24 @@
+import { Router } from "express";
 import {
   getMyOrder,
   getMyOrders,
   getOrder,
   getOrders,
 } from "controllers/order";
-import { Router } from "express";
+
 import { validateAdmin, validateToken } from "middleware/validate";
 
 const router = Router();
 
-const isUser = [validateToken];
 const isAdmin = [validateAdmin];
+const isUser = [validateToken];
 
-// User order routes
+// Order routes (user)
 router.get("/me", isUser, getMyOrders);
 router.get("/me/:id", isUser, getMyOrder);
 
 // Order routes (admin)
 router.get("/", isAdmin, getOrders);
-router.get("/:id", isAdmin, getOrder);
-// router.put("/:id", isAdmin, updateOrder);
-// router.delete("/:id", isAdmin, deleteOrder);
+router.get("/get/:id", isAdmin, getOrder);
 
 export default router;

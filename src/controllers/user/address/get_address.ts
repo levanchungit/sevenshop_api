@@ -9,8 +9,8 @@ const getAddress = async (req: Request, res: Response) => {
     if (!user) return res.sendStatus(403);
     const { id } = req.params;
     if (!id) return res.sendStatus(404);
-    if (!isValidObjectId(id)) return res.sendStatus(404);
-    const address = user.addresses.find((item) => item._id === id);
+     if (!isValidObjectId(id)) return res.sendStatus(404);
+    const address = user.addresses.find((item) => item._id?.toString() === id);
     if (!address) return res.sendStatus(404);
     return res.json(address);
   } catch (err) {

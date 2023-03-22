@@ -34,7 +34,7 @@ const checkout = async (req: Request, res: Response) => {
         address,
         note,
         voucher_id,
-        status: STATUS_ORDER.verified,
+        status: STATUS_ORDER.pending,
         created_at: getNow(),
         created_by: user.email,
         modify: [{ action: `${user.email} send order`, date: getNow() }],

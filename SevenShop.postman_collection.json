@@ -1,0 +1,1301 @@
+{
+	"info": {
+		"_postman_id": "43dd0d2d-a391-4960-9fba-641747e791c6",
+		"name": "SevenShop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17018287"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"thuan.vo@executionlab.asia\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/auth/register",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":\"640627dc727b11c98dc4d676\",\n    \"otp\":\"928403\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/auth/check_otp",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"check_otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/auth/set_password",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"set_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/auth/me",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/auth/logout",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    var result = jsonData = pm.response.json()",
+									"    pm.collectionVariables.set(\"access_token\", result.access_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"thuan.vo@executionlab.asia\",\n    \"password\":\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/auth/login",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2ZjMmRhYjMwYjliYjc3N2I2MDA4NGEiLCJyb2xlX3R5cGUiOjEsImlhdCI6MTY3NzQ3ODc1NCwiZXhwIjoxNjc3NDgwNTU0fQ.e_mLQw6NDZ7niXLKRIyvvbSHEmEKm0VdywnM6Afpogc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/auth/refresh_token",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"auth",
+								"refresh_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "Ping Pong",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/ping",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"SP2\",\n    \"price\": 200000,\n    \"description\": \"Sản phẩm 1\",\n    \"category_ids\": [],\n    \"color_ids\": [],\n    \"size_ids\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/products",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/products",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"SP2\",\n    \"price\": 200000,\n    \"description\": \"Sản phẩm 2\",\n    \"category_ids\": [],\n    \"color_ids\": [\"640d6d679cba5360f0b134b9\",\"640d4790a0a5786d52e4ed22\"],\n    \"size_ids\": [\"640d64ef2ebecf517a33e902\",\"640d64f82ebecf517a33e910\"],\n     \"stock\": [\n        {\n            \"size_id\": \"640d64ef2ebecf517a33e902\",\n            \"color_id\": \"640d6d679cba5360f0b134b9\",\n            \"quantity\": 0,\n            \"_id\": \"641a8370eab32a2d186788c0\"\n        },\n        {\n            \"size_id\": \"640d64ef2ebecf517a33e902\",\n            \"color_id\": \"640d4790a0a5786d52e4ed22\",\n            \"quantity\": 0,\n            \"_id\": \"641a8370eab32a2d186788c1\"\n        },\n        {\n            \"size_id\": \"640d64f82ebecf517a33e910\",\n            \"color_id\": \"640d6d679cba5360f0b134b9\",\n            \"quantity\": 5,\n            \"_id\": \"641a8370eab32a2d186788c2\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/products/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "641a7aac2959267f23def6e1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/products/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Stock",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/products/generate_stock/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products",
+								"generate_stock",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "641a7aac2959267f23def6e1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/products/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "641a7aac2959267f23def6e1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Category 2\",\n    \"description\":\"dncsjsjkcn\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/categories",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Loại 3 \",\n    \"description\":\"Loại 3 là\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/categories/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640cb6800ea881c9de01d760"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/categories",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/categories/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Colors",
+			"item": [
+				{
+					"name": "Create Color",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Blue\",\n    \"code\": \"#123453\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/colors",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"colors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Color",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Red\",\n    \"code\":\"#123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/colors/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"colors",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Colors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/colors",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"colors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Color",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/colors/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"colors",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sizes",
+			"item": [
+				{
+					"name": "Create Size",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Small\",\n    \"size\": \"S\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/sizes",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"sizes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Size",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Red\",\n    \"code\":\"#123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/sizes/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"sizes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sizes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/sizes",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"sizes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Size",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/sizes/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"sizes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "640d480bbbfa1679038c135a"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/orders",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/orders/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "jasndjsankjcd"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Orders",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/orders",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/orders/me/:id",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"orders",
+								"me",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "13212"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/carts",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": \"64143c7072d4de097bd15b0f\",\r\n    \"size_id\": \"640d64ef2ebecf517a33e902\",\r\n    \"quantity\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/carts",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change quantity",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": \"6413e597f7e53d535d96291c\",\r\n    \"quantity\": 5,\r\n    \"size_id\": \"641017d86d6e461901c6bb60\",\r\n    \"color_id\": \"641017a76d6e461901c6bb4a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/carts/",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"carts",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Voucher",
+			"item": [
+				{
+					"name": "Get Vouchers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/voucher",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"voucher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Voucher",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Khuyến mãi 20%\",\r\n    \"type\": \"money\",\r\n    \"value\": 50000,\r\n    \"start_date\": \"2023-03-21\",\r\n    \"end_date\": \"2023-03-21\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/voucher",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"voucher"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pay",
+			"item": [
+				{
+					"name": "Get Invoice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"products\": [\n        {\n            \"product_id\": \"64143c7072d4de097bd15b0f\",\n            \"quantity\": 2,\n            \"size_id\": \"640d64ef2ebecf517a33e902\"\n        }\n    ]\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/pay",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/pay",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Address",
+					"item": [
+						{
+							"name": "Get Address",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/users/addresses",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Address By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/users/addresses/:id",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6419eed693314fee1b959904"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Address",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address\": \"TPHCM\",\r\n    \"full_name\": \"Chun\",\r\n    \"phone\": \"0378484040\",\r\n    \"default_address\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/users/addresses/",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Address",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"address\": \"11\",\r\n    \"full_name\": \" 22\",\r\n    \"phone\": \"33\",\r\n    \"default_address\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{local}}/users/addresses/:id",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6419eef793314fee1b959925"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Set Default Address",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/users/addresses/default/:id",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses",
+										"default",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6419eef793314fee1b959925"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Address",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{local}}/users/addresses/:id",
+									"host": [
+										"{{local}}"
+									],
+									"path": [
+										"users",
+										"addresses",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "6419eef793314fee1b959925"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/users",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "Single",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/levan/Downloads/people.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/upload/single",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"upload",
+								"single"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Multiple",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"/C:/Users/levan/Downloads/product img/pants_00.avif",
+										"/C:/Users/levan/Downloads/product img/pants_0.avif",
+										"/C:/Users/levan/Downloads/product img/pants_1.avif",
+										"/C:/Users/levan/Downloads/product img/pants_2.avif",
+										"/C:/Users/levan/Downloads/product img/pants_3.avif"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/upload/multiple",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"upload",
+								"multiple"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "check_out",
+			"value": ""
+		}
+	]
+}
