@@ -1,8 +1,8 @@
 import { Schema } from "mongoose";
 
 export type IStock = {
-  size_id: string;
-  color_id: string;
+  size_id?: string;
+  color_id?: string;
   quantity: number;
 };
 

@@ -3,7 +3,8 @@ export enum STATUS_ORDER {
   verified = "verified",
   shipping = "shipping",
   completed = "completed",
-  cancel = "cancel",
+  rated = "rated",
+  cancelled = "cancelled"
 }
 
 export enum PAYMENT_TYPE {

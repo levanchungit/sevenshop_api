@@ -1,35 +1,36 @@
-import Order, { IOrder } from "models/order";
+import { STATUS_ORDER } from "constants/order";
 import { Request, Response } from "express";
-import { getIdFromReq } from "utils/token";
-import { getNow } from "utils/common";
+import { IModifyOrder } from "interfaces/basic";
+import Order, { IOrder } from "models/order";
 import User from "models/user";
+import { getNow } from "utils/common";
+import { getIdFromReq } from "utils/token";
 
-//update status order, note modify
 const updateStatusOrder = async (req: Request, res: Response) => {
   try {
-    const id_user = getIdFromReq(req);
-    const user = await User.findById(id_user);
+    const user = await User.findById(getIdFromReq(req));
     if (!user) return res.sendStatus(403);
 
     const { id } = req.params;
-    const { status } = req.body;
-    const order = await Order.findOne({ _id: id });
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+    const { status }: IOrder = req.body;
+    if (!status) return res.status(400).json({ message: "Status is required" });
+    if (!Object.values(STATUS_ORDER).includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
     }
-    const fieldsEdited: any[] = [];
-
-    if (status && status !== order.status) fieldsEdited.push("status");
-
-    if (!fieldsEdited.length) return res.sendStatus(304);
-
-    const modify = {
-      status: status,
-      modify_at: getNow(),
-      modify_by: `${user.email} send order`,
-    };
-    order.modify.push(modify);
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.sendStatus(404);
+    }
+    if (order.status === STATUS_ORDER.cancelled) {
+      return res.sendStatus(403);
+    }
     order.status = status;
+    const modify: IModifyOrder = {
+      status: status,
+      modified_at: getNow(),
+      modified_by: user._id,
+    }
+    order.modify.push(modify);
     await order.save();
     return res.sendStatus(200);
   } catch (error) {

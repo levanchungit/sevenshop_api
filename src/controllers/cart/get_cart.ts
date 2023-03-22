@@ -7,6 +7,7 @@ const get_cart = async (req: Request, res: Response) => {
   try {
     const cart = (await createCart(req, res)) as CartTypeModel;
     const { products } = cart;
+    if (products.length === 0) return res.status(200).json([]);
     const cart_products = products.map(async (product) => {
       const { product_id, quantity, size_id, color_id } = product;
       const itemProduct = await Product.findById(product_id);
