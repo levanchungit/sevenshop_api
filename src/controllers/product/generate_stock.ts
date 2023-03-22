@@ -19,6 +19,7 @@ const generateStock = async (req: Request, res: Response) => {
           stock.push({
             color_id,
             quantity: 0,
+            size_id: "",
           });
         }
       });
@@ -31,6 +32,7 @@ const generateStock = async (req: Request, res: Response) => {
           stock.push({
             size_id,
             quantity: 0,
+            color_id: "",
           });
         }
       });
