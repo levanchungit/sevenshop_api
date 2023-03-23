@@ -15,7 +15,7 @@ const login = async (req: Request, res: Response) => {
   if (!user.password) {
     return res
       .status(500)
-      .json({ message: "User inactive. Please active user!" });
+      .json({ message: "User not have password, please set password" });
   }
 
   const validPass = await bcrypt.compare(password, user.password);

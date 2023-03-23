@@ -22,12 +22,12 @@ export const OTP = {
 
 export type IModifyOrder = {
   status: STATUS_ORDER;
-  modify_at: String;
-  modify_by: String;
+  modified_at: string;
+  modified_by: string;
 };
 
 export const ModifyOrder = {
   status: { type: String, enum: Object.values(STATUS_ORDER) },
-  modify_at: String,
-  modify_by: String,
+  modified_at: String,
+  modified_by: String,
 };
