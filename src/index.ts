@@ -11,7 +11,7 @@ import cartRouter from "routes/cart";
 import uploadRouter from "routes/upload";
 import payRouter from "routes/pay";
 import voucherRouter from "routes/voucher";
-import revenueRouter from "routes/revenue";
+import dashboardRouter from "routes/dashboard";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
@@ -56,7 +56,7 @@ app.use("/carts", cartRouter);
 app.use("/upload", uploadRouter);
 app.use("/pay", payRouter);
 app.use("/voucher", voucherRouter);
-app.use("/revenue", revenueRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({

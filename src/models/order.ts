@@ -15,7 +15,7 @@ export type IOrder = {
   payment_type: PAYMENT_TYPE;
   status: STATUS_ORDER;
   voucher_id: string;
-  created_at: string;
+  created_at: Date;
   created_by: string;
   modify: IModifyOrder[];
 };
@@ -33,7 +33,7 @@ const orderSchema = new Schema({
   payment_type: { type: String, required: true },
   status: { type: String, enum: STATUS_ORDER, default: STATUS_ORDER.pending },
   voucher_id: { type: String },
-  created_at: { type: String, require: true },
+  created_at: { type: Date, require: true },
   created_by: { type: String, require: true },
   modify: { type: [ModifyOrder], require: true },
 });
