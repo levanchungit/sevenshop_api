@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export const formatDateTime = (date: Date | string) => {
-  return moment(date).format("LLL");
+  return moment(date).format("YYYY-MM-DD");
 };
 
 export const getNow = () => {
@@ -21,8 +21,10 @@ export const fieldValidation = {
   number: (val: any) => typeof val === "number",
   boolean: (val: any) => typeof val === "boolean",
   array: (val: any) => Array.isArray(val),
-  arrayString: (val: any) => Array.isArray(val) && val.every((v) => typeof v === "string"),
-  arrayObject: (val: any) => Array.isArray(val) && val.every((v) => typeof v === "object"),
+  arrayString: (val: any) =>
+    Array.isArray(val) && val.every((v) => typeof v === "string"),
+  arrayObject: (val: any) =>
+    Array.isArray(val) && val.every((v) => typeof v === "object"),
   date: (val: any) => isValidDate(val),
 };
 
