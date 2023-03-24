@@ -13,7 +13,8 @@ const getMyOrders = async (req: Request, res: Response) => {
     const order: IOrder[] = await Order.find({ user_id })
       .sort(sort)
       .limit(limit)
-      .skip(startIndex);
+      .skip(startIndex)
+      .populate("products.product_id", "name images");
 
     const total = await Order.countDocuments({ user_id });
 

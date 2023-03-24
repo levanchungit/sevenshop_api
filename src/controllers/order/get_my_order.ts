@@ -8,7 +8,11 @@ const getMyOrderById = async (req: Request, res: Response) => {
     const user_id = getIdFromReq(req);
     const { id } = req.params;
     if (!isValidObjectId(id)) return res.sendStatus(400);
-    const order = await Order.findOne({ _id: id, user_id });
+    const order = await Order.findOne({ _id: id, user_id })
+      .populate("products.product_id", "name images")
+      .populate("products.color_id", "name")
+      .populate("products.size_id", "size");
+
     if (!order) return res.sendStatus(404);
     return res.status(200).json(order);
   } catch (err) {
