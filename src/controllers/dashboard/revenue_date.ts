@@ -1,5 +1,5 @@
-import { IOrder } from "./../../models/order";
-import { formatDateTime, isValidDate } from "./../../utils/common";
+import { IOrder } from "models/order";
+import { formatDateTime, isValidDate } from "utils/common";
 import { STATUS_ORDER } from "constants/order";
 import { Request, Response } from "express";
 import Order from "models/order";
