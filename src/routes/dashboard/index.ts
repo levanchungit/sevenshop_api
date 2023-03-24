@@ -5,6 +5,6 @@ import { revenueDay } from "controllers/dashboard";
 const router = Router();
 const isAdmin = [validateAdmin];
 
-router.get("/", isAdmin, revenueDay);
+router.get("/revenue_day", isAdmin, revenueDay);
 
 export default router;
