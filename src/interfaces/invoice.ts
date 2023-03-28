@@ -9,7 +9,7 @@ export type IInvoice = {
   total_invoice?: number;
   total_invoice_discount?: number;
   total_invoice_before_discount?: number;
-  address?: IAddress;
+  address?: Omit<IAddress, "_id" | "default_address">;
   payment_type: PAYMENT_TYPE;
   note?: string;
   voucher_id?: string;

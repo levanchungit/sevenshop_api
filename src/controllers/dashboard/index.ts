@@ -1,1 +1,1 @@
-export { default as revenueDay } from "./revenue_date";
+export { default as getRevenue } from "./revenue";

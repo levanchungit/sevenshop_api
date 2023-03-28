@@ -43,6 +43,8 @@ const createProduct = async (req: Request, res: Response) => {
     );
     if (validateFieldsResult)
       return res.status(400).json({ message: validateFieldsResult });
+    
+    // check id color_ids, size_ids, category_ids are valid
 
     const user = await User.findById(getIdFromReq(req));
     if (!user) return res.sendStatus(403);

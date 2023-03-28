@@ -5,7 +5,7 @@ import { IUser } from "models/user";
 const register = async (req: Request, res: Response) => {
   const { email, phone }: IUser = req.body;
   if (!email && !phone) {
-    return res.status(500).json({ message: "Missing email or phone" });
+    return res.status(400).json({ message: "Missing email or phone" });
   }
   if (email) {
     await accountVerify({ email, res });

@@ -6,4 +6,10 @@ export type IProductOrder = IProductCart & {
   total: number | undefined;
 };
 
+export const AddressOrder = {
+  address: String,
+  full_name: String,
+  phone: String,
+};
+
 export const ProductOrder = ProductCart;

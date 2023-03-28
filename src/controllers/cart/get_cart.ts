@@ -1,11 +1,11 @@
-import { CartTypeModel } from "models/cart";
+import Log from "libraries/log";
 import { Request, Response } from "express";
 import Product from "models/product";
 import createCart from "./create_cart";
 
-const get_cart = async (req: Request, res: Response) => {
+const getCart = async (req: Request, res: Response) => {
   try {
-    const cart = (await createCart(req, res)) as CartTypeModel;
+    const cart = await createCart(req);
     const { products } = cart;
     if (products.length === 0) return res.status(200).json([]);
     const cart_products = products.map(async (product) => {
@@ -24,10 +24,11 @@ const get_cart = async (req: Request, res: Response) => {
         images,
       };
     });
+
     return res.status(200).json(await Promise.all(cart_products));
   } catch (err) {
     return res.sendStatus(500);
   }
 };
 
-export default get_cart;
+export default getCart;

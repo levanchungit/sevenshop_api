@@ -8,7 +8,7 @@ import createCart from "./create_cart";
 
 const addToCart = async (req: Request, res: Response) => {
   try {
-    const cart = (await createCart(req, res)) as CartTypeModel;
+    const cart = (await createCart(req)) as CartTypeModel;
     const { product_id, quantity, size_id, color_id }: IProductCart = req.body;
     if (!cart) return res.sendStatus(404);
     if (!product_id && !isValidObjectId(product_id))

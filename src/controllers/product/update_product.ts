@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import Log from "libraries/log";
 import Category from "models/category";
 import Color from "models/color";
 import Product, { IProduct } from "models/product";
 import Size from "models/size";
 import User from "models/user";
+import { isValidObjectId } from "mongoose";
 import { getNow, validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
@@ -12,6 +12,8 @@ const updateProduct = async (req: Request, res: Response) => {
   try {
     const id_user = getIdFromReq(req);
     const { id } = req.params;
+    if (!id) return res.sendStatus(400);
+    if (!isValidObjectId(id)) return res.sendStatus(400);
     const user = await User.findById(id_user);
     const {
       name,

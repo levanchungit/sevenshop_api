@@ -12,6 +12,11 @@ export const getNowPlusMinute = (minute: number) => {
   return moment().add(minute, "minutes").format();
 };
 
+// convert string to date
+export const convertStringToDate = (date: string) => {
+  return moment(date).toDate();
+};
+
 export const isValidDate = (dateString: string) => {
   return moment(dateString, "YYYY-MM-DD", true).isValid();
 };

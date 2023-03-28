@@ -1,7 +1,7 @@
 import { PAYMENT_TYPE, STATUS_ORDER } from "constants/order";
 import { Request, Response } from "express";
 import { IInvoice } from "interfaces/invoice";
-import Order from "models/order";
+import Order, { IOrder, OrderTypeModel } from "models/order";
 import User from "models/user";
 import { getNow } from "utils/common";
 import { getIdFromReq } from "utils/token";
@@ -24,7 +24,7 @@ const checkout = async (req: Request, res: Response) => {
       voucher_id,
     }: IInvoice = req.body;
     if (payment_type === PAYMENT_TYPE.cod) {
-      const newOrder = new Order({
+      const newOrder: OrderTypeModel = new Order({
         user_id: id_user,
         products,
         total_price: total_invoice,
@@ -35,7 +35,6 @@ const checkout = async (req: Request, res: Response) => {
         note,
         voucher_id,
         status: STATUS_ORDER.pending,
-        created_at: getNow(),
         created_by: user.email,
         modify: [
           {
