@@ -8,6 +8,7 @@ import orderRouter from "routes/order";
 import colorRouter from "routes/color";
 import sizeRouter from "routes/size";
 import cartRouter from "routes/cart";
+import ratingRouter from "routes/rating";
 import uploadRouter from "routes/upload";
 import payRouter from "routes/pay";
 import voucherRouter from "routes/voucher";
@@ -57,6 +58,7 @@ app.use("/upload", uploadRouter);
 app.use("/pay", payRouter);
 app.use("/voucher", voucherRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/ratings", ratingRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({

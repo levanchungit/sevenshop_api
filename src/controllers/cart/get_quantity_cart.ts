@@ -5,8 +5,8 @@ import { getIdFromReq } from "utils/token";
 const getQuantityCart = async (req: Request, res: Response) => {
   try {
     const user_id = getIdFromReq(req);
-
-    const quantity = await Cart.find({ user_id }).countDocuments();
+    const products = await Cart.findOne({ user_id }).select("products");
+    const quantity = products?.products.length;
     res.status(200).json({ quantity });
   } catch (err) {
     res.sendStatus(500);

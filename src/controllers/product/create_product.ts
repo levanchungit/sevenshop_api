@@ -1,3 +1,4 @@
+import { createRating } from "controllers/product/rating";
 import { Request, Response } from "express";
 import Product, { IProduct } from "models/product";
 import User from "models/user";
@@ -68,6 +69,7 @@ const createProduct = async (req: Request, res: Response) => {
       created_by: `${user.email}`,
       modify: [{ action: `Create by ${user.email}`, date: getNow() }],
     });
+
     await product.save();
     return res.status(200).json({ id: product._id });
   } catch (err) {

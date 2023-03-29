@@ -1,3 +1,4 @@
+import { IProductCart } from "interfaces/cart";
 import { PAYMENT_TYPE, STATUS_ORDER } from "constants/order";
 import { IModifyOrder, ModifyOrder } from "interfaces/basic";
 import { IProductOrder, ProductOrder } from "interfaces/order";
@@ -7,7 +8,7 @@ import { Document, model, Schema } from "mongoose";
 
 export type IOrder = {
   user_id: string;
-  products: IProductOrder;
+  products: IProductCart[];
   total_price: number;
   total_discount: number;
   total_before_discount: number;
