@@ -25,9 +25,13 @@ const checkout = async (req: Request, res: Response) => {
     }: IInvoice = req.body;
 
     //check address exists in user
-    const addressExists = user.addresses.find(
-      (item) => item._id.toString() === address?._id.toString()
-    );
+    if (user.addresses) {
+    }
+    const addressExists = user.addresses.find((item) => {
+      if (!item._id) return false;
+      if (!address?._id) return false;
+      item._id.toString() === address?._id.toString();
+    });
     if (!addressExists) {
       return res.status(400).json({ message: "Address is not exists" });
     }
