@@ -1,4 +1,4 @@
-import { STATUS_ORDER } from "../../../constants/order";
+import { STATUS_ORDER } from "../../constants/order";
 import { Request, Response } from "express";
 import Order from "models/order";
 import Product, { IProduct } from "models/product";

@@ -23,6 +23,15 @@ const checkout = async (req: Request, res: Response) => {
       note,
       voucher_id,
     }: IInvoice = req.body;
+
+    //check address exists in user
+    const addressExists = user.addresses.find(
+      (item) => item._id.toString() === address?._id.toString()
+    );
+    if (!addressExists) {
+      return res.status(400).json({ message: "Address is not exists" });
+    }
+
     if (payment_type === PAYMENT_TYPE.cod) {
       const newOrder = new Order({
         user_id: id_user,

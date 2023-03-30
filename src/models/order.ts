@@ -3,12 +3,14 @@ import { PAYMENT_TYPE, STATUS_ORDER } from "constants/order";
 import { IModifyOrder, ModifyOrder } from "interfaces/basic";
 import { IProductOrder, ProductOrder } from "interfaces/order";
 import { Document, model, Schema } from "mongoose";
+import { Address, IAddress } from "interfaces/user";
 
 /*********************TYPE & INTERFACE*****************************/
 
 export type IOrder = {
   user_id: string;
   products: IProductCart[];
+  address: IAddress;
   total_price: number;
   total_discount: number;
   total_before_discount: number;
@@ -28,6 +30,7 @@ export type OrderTypeModel = IOrder & Document;
 const orderSchema = new Schema({
   user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   products: { type: [ProductOrder], required: true },
+  address: { type: [Address], required: true },
   total_price: { type: Number, required: true },
   total_discount: { type: Number, required: true },
   total_before_discount: { type: Number, required: true },

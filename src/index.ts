@@ -13,6 +13,7 @@ import uploadRouter from "routes/upload";
 import payRouter from "routes/pay";
 import voucherRouter from "routes/voucher";
 import dashboardRouter from "routes/dashboard";
+import notificationRouter from "routes/notification";
 import { config } from "dotenv";
 import Log from "libraries/log";
 import cors from "cors";
@@ -59,6 +60,7 @@ app.use("/pay", payRouter);
 app.use("/voucher", voucherRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/ratings", ratingRouter);
+app.use("/notification", notificationRouter);
 
 app.get("/ping", (req, res: Response) => {
   res.status(200).json({

@@ -4,7 +4,7 @@ import { IModify, Modify } from "interfaces/basic";
 
 /*********************TYPE & INTERFACE*****************************/
 
-export type NotificationType = {
+export type INotification = {
   id: string;
   title: string;
   body: string;
@@ -16,7 +16,7 @@ export type NotificationType = {
   modify: IModify[];
 };
 
-export type NotificationTypeModel = NotificationType & Document;
+export type NotificationTypeModel = INotification & Document;
 
 /*******************************SCHEMA*****************************/
 
@@ -26,8 +26,6 @@ export const notificationSchema = new Schema({
   image: { type: String, required: true },
   from_user_id: { type: Schema.Types.ObjectId, ref: User },
   to_user_id: [{ type: Schema.Types.ObjectId, ref: User }],
-  created_at: { type: String, require: true },
-  created_by: { type: String, require: true },
   modify: { type: [Modify], require: true },
 });
 

@@ -3,7 +3,7 @@ import {
   getNotYetRated,
   getRated,
   getRatings,
-} from "controllers/product/rating";
+} from "controllers/rating";
 import { Router } from "express";
 import { validateToken } from "middleware/validate";
 

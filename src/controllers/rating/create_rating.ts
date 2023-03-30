@@ -32,12 +32,12 @@ const createRating = async (req: Request, res: Response) => {
             modify: { action: `Create by ${user.email}`, date: getNow() },
           },
         ],
+        average_rating: rating,
       });
 
       await newRating.save();
       return res.sendStatus(200);
     } else {
-      //check user is rated or not
       const isRated = ratings.ratings.find((rating) => {
         return rating.user_id.toString() === user._id.toString();
       });
@@ -57,6 +57,13 @@ const createRating = async (req: Request, res: Response) => {
       rating,
       modify: { action: `Create by ${user.email}`, date: getNow() },
     });
+
+    //calculate average rating
+    const totalRating = ratings.ratings.reduce((acc, cur) => {
+      return acc + cur.rating;
+    }, 0);
+
+    ratings.average_rating = totalRating / ratings.ratings.length;
 
     await ratings.save();
 

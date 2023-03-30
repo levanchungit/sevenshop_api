@@ -1,4 +1,3 @@
-import { createRating } from "controllers/product/rating";
 import { Request, Response } from "express";
 import Product, { IProduct } from "models/product";
 import User from "models/user";

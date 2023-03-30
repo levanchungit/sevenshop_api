@@ -12,6 +12,8 @@ const getMyOrderById = async (req: Request, res: Response) => {
       .populate("products.product_id", "name images")
       .populate("products.color_id", "name")
       .populate("products.size_id", "size");
+    //populate address
+    // .populate("address", "name phone address");
 
     if (!order) return res.sendStatus(404);
     return res.status(200).json(order);

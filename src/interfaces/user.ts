@@ -5,7 +5,7 @@ export type IMembership = {
 };
 
 export type IAddress = {
-  _id?: string;
+  _id: string;
   address: string;
   full_name: string;
   phone: string;
