@@ -10,9 +10,7 @@ const getProducts = async (req: Request, res: Response) => {
     const startIndex = (page - 1) * limit;
     const total = await Product.countDocuments();
 
-    const products: IProduct[] = await Product.find({
-      $text: { $search: "Product 1" },
-    })
+    const products: IProduct[] = await Product.find({})
       .sort(sort)
       .limit(limit)
       .skip(startIndex);
