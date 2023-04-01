@@ -7,7 +7,7 @@ const router = Router();
 const isUser = [validateToken];
 
 // pay routes
-router.post("/", isUser, getInvoice);
+router.post("/getInvoice", isUser, getInvoice);
 router.post("/", isUser, checkout);
 
 export default router;
