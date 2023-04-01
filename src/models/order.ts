@@ -30,7 +30,7 @@ export type OrderTypeModel = IOrder & Document;
 const orderSchema = new Schema({
   user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   products: { type: [ProductOrder], required: true },
-  address: { type: [Address], required: true },
+  address: { type: Address, required: true },
   total_price: { type: Number, required: true },
   total_discount: { type: Number, required: true },
   total_before_discount: { type: Number, required: true },

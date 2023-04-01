@@ -4,6 +4,7 @@ import {
   deleteProductCart,
   getCart,
   getQuantityCart,
+  getTotalCart,
 } from "controllers/cart";
 import { Router } from "express";
 import { validateToken } from "middleware/validate";
@@ -16,5 +17,6 @@ router.post("/", validateToken, addCart);
 router.put("/", validateToken, changeQuantity);
 router.delete("/", validateToken, deleteProductCart);
 router.get("/quantity_cart", validateToken, getQuantityCart);
+router.get("/total_cart", validateToken, getTotalCart);
 
 export default router;
