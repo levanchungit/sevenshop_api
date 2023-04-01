@@ -27,12 +27,10 @@ const checkout = async (req: Request, res: Response) => {
     //check address exists in user
     if (user.addresses) {
     }
-    const addressExists = user.addresses.find((item) => {
-      if (!item._id) return false;
-      if (!address?._id) return false;
-      item._id.toString() === address?._id.toString();
-    });
-    if (!addressExists) {
+    const addressExists = user.addresses.filter(
+      (addressItem) => addressItem._id?.toString() == address?._id?.toString()
+    );
+    if (addressExists.length == 0) {
       return res.status(400).json({ message: "Address is not exists" });
     }
 

@@ -1,4 +1,4 @@
-import { getUsers } from "controllers/user";
+import { getUsers, updateUser } from "controllers/user";
 import getUserById from "controllers/user/get_user";
 import { Router } from "express";
 import { validateAdmin, validateToken } from "middleware/validate";
@@ -11,6 +11,7 @@ const isUser = [validateToken];
 
 router.get("/", isAdmin, getUsers);
 router.get("/get/:id", isAdmin, getUserById);
+router.put("/get", isAdmin, updateUser);
 
 router.use("/addresses", isUser, addressRouter);
 

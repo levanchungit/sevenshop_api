@@ -19,8 +19,6 @@ export type IUser = {
   status: STATUS_USER;
   favorite_products: string[];
   recently_products: string[];
-  rated_products: string[];
-  unrated_products: string[];
   otp: IOTP;
   access_token: string;
   refresh_token: string;
@@ -56,18 +54,17 @@ export const userSchema = new Schema({
   status: { type: String, enum: STATUS_USER, default: STATUS_USER.pending },
   favorite_products: { type: [Schema.Types.ObjectId], ref: "Product" },
   recently_products: { type: [Schema.Types.ObjectId], ref: "Product" },
-  rated_products: { type: [Schema.Types.ObjectId], ref: "Product" },
-  unrated_products: { type: [Schema.Types.ObjectId], ref: "Product" },
   otp: { type: OTP, default: {} },
   access_token: { type: String },
   refresh_token: { type: String },
   role: { type: String, default: "user" },
   membership: {
-    type: Membership, default: {
+    type: Membership,
+    default: {
       name: "Basic",
       description: "You are a basic member, buy more to get more benefits",
       point: 0,
-  }
+    },
   },
   vouchers: [VoucherUser],
   history_search: [{ type: String }],

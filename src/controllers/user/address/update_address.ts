@@ -32,6 +32,11 @@ const updateAddress = async (req: Request, res: Response) => {
       user.addresses.forEach((item) => {
         if (item._id?.toString() !== id) item.default_address = false;
       });
+    } else {
+      if (user.addresses.filter((item) => item.default_address).length === 1) {
+        const message = `There must be at least 1 default address`;
+        return res.status(409).json({ message });
+      }
     }
     if (
       user.addresses[addressIndex].address === address &&
@@ -48,13 +53,7 @@ const updateAddress = async (req: Request, res: Response) => {
       const message = `Address '${address}' by ${full_name} already exists`;
       return res.status(409).json({ message });
     }
-    if (
-      !default_address &&
-      user.addresses.filter((item) => item.default_address).length === 1
-    ) {
-      const message = `There must be at least 1 default address`;
-      return res.status(409).json({ message });
-    }
+
     user.addresses[addressIndex].address = address;
     user.addresses[addressIndex].full_name = full_name;
     user.addresses[addressIndex].phone = phone;
