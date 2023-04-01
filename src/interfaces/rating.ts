@@ -1,3 +1,4 @@
+import { IReview } from "./product";
 export type IRatingResult = {
   product_id: string;
   product_image: string;
@@ -7,4 +8,9 @@ export type IRatingResult = {
   color_id: string;
   color_name: string;
   quantity: number;
+};
+
+export type IRateResult = {
+  product_id: string;
+  ratings: IReview;
 };
