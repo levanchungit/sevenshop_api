@@ -16,6 +16,11 @@ const createRating = async (req: Request, res: Response) => {
       product_id,
     });
 
+    //check rating 1 -> 5
+    if (rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating must be 1 -> 5" });
+    }
+
     //check ratings is exist or not if not create new one
     if (!ratings) {
       const newRating = new Rating({

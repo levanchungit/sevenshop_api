@@ -7,6 +7,14 @@ export type IStock = {
   quantity: number;
 };
 
+export type IStockResult = {
+  size_id: string;
+  size_name: string;
+  color_id: string;
+  color_name: string;
+  quantity: number;
+};
+
 export type IReview = {
   user_id: string;
   avatar: string;

@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import { ROLE } from "constants/user";
 import { STATUS_PRODUCT } from "constants/product";
 import Product from "models/product";
+import Color from "models/color";
+import Size from "models/size";
 
 const getProductById = async (req: Request, res: Response) => {
   try {
@@ -11,19 +13,21 @@ const getProductById = async (req: Request, res: Response) => {
     const product = await Product.findById(id);
     if (!product) return res.sendStatus(404);
 
-    const product_for_user = {
-      name: product.name,
-      price: product.price,
-      price_sale: product.price_sale,
-      description: product.description,
-      images: product.images,
-    };
+    const stock = product.stock.map(async (item) => {
+      //get color name by color_id, size name by size_id
+      const color = await Color.findById(item.color_id);
+      const size = await Size.findById(item.size_id);
 
-    if (token && getRoleFromReq(req) !== ROLE.admin && product.status === STATUS_PRODUCT.inactive) {
-      return res.sendStatus(403);
-    }
-    
-    return res.status(200).json(token && getRoleFromReq(req) === ROLE.admin ? product : product_for_user);
+      if (!color || !size) return res.sendStatus(500);
+
+      return {
+        ...item,
+        color_name: color.name,
+        size_name: size.name,
+      };
+    });
+
+    return res.status(200).json(token && product);
   } catch (err) {
     return res.sendStatus(500);
   }
