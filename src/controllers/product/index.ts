@@ -7,3 +7,5 @@ export { default as generateStock } from "./generate_stock";
 export { default as productFavorites } from "./favorites_products";
 export { default as getFavorites } from "./get_favorites";
 export { default as deleteFavorites } from "./delete_favorites";
+export { default as searchProducts } from "./search_products";
+export { default as filterProducts } from "./filter_products";

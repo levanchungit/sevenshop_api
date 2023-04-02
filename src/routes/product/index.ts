@@ -10,6 +10,8 @@ import {
   productFavorites,
   getFavorites,
   deleteFavorites,
+  searchProducts,
+  filterProducts,
 } from "controllers/product";
 
 const router = Router();
@@ -25,5 +27,7 @@ router.delete("/:id", isAdmin, deleteProduct);
 router.post("/favorites/:id", isUser, productFavorites);
 router.get("/favorites/get", isUser, getFavorites);
 router.delete("/favorites/:id", isUser, deleteFavorites);
+router.get("/search_products/find", isUser, searchProducts);
+router.get("/filter_products/find", isUser, filterProducts);
 
 export default router;
