@@ -1,6 +1,13 @@
 import { GENDER, ROLE, STATUS_USER } from "constants/user";
 import { IModify, IOTP, Modify, OTP } from "interfaces/basic";
-import { Address, IAddress, IMembership, Membership } from "interfaces/user";
+import {
+  Address,
+  IAddress,
+  IMembership,
+  ISearchProduct,
+  Membership,
+  SearchProduct,
+} from "interfaces/user";
 import { IVoucherUser, VoucherUser } from "interfaces/voucher";
 import { Schema, model, Document } from "mongoose";
 
@@ -25,7 +32,7 @@ export type IUser = {
   role: ROLE;
   membership: IMembership;
   vouchers: IVoucherUser[];
-  history_search: string[];
+  history_search: ISearchProduct[];
   created_at: string;
   created_by: string;
   modify: IModify[];
@@ -67,7 +74,7 @@ export const userSchema = new Schema({
     },
   },
   vouchers: [VoucherUser],
-  history_search: [{ type: String }],
+  history_search: [SearchProduct],
   created_at: { type: String },
   created_by: { type: String },
   modify: [Modify],

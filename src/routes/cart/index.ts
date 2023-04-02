@@ -1,6 +1,7 @@
 import {
   addCart,
   changeQuantity,
+  changeSizeColor,
   deleteProductCart,
   getCart,
   getQuantityCart,
@@ -18,5 +19,6 @@ router.put("/", validateToken, changeQuantity);
 router.delete("/", validateToken, deleteProductCart);
 router.get("/quantity_cart", validateToken, getQuantityCart);
 router.get("/total_cart", validateToken, getTotalCart);
+router.put("/change_size_color", validateToken, changeSizeColor);
 
 export default router;
