@@ -19,7 +19,7 @@ const productFavorites = async (req: Request, res: Response) => {
 
     if (user.favorite_products.includes(id)) {
       user.favorite_products = user.favorite_products.filter(
-        (item) => item !== id
+        (item) => item != id
       );
       user.modify.push({
         action: `Delete product '${id}' from favorites list by ${user?.email}`,

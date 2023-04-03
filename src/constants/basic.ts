@@ -1,0 +1,1 @@
+export const TIME_END_FLASH_SALE = "2023-04-05T00:00:00+07:00";

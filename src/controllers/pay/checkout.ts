@@ -5,6 +5,7 @@ import Cart from "models/cart";
 import Order from "models/order";
 import Product from "models/product";
 import User from "models/user";
+import mongoose from "mongoose";
 import { getNow } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
@@ -38,6 +39,7 @@ const checkout = async (req: Request, res: Response) => {
 
     if (payment_type === PAYMENT_TYPE.cod) {
       const newOrder = new Order({
+        _id: new mongoose.Types.ObjectId(),
         user_id: id_user,
         products,
         total_price: total_invoice,
@@ -58,6 +60,7 @@ const checkout = async (req: Request, res: Response) => {
           },
         ],
       });
+
       await newOrder.save();
 
       //remove product in cart
@@ -80,7 +83,6 @@ const checkout = async (req: Request, res: Response) => {
       try {
         const productsInStock = products.map(async (product) => {
           const { product_id, quantity, size_id, color_id } = product;
-          console.log(product);
 
           const productInStock = await Product.findById(product_id);
           if (!productInStock) return res.sendStatus(404);
@@ -94,7 +96,6 @@ const checkout = async (req: Request, res: Response) => {
               stockItem.color_id.toString() == color_id.toString()
             ) {
               //check stock.quantity > quantity
-              console.log(stockItem.quantity, quantity);
               if (stockItem.quantity < quantity) {
                 throw new Error(
                   `Product ${product_id} size: ${size_id} color: ${color_id} is out of stock`
@@ -122,7 +123,13 @@ const checkout = async (req: Request, res: Response) => {
 
       //send email to admin
 
-      return res.sendStatus(201);
+      const results = {
+        _id: newOrder._id,
+        created_at: newOrder.created_at,
+        payment_type: newOrder.payment_type,
+      };
+
+      return res.status(201).json({ results });
     }
     return res.sendStatus(501);
   } catch (err) {

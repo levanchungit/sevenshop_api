@@ -13,7 +13,6 @@ export type IProduct = {
   images: string[];
   stock: IStock[];
   status: STATUS_PRODUCT;
-  reviews: IReview[];
   category_ids: string[];
   color_ids: string[];
   size_ids: string[];
@@ -33,8 +32,11 @@ const productSchema: Schema = new Schema({
   description: { type: String, require: true },
   images: { type: Array, require: true },
   stock: { type: [Stock], require: true },
-  status: { type: String, enum: STATUS_PRODUCT, default: STATUS_PRODUCT.inactive },
-  reviews: { type: [Review], require: true },
+  status: {
+    type: String,
+    enum: STATUS_PRODUCT,
+    default: STATUS_PRODUCT.inactive,
+  },
   cart_id: { type: String, require: true, ref: "Cart" },
   category_ids: { type: [String], require: true, ref: "Category" },
   color_ids: { type: [String], require: true, ref: "Color" },

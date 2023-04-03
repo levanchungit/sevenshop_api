@@ -17,7 +17,6 @@ export type IStockResult = {
 
 export type IReview = {
   user_id: string;
-  avatar: string;
   size_id: string;
   color_id: string;
   images: string[];
@@ -34,7 +33,6 @@ export const Stock = {
 
 export const Review = {
   user_id: { type: Schema.Types.ObjectId, ref: "User" },
-  avatar: String,
   size_id: { type: Schema.Types.ObjectId, ref: "Size" },
   color_id: { type: Schema.Types.ObjectId, ref: "Color" },
   images: [String],

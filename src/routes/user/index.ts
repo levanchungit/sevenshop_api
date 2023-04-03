@@ -17,8 +17,8 @@ const isUser = [validateToken];
 router.get("/", isAdmin, getUsers);
 router.get("/get/:id", isAdmin, getUserById);
 router.put("/get", isAdmin, updateUser);
-router.post("/add_keyword_search", isAdmin, addSearchHistory);
-router.get("/get_keyword_search", isAdmin, getSearchHistory);
+router.post("/add_keyword_search", isUser, addSearchHistory);
+router.get("/get_keyword_search", isUser, getSearchHistory);
 
 router.use("/addresses", isUser, addressRouter);
 

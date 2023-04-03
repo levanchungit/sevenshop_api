@@ -54,7 +54,6 @@ const createRating = async (req: Request, res: Response) => {
 
     ratings.ratings.push({
       user_id: user._id,
-      avatar: user.avatar,
       size_id,
       color_id,
       images,
@@ -64,9 +63,10 @@ const createRating = async (req: Request, res: Response) => {
     });
 
     //calculate average rating
-    const totalRating = ratings.ratings.reduce((acc, cur) => {
-      return acc + cur.rating;
-    }, 0);
+    let totalRating = 0;
+    ratings.ratings.forEach((rating) => {
+      totalRating += rating.rating;
+    });
 
     ratings.average_rating = totalRating / ratings.ratings.length;
 
