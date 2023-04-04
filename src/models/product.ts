@@ -1,6 +1,6 @@
 import { STATUS_PRODUCT } from "constants/product";
 import { IModify, Modify } from "interfaces/basic";
-import { IReview, IStock, Review, Stock } from "interfaces/product";
+import { IStock, Stock } from "interfaces/product";
 import { Document, model, Schema } from "mongoose";
 
 /*********************TYPE & INTERFACE*****************************/

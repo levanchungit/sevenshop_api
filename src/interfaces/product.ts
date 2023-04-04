@@ -16,9 +16,21 @@ export type IStockResult = {
 };
 
 export type IReview = {
-  user_id: string;
-  size_id: string;
-  color_id: string;
+  user_id: {
+    _id: string;
+    full_name?: string;
+    avatar?: string;
+    email?: string;
+  };
+  size_id: {
+    _id: string;
+    size?: string;
+  };
+  color_id: {
+    _id: string;
+    name?: string;
+    code?: string;
+  };
   images: string[];
   content: string;
   rating: number;

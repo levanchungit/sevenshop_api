@@ -33,10 +33,19 @@ const updateAddress = async (req: Request, res: Response) => {
         if (item._id?.toString() !== id) item.default_address = false;
       });
     } else {
-      if (user.addresses.filter((item) => item.default_address).length === 1) {
-        const message = `There must be at least 1 default address`;
+      //find address by id and check if it is default address
+      const address = user.addresses.find(
+        (item) => item._id?.toString() === id
+      );
+      if (address?.default_address) {
+        const message = `Address '${address.address}' by '${address.full_name}' is default address. Can not update default_address to false`;
         return res.status(409).json({ message });
       }
+      // //check if there is at least 1 default address
+      // if (user.addresses.filter((item) => item.default_address).length === 1) {
+      //   const message = `There must be at least 1 default address`;
+      //   return res.status(409).json({ message });
+      // }
     }
     if (
       user.addresses[addressIndex].address === address &&

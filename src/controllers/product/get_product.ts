@@ -15,10 +15,10 @@ const getProductById = async (req: Request, res: Response) => {
 
     //get product by id. Select color name, size name by color_id, size_id
     const product: any = await Product.findById(id)
-      //select name, price, price_sale, description, images, stock (get color name, size name by color_id, size_id), status, category_ids, color_ids, size_ids, reviews
+      //select name, price, price_sale, description, images, stock (get color name, size name by color_id, size_id), status, category_ids, color_ids, size_ids
       .populate({
         path: "color_ids",
-        select: "name",
+        select: "name code",
         model: Color,
       })
       //populate stock get color name by color_id
@@ -44,7 +44,7 @@ const getProductById = async (req: Request, res: Response) => {
         },
       })
       .select(
-        "name price price_sale description images stock category_ids color_ids size_ids reviews"
+        "name price price_sale description images stock category_ids color_ids size_ids"
       );
 
     if (!product) return res.sendStatus(404);
@@ -57,7 +57,7 @@ const getProductById = async (req: Request, res: Response) => {
         populate: [
           {
             path: "user_id",
-            select: "full_name avatar",
+            select: "full_name avatar email",
             model: "User",
           },
           {

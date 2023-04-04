@@ -64,7 +64,6 @@ const createProduct = async (req: Request, res: Response) => {
       price_sale,
       status,
       stock: [],
-      reviews: [],
       created_at: getNow(),
       created_by: `${user.email}`,
       modify: [{ action: `Create by ${user.email}`, date: getNow() }],

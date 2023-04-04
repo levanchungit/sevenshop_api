@@ -1,4 +1,5 @@
-import { IReview } from "./product";
+import { IModify } from "./basic";
+
 export type IRatingResult = {
   product_id: string;
   product_image: string;
@@ -11,6 +12,14 @@ export type IRatingResult = {
 };
 
 export type IRateResult = {
-  product_id: string;
-  ratings: IReview;
+  user_id: string;
+  avatar: string;
+  size_id: string;
+  size: string;
+  color_id: string;
+  color_code: string;
+  images: string[];
+  content: string;
+  rating: number;
+  modify: IModify;
 };

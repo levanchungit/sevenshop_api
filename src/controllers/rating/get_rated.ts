@@ -1,32 +1,54 @@
 import { Request, Response } from "express";
 import { getIdFromReq } from "utils/token";
 import Rating from "models/rating";
-import { IRateResult } from "interfaces/rating";
-import { IReview } from "interfaces/product";
+import User from "models/user";
+import Color from "models/color";
+import Size from "models/size";
 
 //get all ratings by user_id
 const getRated = async (req: Request, res: Response) => {
   try {
     const user_id = getIdFromReq(req);
+    //get item in ratings have user_id = user_id. Get color name, code by color_id, size name by size_id
+    const ratings = await Rating.find({
+      ratings: {
+        $elemMatch: {
+          user_id,
+        },
+      },
+    }).populate({
+      path: "ratings",
+      match: { user_id },
+      populate: [
+        {
+          path: "color_id",
+          model: Color,
+          select: "name code",
+        },
+        {
+          path: "size_id",
+          model: Size,
+          select: "name",
+        },
+        {
+          path: "user_id",
+          model: User,
+          select: "avatar full_name _id email",
+        },
+      ],
+    });
 
-    //get all rating for user_id
-    const ratings = await Rating.find({ ratings: { $elemMatch: { user_id } } });
-    if (!ratings) return res.status(400).json({ ratings });
+    const arr: any = [];
 
-    //get all ratings by user
-    const rated: IRateResult[] = [];
     ratings.forEach((rating) => {
-      rating.ratings.forEach((rate) => {
-        if (rate.user_id.toString() == user_id.toString()) {
-          rated.push({
-            product_id: rating.product_id,
-            ratings: rate,
-          });
+      rating.ratings.forEach((item) => {
+        if (item.user_id._id == user_id) {
+          arr.push(item);
         }
       });
     });
 
-    return res.status(200).json({ results: rated });
+    return res.status(200).json({ results: arr });
   } catch (err) {
     return res.sendStatus(500);
   }
