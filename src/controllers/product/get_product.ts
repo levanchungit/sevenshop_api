@@ -16,32 +16,34 @@ const getProductById = async (req: Request, res: Response) => {
     //get product by id. Select color name, size name by color_id, size_id
     const product: any = await Product.findById(id)
       //select name, price, price_sale, description, images, stock (get color name, size name by color_id, size_id), status, category_ids, color_ids, size_ids
-      .populate({
-        path: "color_ids",
-        select: "name code",
-        model: Color,
-      })
-      //populate stock get color name by color_id
-      .populate({
-        path: "stock",
-        select: "color_id size_id quantity",
-        model: "Stock",
-        populate: {
-          path: "color_id",
-          select: "name",
+      .populate([
+        {
+          path: "color_ids",
+          select: "name code",
           model: Color,
         },
-      })
-      //populate stock get size name by size_id
-      .populate({
-        path: "stock",
-        select: "color_id size_id quantity",
-        model: "Stock",
-        populate: {
-          path: "size_id",
+        {
+          path: "size_ids",
           select: "size",
           model: Size,
         },
+      ])
+      .populate({
+        path: "stock",
+        select: "color_id size_id quantity",
+        model: "Stock",
+        populate: [
+          {
+            path: "size_id",
+            select: "size",
+            model: Size,
+          },
+          {
+            path: "color_id",
+            select: "name",
+            model: Color,
+          },
+        ],
       })
       .select(
         "name price price_sale description images stock category_ids color_ids size_ids"
