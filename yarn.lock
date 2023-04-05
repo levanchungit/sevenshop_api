@@ -939,6 +939,11 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-18.11.18.tgz"
   integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
 
+"@types/node@>=8.1.0":
+  version "18.15.11"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.11.tgz#b3b790f09cb1696cffcec605de025b088fa4225f"
+  integrity sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==
+
 "@types/nodemailer@^6.4.7":
   version "6.4.7"
   resolved "https://registry.npmjs.org/@types/nodemailer/-/nodemailer-6.4.7.tgz"
@@ -2393,6 +2398,13 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
+qs@^6.11.0:
+  version "6.11.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.1.tgz#6c29dff97f0c0060765911ba65cbc9764186109f"
+  integrity sha512-0wsrzgTz/kAVIeuxSjnpGC56rzYtr6JT/2BwEvMaPhFIoYa1aGO8LbzuU1R0uUYQkLpWBTOj0l/CLAJB64J6nQ==
+  dependencies:
+    side-channel "^1.0.4"
+
 queue-lit@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/queue-lit/-/queue-lit-1.5.0.tgz#8197fdafda1edd615c8a0fc14c48353626e5160a"
@@ -2683,6 +2695,14 @@ strip-bom@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/strip-bom/-/strip-bom-3.0.0.tgz"
   integrity sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==
+
+stripe@^11.17.0:
+  version "11.17.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-11.17.0.tgz#0193396034fbaf600d69bd7941350883a2b59e47"
+  integrity sha512-nDH5afq2J5x8cp0b3Uf0h4U7mLLntDLXA91/4cg+LRhMOrDc2BI6xOGjYpI2uwRG80PU16pqhZh9oVupvCG/pQ==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.11.0"
 
 strnum@^1.0.5:
   version "1.0.5"

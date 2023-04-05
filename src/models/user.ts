@@ -2,11 +2,11 @@ import { GENDER, ROLE, STATUS_USER } from "constants/user";
 import { IModify, IOTP, Modify, OTP } from "interfaces/basic";
 import {
   Address,
-  IAddress,
   IMembership,
   ISearchProduct,
+  HistorySearch,
+  IAddress,
   Membership,
-  SearchProduct,
 } from "interfaces/user";
 import { IVoucherUser, VoucherUser } from "interfaces/voucher";
 import { Schema, model, Document } from "mongoose";
@@ -74,7 +74,7 @@ export const userSchema = new Schema({
     },
   },
   vouchers: [VoucherUser],
-  history_search: [SearchProduct],
+  history_search: [HistorySearch],
   created_at: { type: String },
   created_by: { type: String },
   modify: [Modify],

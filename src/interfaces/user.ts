@@ -18,6 +18,12 @@ export type ISearchProduct = {
   created_at: string;
 };
 
+export type IHistorySearch = {
+  _id?: string;
+  keyword: string;
+  create_at: string;
+};
+
 export const Membership = {
   name: String,
   description: String,
@@ -31,7 +37,7 @@ export const Address = {
   default_address: Boolean,
 };
 
-export const SearchProduct = {
+export const HistorySearch = {
   keyword: String,
-  created_at: String,
+  create_at: String,
 };
