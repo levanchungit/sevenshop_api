@@ -2,7 +2,7 @@ import {
   addCart,
   changeQuantity,
   changeSizeColor,
-  deleteProductCart,
+  deleteProductsCart,
   getCart,
   getQuantityCart,
   getTotalCart,
@@ -16,7 +16,7 @@ const router = Router();
 router.get("/", validateToken, getCart);
 router.post("/", validateToken, addCart);
 router.put("/", validateToken, changeQuantity);
-router.delete("/", validateToken, deleteProductCart);
+router.delete("/", validateToken, deleteProductsCart);
 router.get("/quantity_cart", validateToken, getQuantityCart);
 router.get("/total_cart", validateToken, getTotalCart);
 router.put("/change_size_color", validateToken, changeSizeColor);
