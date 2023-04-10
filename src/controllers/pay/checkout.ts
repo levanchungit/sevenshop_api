@@ -130,6 +130,10 @@ const checkout = async (req: Request, res: Response) => {
       };
 
       return res.status(201).json({ results });
+    } else if (payment_type === PAYMENT_TYPE.bank) {
+      return res.status(501).json("Update later");
+    } else if (payment_type === PAYMENT_TYPE.momo) {
+      return res.status(501).json("Update later");
     }
     return res.sendStatus(501);
   } catch (err) {

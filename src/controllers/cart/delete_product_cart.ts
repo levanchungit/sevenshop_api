@@ -37,9 +37,13 @@ const deleteProductsCart = async (req: Request, res: Response) => {
       return !_product;
     });
 
+    const productsDelete = cart.products.filter((item) => {
+      return item.product_id && item.color_id && item.size_id;
+    });
+
     cart.products = newProducts;
     cart.modify.push({
-      action: `Delete products '${products}' in cart by ${user?.email}`,
+      action: `Delete products '${productsDelete}' in cart by ${user?.email}`,
       date: getNow(),
     });
     await cart.save();

@@ -8,3 +8,4 @@ export { default as logout } from "./logout";
 export { default as refreshToken } from "./refresh_token";
 export { default as getMe } from "./get_me";
 export { default as changePassword } from "./change_pass";
+export { default as loginGmail } from "./login_gmail";

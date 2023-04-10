@@ -15,14 +15,27 @@ const checkoutStripe = async (req: Request, res: Response) => {
       name: user.full_name,
       phone: user.phone,
     });
+
+    const ephemeralKey = await stripe.ephemeralKeys.create(
+      { customer: customer.id },
+      { apiVersion: "2022-11-15" }
+    );
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: req.body.amount,
       currency: "usd",
       customer: customer.id,
-      payment_method_types: ["card"],
+      automatic_payment_methods: {
+        enabled: true,
+      },
     });
 
-    res.json({ paymentIntent: paymentIntent.client_secret });
+    res.json({
+      paymentIntent: paymentIntent.client_secret,
+      ephemeralKey: ephemeralKey.secret,
+      customer: customer.id,
+      publishableKey: process.env.PUBLISHABLE_KEY,
+    });
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
