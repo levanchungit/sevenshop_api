@@ -22,6 +22,7 @@ const addSearchHistory = async (req: Request, res: Response) => {
       keyword,
       created_at: getNow(),
     };
+    console.log(search);
 
     //check keyword exist
     const index = user?.history_search.findIndex(
