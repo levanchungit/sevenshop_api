@@ -39,5 +39,5 @@ export const Address = {
 
 export const HistorySearch = {
   keyword: String,
-  create_at: String,
+  created_at: String,
 };

@@ -40,13 +40,13 @@ const getProductById = async (req: Request, res: Response) => {
           },
           {
             path: "color_id",
-            select: "name",
+            select: "name code",
             model: Color,
           },
         ],
       })
       .select(
-        "name price price_sale description images stock category_ids color_ids size_ids"
+        "name price price_sale description images stock category_ids color_ids size_ids status"
       );
 
     if (!product) return res.sendStatus(404);

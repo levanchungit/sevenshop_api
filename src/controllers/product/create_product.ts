@@ -3,6 +3,8 @@ import Product, { IProduct } from "models/product";
 import User from "models/user";
 import { getNow, validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
+import generateStock from "./generate_stock";
+import mongoose from "mongoose";
 
 const createProduct = async (req: Request, res: Response) => {
   try {
@@ -54,6 +56,7 @@ const createProduct = async (req: Request, res: Response) => {
         .json({ message: "Product with this name already exists" });
     }
     const product = new Product({
+      _id: new mongoose.Types.ObjectId(),
       name,
       description,
       images,
