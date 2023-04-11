@@ -17,7 +17,7 @@ export type IOrder = {
   note: string;
   payment_type: PAYMENT_TYPE;
   status: STATUS_ORDER;
-  voucher_id: string;
+  voucher_ids: string[];
   created_at: Date;
   created_by: string;
   modify: IModifyOrder[];

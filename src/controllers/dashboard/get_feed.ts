@@ -1,9 +1,11 @@
+import { IModify } from "./../../interfaces/basic";
 import { Request, Response } from "express";
 import Cart from "models/cart";
 import Category from "models/category";
 import Notification from "models/notification";
 import Order from "models/order";
 import Product from "models/product";
+import Rating from "models/rating";
 import User, { IUser } from "models/user";
 import Voucher from "models/voucher";
 import { Document, Types } from "mongoose";
@@ -11,40 +13,21 @@ import { Document, Types } from "mongoose";
 //get modify all table
 export const getModifyAllTable = async (req: Request, res: Response) => {
   try {
-    //get all table in database only field modify
-    //modify.date is string value. I want to sort by date
-    const carts = await Cart.find({}, "modify").sort({ "modify.date": 1 });
+    //get created_at created_by from orders
+    const orders = await Order.find().select("created_at created_by");
 
-    const notifications = await Notification.find({}, "modify").sort({
-      "modify.date": 1,
-    });
-    const orders = await Order.find({}, "modify").sort({ "modify.date": 1 });
+    const modify = {
+      orders: [] as { created_at: Date; created_by: string }[],
+    };
 
-    const modify = [] as any[];
+    orders.map((order) =>
+      modify.orders.push({
+        created_at: order.created_at,
+        created_by: order.created_by,
+      })
+    );
 
-    carts.map((carts) => {
-      if (carts.modify.length > 0) {
-        carts.modify.map((item) => {
-          modify.push(item);
-        });
-      }
-    });
-
-    notifications.map((notifications) => {
-      if (notifications.modify.length > 0) {
-        notifications.modify.map((item) => {
-          modify.push(item);
-        });
-      }
-    });
-
-    orders.map((orders) => {
-      if (orders.modify.length > 0) {
-        orders.modify.map((item) => {
-          modify.push(item);
-        });
-      }
-    });
+    modify.orders = modify.orders.slice(0, 10);
 
     res.status(200).json(modify);
   } catch (err: any) {

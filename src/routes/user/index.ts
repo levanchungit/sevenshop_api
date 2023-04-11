@@ -2,6 +2,7 @@ import {
   addSearchHistory,
   getSearchHistory,
   getUsers,
+  updateSelfUser,
   updateUser,
 } from "controllers/user";
 import getUserById from "controllers/user/get_user";
@@ -16,9 +17,10 @@ const isUser = [validateToken];
 
 router.get("/", isAdmin, getUsers);
 router.get("/get/:id", isAdmin, getUserById);
-router.put("/get", isAdmin, updateUser);
+router.put("/get", isUser, updateSelfUser);
 router.post("/add_keyword_search", isUser, addSearchHistory);
 router.get("/get_keyword_search", isUser, getSearchHistory);
+router.put("/:id", isAdmin, updateUser);
 
 router.use("/addresses", isUser, addressRouter);
 

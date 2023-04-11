@@ -37,7 +37,6 @@ const productSchema: Schema = new Schema({
     enum: STATUS_PRODUCT,
     default: STATUS_PRODUCT.inactive,
   },
-  cart_id: { type: String, require: true, ref: "Cart" },
   category_ids: { type: [String], require: true, ref: "Category" },
   color_ids: { type: [String], require: true, ref: "Color" },
   size_ids: { type: [String], require: true, ref: "Size" },

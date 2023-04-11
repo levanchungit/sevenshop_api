@@ -69,10 +69,9 @@ const checkout = async (req: Request, res: Response) => {
         const newProducts = cart.products.filter((product) => {
           return !products.find(
             (productItem) =>
-              productItem.product_id.toString() ==
-                product.product_id.toString() &&
-              productItem.color_id.toString() == product.color_id.toString() &&
-              productItem.size_id.toString() == product.size_id.toString()
+              productItem.product_id.toString() == product.product_id &&
+              productItem.color_id == product.color_id.toString() &&
+              productItem.size_id == product.size_id.toString()
           );
         });
         cart.products = newProducts;

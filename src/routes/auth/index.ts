@@ -4,6 +4,7 @@ import {
   forgotPassword,
   getMe,
   login,
+  loginCMS,
   loginGmail,
   logout,
   refreshToken,
@@ -19,6 +20,7 @@ const router = Router();
 // Auth routes
 router.post("/login", login);
 router.post("/login_gmail", loginGmail);
+router.post("/login_cms", loginCMS);
 router.post("/register", register);
 router.post("/check_otp", checkOTP);
 router.post("/forgot_password", forgotPassword);
