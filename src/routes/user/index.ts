@@ -1,5 +1,6 @@
 import {
   addSearchHistory,
+  deleteUser,
   getSearchHistory,
   getUsers,
   updateSelfUser,
@@ -21,6 +22,7 @@ router.put("/get", isUser, updateSelfUser);
 router.post("/add_keyword_search", isUser, addSearchHistory);
 router.get("/get_keyword_search", isUser, getSearchHistory);
 router.put("/:id", isAdmin, updateUser);
+router.delete("/:id", isAdmin, deleteUser);
 
 router.use("/addresses", isUser, addressRouter);
 
