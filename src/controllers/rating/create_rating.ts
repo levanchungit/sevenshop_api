@@ -42,15 +42,16 @@ const createRating = async (req: Request, res: Response) => {
 
       await newRating.save();
       return res.sendStatus(200);
-    } else {
-      const isRated = ratings.ratings.find((rating) => {
-        return rating.user_id.toString() === user._id.toString();
-      });
-
-      if (isRated) {
-        return res.status(400).json({ message: "You have rated this product" });
-      }
     }
+    // else {
+    //   const isRated = ratings.ratings.find((rating) => {
+    //     return rating.user_id.toString() === user._id.toString();
+    //   });
+
+    //   if (isRated) {
+    //     return res.status(400).json({ message: "You have rated this product" });
+    //   }
+    // }
 
     ratings.ratings.push({
       user_id: user._id,

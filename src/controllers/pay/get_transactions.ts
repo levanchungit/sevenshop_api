@@ -13,11 +13,9 @@ const getTransactions = async (req: Request, res: Response) => {
       apiVersion: "2022-11-15",
     });
 
-    const transactions = await stripe.balanceTransactions.list({
-      limit: 100,
-    });
+    const paymentIntents = await stripe.paymentIntents.list({ limit: 100 });
 
-    return res.json(transactions);
+    return res.json(paymentIntents);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);

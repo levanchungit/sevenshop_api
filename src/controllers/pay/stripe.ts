@@ -9,33 +9,18 @@ const checkoutStripe = async (req: Request, res: Response) => {
     if (!user) {
       return res.sendStatus(403);
     }
-    const customer = await stripe.customers.create({
-      id: user._id,
-      email: user.email,
-      name: user.full_name,
-      phone: user.phone,
-    });
 
-    const ephemeralKey = await stripe.ephemeralKeys.create(
-      { customer: customer.id },
-      { apiVersion: "2022-11-15" }
-    );
+    const { lineItems } = req.body;
 
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: req.body.amount,
-      currency: "usd",
-      customer: customer.id,
-      automatic_payment_methods: {
-        enabled: true,
-      },
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "https://example.com/success",
+      cancel_url: "https://example.com/cancel",
     });
-
-    res.json({
-      paymentIntent: paymentIntent.client_secret,
-      ephemeralKey: ephemeralKey.secret,
-      customer: customer.id,
-      publishableKey: process.env.PUBLISHABLE_KEY,
-    });
+    console.log(session);
+    res.json(session);
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
