@@ -85,7 +85,7 @@ const changeSizeColor = async (req: Request, res: Response) => {
         await cart.save();
       }
     }
-    return res.status(200).json(cart);
+    return res.sendStatus(200);
   } catch (err) {
     console.log(err);
     return res.sendStatus(500);

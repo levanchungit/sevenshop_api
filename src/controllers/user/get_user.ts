@@ -5,7 +5,6 @@ const getUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const user: IUser | null = await User.findById(id);
-    console.log(user, id);
     if (!user) {
       return res.sendStatus(404);
     }

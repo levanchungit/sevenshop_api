@@ -1,8 +1,10 @@
 import {
+  addVoucherUser,
   createVoucher,
   deleteVoucher,
   getVoucherById,
   getVouchers,
+  getVouchersUser,
   updateVoucher,
 } from "controllers/voucher";
 import { Router } from "express";
@@ -12,6 +14,9 @@ const router = Router();
 
 const isAdmin = [validateAdmin];
 const isUser = [validateToken];
+
+router.post("/add_voucher/:id", isUser, addVoucherUser);
+router.get("/get_vouchers", isUser, getVouchersUser);
 
 router.get("/", isAdmin, getVouchers);
 router.post("/", isAdmin, createVoucher);
