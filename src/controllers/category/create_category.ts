@@ -8,11 +8,10 @@ const createCategory = async (req: Request, res: Response) => {
   try {
     const user_id = getIdFromReq(req);
     const user = await User.findById(user_id);
-    const { name, description, image = "" }: ICategory = req.body;
-    const validateFieldsResult = validateFields({ name, description, image }, [
+    const { name, description }: ICategory = req.body;
+    const validateFieldsResult = validateFields({ name, description }, [
       { name: "name", type: "string", required: true },
       { name: "description", type: "string", required: true },
-      { name: "image", type: "string" },
     ]);
     if (validateFieldsResult) {
       return res.status(400).json({ message: validateFieldsResult });
@@ -27,7 +26,6 @@ const createCategory = async (req: Request, res: Response) => {
     const category = new Category({
       name,
       description,
-      image,
       created_at: getNow(),
       created_by: user.email,
       modify: [{ action: `Create by ${user.email}`, date: getNow() }],
