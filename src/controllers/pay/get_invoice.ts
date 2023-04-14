@@ -4,7 +4,9 @@ import { Request, Response } from "express";
 import { IProductCart } from "interfaces/cart";
 import { IInvoice } from "interfaces/invoice";
 import { IVoucherUser } from "interfaces/voucher";
+import Color from "models/color";
 import Product, { IProduct } from "models/product";
+import Size from "models/size";
 import User from "models/user";
 import Voucher from "models/voucher";
 import { validateFields } from "utils/common";
@@ -26,8 +28,16 @@ const getInvoice = async (req: Request, res: Response) => {
     const productsCart = products.map(async (product) => {
       const { product_id, quantity, size_id, color_id }: IProductCart = product;
       const itemProduct = await Product.findById(product_id);
+      const itemSize = await Size.findById(size_id);
+      const itemColor = await Color.findById(color_id);
       if (!itemProduct) {
         return { error: `Product with id ${product_id} not found` };
+      }
+      if (!itemSize) {
+        return { error: `Size with id ${size_id} not found` };
+      }
+      if (!itemColor) {
+        return { error: `Color with id ${color_id} not found` };
       }
       const { name, price, price_sale, images, stock }: IProduct = itemProduct;
       if (stock) {
@@ -49,7 +59,9 @@ const getInvoice = async (req: Request, res: Response) => {
         product_id,
         quantity,
         size_id,
+        size_name: itemSize.size,
         color_id,
+        color_name: itemColor.name,
         name,
         price,
         price_sale,
