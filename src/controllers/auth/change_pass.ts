@@ -1,4 +1,4 @@
-import { getNow } from "utils/common";
+import { getNow, validateFields } from "utils/common";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import User from "models/user";
@@ -11,6 +11,24 @@ const changePassword = async (req: Request, res: Response) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
+  //validate password, new_password
+  const validateFieldsResult = validateFields({ password, new_password }, [
+    { name: "password", type: "string", required: true },
+    { name: "new_password", type: "string", required: true },
+  ]);
+  if (validateFieldsResult)
+    return res.status(400).json({ message: validateFieldsResult });
+
+  //validate not null, not empty, not undefined
+  if (!password || !new_password)
+    return res.status(400).json({ message: "Password must not be empty" });
+
+  if (password === new_password)
+    return res
+      .status(400)
+      .json({ message: "New password must be different from old password" });
+
   const compare = await bcrypt.compare(password, user.password);
   if (compare) {
     const salt = await bcrypt.genSalt(10);
