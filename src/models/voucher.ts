@@ -7,6 +7,8 @@ import { Document, model, Schema } from "mongoose";
 export type IVoucher = {
   _id?: string;
   name: string;
+  code: string;
+  quantity: number;
   type: TYPE_VOUCHER;
   value: number;
   start_date: string;
@@ -22,6 +24,8 @@ export type VoucherTypeModel = IVoucher & Document;
 
 const voucherSchema: Schema = new Schema({
   name: { type: String, require: true },
+  code: { type: String, require: true },
+  quantity: { type: Number, require: true },
   type: { type: String, enum: Object.values(TYPE_VOUCHER), require: true },
   value: { type: Number, require: true },
   start_date: { type: String, require: true },

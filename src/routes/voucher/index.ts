@@ -15,7 +15,7 @@ const router = Router();
 const isAdmin = [validateAdmin];
 const isUser = [validateToken];
 
-router.post("/add_voucher/:id", isUser, addVoucherUser);
+router.post("/add_voucher/:code", isUser, addVoucherUser);
 router.get("/get_vouchers", isUser, getVouchersUser);
 
 router.get("/", isAdmin, getVouchers);

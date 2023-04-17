@@ -1,10 +1,11 @@
 import upload from "controllers/upload/image";
 import { Router } from "express";
-import { validateAdmin } from "middleware/validate";
+import { validateAdmin, validateToken } from "middleware/validate";
 import { v2 as cloudinary } from "cloudinary";
 
 const router = Router();
 const isAdmin = [validateAdmin];
+const isUser = [validateToken];
 
 const uploader = async (path: string) =>
   await cloudinary.uploader.upload(path, {
@@ -28,7 +29,7 @@ router.post(
 
 router.post(
   "/multiple",
-  isAdmin,
+  isUser,
   upload.array("files", 10),
   async (req: any, res: any, next: any) => {
     if (!req.files) {

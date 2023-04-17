@@ -8,11 +8,13 @@ import { getIdFromReq } from "utils/token";
 
 const createVoucher = async (req: Request, res: Response) => {
   try {
-    const { name, type, value, start_date, end_date }: IVoucher = req.body;
+    const { name, quantity, type, value, start_date, end_date }: IVoucher =
+      req.body;
     const validateFieldsResult = validateFields(
-      { name, type, value, start_date, end_date },
+      { name, quantity, type, value, start_date, end_date },
       [
         { name: "name", type: "string", required: true },
+        { name: "quantity", type: "number", required: true },
         { name: "type", type: "string", required: true },
         { name: "value", type: "number", required: true },
         { name: "start_date", type: "date", required: true },
@@ -34,8 +36,16 @@ const createVoucher = async (req: Request, res: Response) => {
       const message = `Voucher name '${name}' already exists`;
       return res.status(409).json({ message });
     }
+
+    //generate string code voucher random not
+    const code =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+
     const newVoucher = new Voucher({
       name,
+      code,
+      quantity,
       type,
       value,
       start_date,

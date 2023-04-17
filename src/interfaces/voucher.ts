@@ -2,6 +2,7 @@ import { STATUS_VOUCHER_USER } from "constants/voucher";
 import { Schema } from "mongoose";
 
 export type IVoucherUser = {
+  _id: string;
   voucher_id: string;
   status: STATUS_VOUCHER_USER;
 };

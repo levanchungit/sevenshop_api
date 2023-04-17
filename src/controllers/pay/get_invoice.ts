@@ -9,6 +9,7 @@ import Product, { IProduct } from "models/product";
 import Size from "models/size";
 import User from "models/user";
 import Voucher from "models/voucher";
+import moment from "moment";
 import { validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
@@ -92,31 +93,40 @@ const getInvoice = async (req: Request, res: Response) => {
       totalAfterVoucher,
       totalInvoiceDiscount;
     if (voucher_id) {
-      const voucher = user.vouchers.find(
-        (item) => item.voucher_id === voucher_id
+      const voucher = user.vouchers.find((item) =>
+        item.voucher_id.toString() === voucher_id ? true : false
       );
       if (!voucher) {
         return res.status(400).json({ message: "Voucher not found" });
       }
-      const { voucher_id, status } = voucher as IVoucherUser;
+      const { voucher_id: found_voucher_id, status } = voucher as IVoucherUser;
       if (status === STATUS_VOUCHER_USER.unused) {
         const voucherUser = await Voucher.findById(voucher_id);
         if (!voucherUser) {
           return res.status(400).json({ message: "Voucher not found" });
         }
-        const { type, value } = voucherUser;
+
+        const { type, value, start_date, end_date } = voucherUser;
+
+        if (moment().isBefore(start_date) || moment().isAfter(end_date)) {
+          return res.status(400).json({ message: "Voucher is expired" });
+        }
+
         chooseVoucherID = voucherUser._id;
         if (type === TYPE_VOUCHER.percent) {
           const totalInvoiceSale = totalPrice * (value / 100);
           totalBeforeVoucher = totalPrice;
           totalAfterVoucher = totalPrice - totalInvoiceSale;
+          totalInvoiceDiscount = totalInvoiceSale;
         }
         if (type === TYPE_VOUCHER.money) {
           totalBeforeVoucher = totalPrice;
           totalAfterVoucher = totalPrice - value;
+          totalInvoiceDiscount = totalPrice - totalAfterVoucher;
         }
+      } else if (status == STATUS_VOUCHER_USER.used) {
+        return res.status(400).json({ message: "Voucher has been used" });
       }
-      return res.status(400).json({ message: "Voucher expired" });
     }
     const hasError = resolvedProducts.some((product) => !!product.error);
     if (hasError) {

@@ -121,6 +121,20 @@ const checkout = async (req: Request, res: Response) => {
         return res.status(400).json({ message: err.message });
       }
 
+      //check voucher exists and update user voucher status to used
+      if (voucher_id) {
+        user.vouchers.map((voucher) => {
+          if (voucher._id.toString() == voucher_id) {
+            return {
+              ...voucher,
+              status: "used",
+            };
+          }
+          return voucher;
+        });
+        await user.save();
+      }
+
       //send email to user
 
       //send email to admin
@@ -211,6 +225,20 @@ const checkout = async (req: Request, res: Response) => {
         await Promise.all(productsInStock);
       } catch (err: any) {
         return res.status(400).json({ message: err.message });
+      }
+
+      //check voucher exists and update user voucher status to used
+      if (voucher_id) {
+        user.vouchers.map((voucher) => {
+          if (voucher._id.toString() == voucher_id) {
+            return {
+              ...voucher,
+              status: "used",
+            };
+          }
+          return voucher;
+        });
+        await user.save();
       }
 
       const lineItems = await Promise.all(
