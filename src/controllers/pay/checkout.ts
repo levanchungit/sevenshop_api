@@ -124,14 +124,17 @@ const checkout = async (req: Request, res: Response) => {
       //check voucher exists and update user voucher status to used
       if (voucher_id) {
         user.vouchers.map((voucher) => {
-          if (voucher._id.toString() == voucher_id) {
-            return {
-              ...voucher,
-              status: "used",
-            };
+          if (voucher._id != null) {
+            if (voucher._id.toString() == voucher_id) {
+              return {
+                ...voucher,
+                status: "used",
+              };
+            }
+            return voucher;
           }
-          return voucher;
         });
+
         await user.save();
       }
 
@@ -230,11 +233,13 @@ const checkout = async (req: Request, res: Response) => {
       //check voucher exists and update user voucher status to used
       if (voucher_id) {
         user.vouchers.map((voucher) => {
-          if (voucher._id.toString() == voucher_id) {
-            return {
-              ...voucher,
-              status: "used",
-            };
+          if (voucher._id != null) {
+            if (voucher._id.toString() == voucher_id) {
+              return {
+                ...voucher,
+                status: "used",
+              };
+            }
           }
           return voucher;
         });

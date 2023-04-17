@@ -1,11 +1,10 @@
 import { STATUS_VOUCHER_USER } from "./../../constants/voucher";
-import { TYPE_VOUCHER } from "constants/voucher";
 import { Request, Response } from "express";
-import Size, { ISize } from "models/size";
 import User from "models/user";
-import Voucher, { IVoucher } from "models/voucher";
+import Voucher from "models/voucher";
 import moment from "moment";
-import { formatDateTime, getNow, validateFields } from "utils/common";
+import mongoose from "mongoose";
+import { getNow } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
 const addVoucherUser = async (req: Request, res: Response) => {
