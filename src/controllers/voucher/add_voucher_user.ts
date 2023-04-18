@@ -18,7 +18,7 @@ const addVoucherUser = async (req: Request, res: Response) => {
     //check voucher is expired
     const now = moment(getNow());
     const start_date = moment(voucher.start_date);
-    const end_date = moment(voucher.end_date);
+    const end_date = moment(voucher.end_date).add(1, "days");
     if (now.isBefore(start_date) || now.isAfter(end_date)) {
       return res.status(400).json({ message: "Voucher is expired" });
     }

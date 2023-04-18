@@ -10,7 +10,7 @@ import Size from "models/size";
 import User from "models/user";
 import Voucher from "models/voucher";
 import moment from "moment";
-import { validateFields } from "utils/common";
+import { getNow, validateFields } from "utils/common";
 import { getIdFromReq } from "utils/token";
 
 const getInvoice = async (req: Request, res: Response) => {
@@ -90,7 +90,7 @@ const getInvoice = async (req: Request, res: Response) => {
     );
     let chooseVoucherID,
       totalBeforeVoucher,
-      totalAfterVoucher,
+      totalAfterVoucher = 0,
       totalInvoiceDiscount;
     if (voucher_id) {
       const voucher = user.vouchers.find((item) =>
@@ -108,7 +108,11 @@ const getInvoice = async (req: Request, res: Response) => {
 
         const { type, value, start_date, end_date } = voucherUser;
 
-        if (moment().isBefore(start_date) || moment().isAfter(end_date)) {
+        //check voucher is expired
+        const now = moment(getNow());
+        const _start_date = moment(start_date);
+        const _end_date = moment(end_date).add(1, "days");
+        if (now.isBefore(_start_date) || now.isAfter(_end_date)) {
           return res.status(400).json({ message: "Voucher is expired" });
         }
 
@@ -142,7 +146,11 @@ const getInvoice = async (req: Request, res: Response) => {
       total_invoice_discount: voucher_id
         ? totalInvoiceDiscount
         : totalDiscountProducts,
-      total_invoice: voucher_id ? totalAfterVoucher : totalPrice,
+      total_invoice: voucher_id
+        ? totalAfterVoucher < 0
+          ? 0
+          : totalAfterVoucher
+        : totalPrice,
       voucher_id: chooseVoucherID,
       address,
     });
