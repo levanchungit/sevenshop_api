@@ -38,7 +38,7 @@ const createVoucher = async (req: Request, res: Response) => {
     }
 
     //generate string code voucher random not
-    const code = Math.random().toString(36).substring(2, 8);
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
 
     const newVoucher = new Voucher({
       name,
