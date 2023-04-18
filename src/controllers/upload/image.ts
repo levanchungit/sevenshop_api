@@ -17,6 +17,10 @@ const cloudinaryStorage = new CloudinaryStorage({
     return {
       public_id: req.params.id,
       use_filename: true,
+      width: 1200,
+      height: 800,
+      crop: "limit",
+      quantity: "auto:best",
     };
   },
 });
