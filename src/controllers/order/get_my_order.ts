@@ -9,7 +9,7 @@ const getMyOrderById = async (req: Request, res: Response) => {
     const { id } = req.params;
     if (!isValidObjectId(id)) return res.sendStatus(400);
     const order = await Order.findOne({ _id: id, user_id })
-      .populate("products.product_id", "name images")
+      .populate("products.product_id", "name images price")
       .populate("products.color_id", "name")
       .populate("products.size_id", "size");
     //populate address
