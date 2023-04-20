@@ -14,6 +14,7 @@ export type INotification = {
   created_at: string;
   created_by: string;
   modify: IModify[];
+  tokens?: string[];
 };
 
 export type NotificationTypeModel = INotification & Document;

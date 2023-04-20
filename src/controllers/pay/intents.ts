@@ -8,8 +8,6 @@ const getIntents = async (req: Request, res: Response) => {
     const { amount } = req.body;
     const user = await User.findById(getIdFromReq(req));
 
-    console.log(amount);
-
     //create customer
     const customer = await stripe.customers.create({
       name: user?.full_name,

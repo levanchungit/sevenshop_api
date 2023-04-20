@@ -4,6 +4,7 @@ import {
   createNotification,
   getNotifications,
   getNotificationsUser,
+  pushNotifications,
 } from "controllers/notification";
 
 const router = Router();
@@ -13,5 +14,6 @@ const isUser = [validateToken];
 router.post("/", isAdmin, createNotification);
 router.get("/get", isUser, getNotifications);
 router.get("/get/:user_id", isUser, getNotificationsUser);
+router.post("/push_notifications", isAdmin, pushNotifications);
 
 export default router;
