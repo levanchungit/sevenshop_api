@@ -11,11 +11,23 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-const pushNotifications = async (req: Request, res: Response) => {
+const pushNotifications = async (
+  req: Request,
+  res: Response,
+  notificationObject: any
+) => {
   const user = await User.findById(getIdFromReq(req));
   if (!user) return res.sendStatus(403);
   try {
-    const { title, body, image, to_user_id, tokens }: INotification = req.body;
+    let { title, body, image, to_user_id, tokens }: INotification = req.body;
+
+    if (notificationObject) {
+      title = notificationObject.title;
+      body = notificationObject.body;
+      image = notificationObject.image;
+      to_user_id = notificationObject.to_user_id;
+      tokens = notificationObject.tokens;
+    }
 
     const validateFieldsResult = validateFields(
       {

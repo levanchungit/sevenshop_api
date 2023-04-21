@@ -1,5 +1,7 @@
 import { STATUS_ORDER } from "constants/order";
+import { ROLE } from "constants/user";
 import { STATUS_VOUCHER_USER } from "constants/voucher";
+import { pushNotifications } from "controllers/notification";
 import { Request, Response } from "express";
 import { IInvoice } from "interfaces/invoice";
 import Cart from "models/cart";
@@ -144,6 +146,25 @@ const checkout = async (req: Request, res: Response) => {
     //send email to admin
 
     //push notification to admin
+
+    //get device_id all user role admin
+    const adminUsers = await User.find({ role: ROLE.admin });
+    const adminIds: string[] = [];
+    const adminDeviceIds: string[] = [];
+    adminUsers.forEach(
+      (user) => adminIds.push(user._id),
+      adminDeviceIds.push(user.device_id)
+    );
+
+    const notification = {
+      title: "New order",
+      body: `New order from ${user.email}`,
+      image: "",
+      to_user_id: adminIds,
+      tokens: adminDeviceIds,
+    };
+
+    await pushNotifications(req, res, notification);
 
     const results = {
       _id: newOrder._id,

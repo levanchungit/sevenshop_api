@@ -36,6 +36,7 @@ export type IUser = {
   created_at: string;
   created_by: string;
   modify: IModify[];
+  device_id: string;
 };
 
 export type UserTypeModel = IUser & Document;
@@ -78,6 +79,7 @@ export const userSchema = new Schema({
   created_at: { type: String },
   created_by: { type: String },
   modify: [Modify],
+  device_id: { type: String },
 });
 
 const User = model<UserTypeModel>("User", userSchema);
