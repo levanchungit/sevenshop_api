@@ -14,6 +14,7 @@ import {
   getFlashSale,
   recentlyProduct,
   getForYou,
+  getProductsByCategories,
 } from "controllers/product";
 
 const router = Router();
@@ -33,5 +34,6 @@ router.get("/search_products/find", isUser, searchProducts);
 router.get("/filter_products/find", isUser, filterProducts);
 router.get("/flash_sale/get", getFlashSale);
 router.get("/for_you/get", getForYou);
+router.get("/categories/get", getProductsByCategories);
 
 export default router;

@@ -11,3 +11,4 @@ export { default as searchProducts } from "./search_products";
 export { default as filterProducts } from "./filter_products";
 export { default as getFlashSale } from "./get_flash_sale";
 export { default as getForYou } from "./get_for_you";
+export { default as getProductsByCategories } from "./get_products_by_categories";

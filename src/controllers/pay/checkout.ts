@@ -143,6 +143,8 @@ const checkout = async (req: Request, res: Response) => {
 
     //send email to admin
 
+    //push notification to admin
+
     const results = {
       _id: newOrder._id,
       created_at: newOrder.created_at,
