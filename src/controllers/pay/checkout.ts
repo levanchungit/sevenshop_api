@@ -115,7 +115,7 @@ const checkout = async (req: Request, res: Response) => {
       await user.save();
     }
 
-    //create order
+    // //create order
     const newOrder = new Order({
       _id: new mongoose.Types.ObjectId(),
       user_id: id_user,
@@ -147,24 +147,30 @@ const checkout = async (req: Request, res: Response) => {
 
     //push notification to admin
 
-    //get device_id all user role admin
+    // get device_id all user role admin
     const adminUsers = await User.find({ role: ROLE.admin });
     const adminIds: string[] = [];
     const adminDeviceIds: string[] = [];
-    adminUsers.forEach(
-      (user) => adminIds.push(user._id),
-      adminDeviceIds.push(user.device_id)
-    );
+    adminUsers.forEach((user) => {
+      if (user.device_id != "") {
+        adminIds.push(user._id.toString()), adminDeviceIds.push(user.device_id);
+      }
+    });
 
     const notification = {
-      title: "New order",
+      title: "New order #",
       body: `New order from ${user.email}`,
-      image: "",
+      image:
+        "https://res.cloudinary.com/dzhlsdyqv/image/upload/v1681919879/Image/Logo_128_zzjr4f.png",
       to_user_id: adminIds,
       tokens: adminDeviceIds,
     };
 
-    await pushNotifications(req, res, notification);
+    try {
+      await pushNotifications(req, res, notification);
+    } catch (err) {
+      console.log("BUG", err);
+    }
 
     const results = {
       _id: newOrder._id,

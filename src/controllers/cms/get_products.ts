@@ -12,7 +12,9 @@ const getProducts = async (req: Request, res: Response) => {
     const products: IProduct[] = await Product.find({
       status: STATUS_PRODUCT.active,
     })
-      .select("name price price price_sale images category_ids stock")
+      .select(
+        "name price price price_sale description images status category_ids color_ids size_ids"
+      )
       .sort(sort)
       .limit(limit)
       .skip(startIndex);

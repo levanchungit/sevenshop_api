@@ -5,11 +5,8 @@ import { tokenGen } from "utils/token";
 
 const loginCMS = async (req: Request, res: Response) => {
   const { email, password, device_id } = req.body;
-  console.log(email, password, device_id);
-  if (!email || !password || !device_id) {
-    return res
-      .status(500)
-      .json({ message: "Missing email or password or device_id" });
+  if (!email || !password) {
+    return res.status(500).json({ message: "Missing email or password" });
   }
   const user = await User.findOne({ email });
   if (!user) {
@@ -40,7 +37,7 @@ const loginCMS = async (req: Request, res: Response) => {
   );
   user.access_token = access_token;
   user.refresh_token = refresh_token;
-  user.device_id = device_id;
+  if (device_id != "") user.device_id = device_id;
   await user.save();
   return res.status(200).json({
     message: "Login success",

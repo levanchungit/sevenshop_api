@@ -13,7 +13,9 @@ const getProductById = async (req: Request, res: Response) => {
     const token = haveToken(req);
     const { id } = req.params;
 
+    //get product by id. Select color name, size name by color_id, size_id
     const product: any = await Product.findById(id)
+      //select name, price, price_sale, description, images, stock (get color name, size name by color_id, size_id), status, category_ids, color_ids, size_ids
       .populate([
         {
           path: "color_ids",
@@ -43,7 +45,9 @@ const getProductById = async (req: Request, res: Response) => {
           },
         ],
       })
-      .select("name price price_sale description images stock");
+      .select(
+        "name price price_sale description images stock category_ids color_ids size_ids status"
+      );
 
     if (!product) return res.sendStatus(404);
 

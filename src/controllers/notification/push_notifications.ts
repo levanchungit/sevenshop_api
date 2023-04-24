@@ -16,10 +16,12 @@ const pushNotifications = async (
   res: Response,
   notificationObject: any
 ) => {
-  const user = await User.findById(getIdFromReq(req));
-  if (!user) return res.sendStatus(403);
   try {
+    const user = await User.findById(getIdFromReq(req));
+    if (!user) return res.sendStatus(403);
     let { title, body, image, to_user_id, tokens }: INotification = req.body;
+
+    console.log(req.body, title, body, image, to_user_id, tokens);
 
     if (notificationObject) {
       title = notificationObject.title;
@@ -28,6 +30,8 @@ const pushNotifications = async (
       to_user_id = notificationObject.to_user_id;
       tokens = notificationObject.tokens;
     }
+
+    console.log(notificationObject);
 
     const validateFieldsResult = validateFields(
       {
@@ -98,8 +102,7 @@ const pushNotifications = async (
         return res.sendStatus(201);
       })
       .catch((err: any) => {
-        console.log(err);
-        return res.status(500).json({ message: err });
+        console.log("ERR catch notification", err);
       });
   } catch (err) {
     console.log(err);
