@@ -6,7 +6,7 @@ import { tokenGen } from "utils/token";
 
 const loginGmail = async (req: Request, res: Response) => {
   try {
-    const { email, avatar, full_name }: IUser = req.body;
+    const { email, avatar, full_name, device_id }: IUser = req.body;
 
     if (!email && !avatar && !full_name) {
       return res
@@ -38,6 +38,7 @@ const loginGmail = async (req: Request, res: Response) => {
       );
       user.access_token = access_token;
       user.refresh_token = refresh_token;
+      if (device_id != "") user.device_id = device_id;
       await user.save();
       return res.status(200).json({
         message: "Login success",
