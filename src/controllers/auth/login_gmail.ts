@@ -15,6 +15,7 @@ const loginGmail = async (req: Request, res: Response) => {
     }
 
     const user = await User.findOne({ email: email });
+    let _user;
     if (!user) {
       const newUser = new User({
         email,
@@ -25,9 +26,11 @@ const loginGmail = async (req: Request, res: Response) => {
 
       newUser.created_at = getNow();
       newUser.created_by = email + " register gmail";
-      await newUser.save();
-    } else {
-      const contentToken = { _id: user.id, role: user.role };
+      _user = await newUser.save();
+    }
+
+    if (_user != undefined) {
+      const contentToken = { _id: _user.id, role: _user.role };
       const access_token = tokenGen(
         contentToken,
         parseInt(<string>process.env.EXPIRED_ACCESS_TOKEN)
@@ -36,10 +39,10 @@ const loginGmail = async (req: Request, res: Response) => {
         contentToken,
         parseInt(<string>process.env.EXPIRED_REFRESH_TOKEN)
       );
-      user.access_token = access_token;
-      user.refresh_token = refresh_token;
-      if (device_id != "") user.device_id = device_id;
-      await user.save();
+      _user.access_token = access_token;
+      _user.refresh_token = refresh_token;
+      if (device_id != "") _user.device_id = device_id;
+      await _user.save();
       return res.status(200).json({
         message: "Login success",
         access_token,
@@ -48,6 +51,7 @@ const loginGmail = async (req: Request, res: Response) => {
     }
   } catch (err) {
     console.log(err);
+    res.sendStatus(500);
   }
 };
 
