@@ -5,13 +5,7 @@ import { Request, Response } from "express";
 import User from "models/user";
 var admin = require("firebase-admin");
 
-var serviceAccount = require("../../../pushnotification-sevenshop-firebase-adminsdk-8qqx2-c491f5c4f7.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-const pushNotifications = async (
+const pushNotificationsAll = async (
   req: Request,
   res: Response,
   notificationObject: any
@@ -19,21 +13,7 @@ const pushNotifications = async (
   try {
     const user = await User.findById(getIdFromReq(req));
     if (!user) return res.sendStatus(403);
-    let { title, body, image, to_user_id, tokens }: INotification = req.body;
-
-    console.log(title, body, image, to_user_id, tokens);
-
-    // if (notificationObject) {
-    //   title = notificationObject.title;
-    //   body = notificationObject.body;
-    //   image = notificationObject.image;
-    //   to_user_id = notificationObject.to_user_id;
-    //   tokens = notificationObject.tokens;
-    // }
-
-    // if (!notificationObject.title) {
-    //   title = notificationObject.title;
-    // }
+    let { title, body, image }: INotification = req.body;
 
     if (!title)
       return res.status(400).json({ title, message: "Title not exists" });
@@ -42,10 +22,18 @@ const pushNotifications = async (
       image =
         "https://res.cloudinary.com/dzhlsdyqv/image/upload/v1681919879/Image/Logo_128_zzjr4f.png";
 
-    //check to_user_id array exists
-    const users = await User.find({ _id: { $in: to_user_id } });
-    if (users.length !== to_user_id.length)
-      return res.status(400).json({ message: "User not exists" });
+    //get array device_id by user
+    const user_ids: string[] = [];
+    const users = await User.find({});
+    const tokens: string[] = [];
+    users.map((user) => {
+      if (user.device_id != undefined) {
+        user_ids.push(user._id);
+        tokens.push(user.device_id);
+      }
+    });
+
+    console.log(tokens);
 
     //send notification to multiple devices
     const message = {
@@ -81,7 +69,7 @@ const pushNotifications = async (
           body,
           image,
           from_user_id: user._id,
-          to_user_id,
+          to_user_id: user_ids,
           created_at: getNow(),
           created_by: `${user.email}`,
           modify: [{ action: `Create by ${user.email}`, date: getNow() }],
@@ -99,4 +87,4 @@ const pushNotifications = async (
   }
 };
 
-export default pushNotifications;
+export default pushNotificationsAll;
