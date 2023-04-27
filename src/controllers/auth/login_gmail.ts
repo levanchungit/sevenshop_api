@@ -15,7 +15,7 @@ const loginGmail = async (req: Request, res: Response) => {
     }
 
     const user = await User.findOne({ email: email });
-    let _user;
+    let _user = user;
     if (!user) {
       const newUser = new User({
         email,
@@ -28,6 +28,8 @@ const loginGmail = async (req: Request, res: Response) => {
       newUser.created_by = email + " register gmail";
       _user = await newUser.save();
     }
+
+    console.log(_user);
 
     if (_user != undefined) {
       const contentToken = { _id: _user.id, role: _user.role };
