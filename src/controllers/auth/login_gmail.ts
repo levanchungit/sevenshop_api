@@ -29,8 +29,6 @@ const loginGmail = async (req: Request, res: Response) => {
       _user = await newUser.save();
     }
 
-    console.log(_user);
-
     if (_user != undefined) {
       const contentToken = { _id: _user.id, role: _user.role };
       const access_token = tokenGen(

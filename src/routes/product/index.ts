@@ -33,7 +33,7 @@ router.post("/recently/:id", isUser, recentlyProduct);
 router.get("/search_products/find", isUser, searchProducts);
 router.get("/filter_products/find", isUser, filterProducts);
 router.get("/flash_sale/get", getFlashSale);
-router.get("/for_you/get", getForYou);
+router.get("/for_you/get", isUser, getForYou);
 router.get("/categories/get", getProductsByCategories);
 
 export default router;
